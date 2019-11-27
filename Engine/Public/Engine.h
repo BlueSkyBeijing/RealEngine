@@ -1,4 +1,6 @@
 #pragma once
+#include "..\Public\Renderer.h"
+#include "..\Public\Device.h"
 
 class IEngine
 {
@@ -15,11 +17,17 @@ class RealEngine : public IEngine
 {
 public:
 	RealEngine();
-	~RealEngine();
+	virtual ~RealEngine();
 
 	virtual int Init() override;
 
 	virtual int Tick() override;
 
 	virtual int Exit() override;
+
+	IDevice* GetDevice();
+
+private:
+	IRenderer* Renderer;
+	IDevice* Device;
 };

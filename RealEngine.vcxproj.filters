@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Engine\Private\Engine.cpp">
+      <Filter>Engine\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Private\Globals.cpp">
+      <Filter>Engine\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Private\Renderer.cpp">
+      <Filter>Engine\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Private\Device.cpp">
+      <Filter>Engine\Private</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Engine\Public\Engine.h">
+      <Filter>Engine\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Public\Globals.h">
+      <Filter>Engine\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Public\Renderer.h">
+      <Filter>Engine\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Public\Device.h">
+      <Filter>Engine\Public</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{96a2a5db-587c-49c1-a3f8-8cc98196a6c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Private">
+      <UniqueIdentifier>{cb1154bc-8a02-4614-b5dd-65156d91e071}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Public">
+      <UniqueIdentifier>{1ea6f131-890d-46f3-bfca-1e430ba2f724}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
