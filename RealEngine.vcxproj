@@ -126,6 +126,7 @@
     <ClInclude Include="Engine\Public\Engine.h" />
     <ClInclude Include="Engine\Public\Globals.h" />
     <ClInclude Include="Engine\Public\Renderer.h" />
+    <ClInclude Include="Engine\Public\Singleton.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

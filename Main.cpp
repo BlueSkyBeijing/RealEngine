@@ -1,18 +1,16 @@
 #include "Engine\Public\Engine.h"
 #include "Engine\Public\Globals.h"
 
-RealEngine GEngine;
-
 int main()
 {
-	GEngine.Init();
+	RealEngine::GetInstance()->Init();
 
 	while (!GExit)
 	{
-		GEngine.Tick();
+		RealEngine::GetInstance()->Tick();
 	}
 
-	GEngine.Exit();
+	RealEngine::GetInstance()->Exit();
 
 	return 0;
 }

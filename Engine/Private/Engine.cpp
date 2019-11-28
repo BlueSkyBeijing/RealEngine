@@ -1,15 +1,7 @@
 #include "..\Public\Engine.h"
 #include "..\Public\Renderer.h"
 
-RealEngine::RealEngine()
-{
-
-}
-
-RealEngine::~RealEngine()
-{
-
-}
+template<> RealEngine* RealEngine::Singleton<RealEngine>::Instance = nullptr;
 
 int RealEngine::Init()
 {

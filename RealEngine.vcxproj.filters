@@ -28,6 +28,9 @@
     <ClInclude Include="Engine\Public\Device.h">
       <Filter>Engine\Public</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Public\Singleton.h">
+      <Filter>Engine\Public</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
