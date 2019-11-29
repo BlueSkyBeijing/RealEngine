@@ -14,6 +14,9 @@
     <ClCompile Include="Engine\Private\Device.cpp">
       <Filter>Engine\Private</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Private\RenderTarget.cpp">
+      <Filter>Engine\Private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Public\Engine.h">
@@ -29,6 +32,9 @@
       <Filter>Engine\Public</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Public\Singleton.h">
+      <Filter>Engine\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Public\RenderTarget.h">
       <Filter>Engine\Public</Filter>
     </ClInclude>
   </ItemGroup>
