@@ -1,8 +1,12 @@
 #include "Engine\Public\Engine.h"
 #include "Engine\Public\Globals.h"
+#include <windows.h>
 
-int main()
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
+	PSTR cmdLine, int showCmd)
 {
+	RealEngine::GetInstance()->SetInstanceHandle(hInstance);
+
 	RealEngine::GetInstance()->Init();
 
 	while (!GExit)

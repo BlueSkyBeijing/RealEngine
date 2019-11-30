@@ -2,6 +2,8 @@
 #include "..\Public\Renderer.h"
 #include "..\Public\Device.h"
 #include "..\Public\Singleton.h"
+#include "..\Public\RenderTarget.h"
+#include <windows.h>
 
 class IEngine
 {
@@ -11,6 +13,9 @@ public:
 	virtual int Tick() = 0;
 
 	virtual int Exit() = 0;
+
+	virtual IDevice* GetDevice() = 0;
+
 };
 
 
@@ -24,10 +29,17 @@ public:
 
 	virtual int Exit() override;
 
-	IDevice* GetDevice();
+	virtual IDevice* GetDevice() override;
+
+
+	HINSTANCE GetInstanceHandle();
+	void SetInstanceHandle(HINSTANCE Instance);
 
 private:
 	IRenderer* Renderer;
 	IDevice* Device;
+	IRenderTarget* RenderTarget;
+
+	HINSTANCE InstanceHandle;
 };
 
