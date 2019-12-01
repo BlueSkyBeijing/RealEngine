@@ -1,11 +1,5 @@
 #pragma once
-
-class IDevice
-{
-public:
-	virtual int Draw() = 0;
-};
-
+#include "..\..\Frame\Public\Device.h"
 
 class DX12Device : public IDevice
 {

@@ -1,19 +1,21 @@
-#include "..\Public\RenderTarget.h"
-#include "..\Public\Engine.h"
+#include "..\..\..\Frame\Public\RenderTarget.h"
+#include "..\..\..\Frame\Public\Engine.h"
+#include "..\Public\RenderWindow.h"
+#include "..\Public\EngineWindows.h"
 
-RenderTargetWindow::RenderTargetWindow()
+RenderWindow::RenderWindow()
 {
 
 }
 
-RenderTargetWindow::~RenderTargetWindow()
+RenderWindow::~RenderWindow()
 {
 
 }
 
-int RenderTargetWindow::Initialize()
+int RenderWindow::Initialize()
 {
-	HINSTANCE  Instacne = RealEngine::GetInstance()->GetInstanceHandle();
+	HINSTANCE  Instacne = EngineWindows::GetInstance()->GetInstanceHandle();
 	WNDCLASS WindowClass;
 	WindowClass.style = CS_HREDRAW | CS_VREDRAW;
 	WindowClass.lpfnWndProc = 0;
@@ -54,12 +56,12 @@ int RenderTargetWindow::Initialize()
 	return 0;
 }
 
-int RenderTargetWindow::GetWidth() const
+int RenderWindow::GetWidth() const
 {
 	return 1024;
 }
 
-int RenderTargetWindow::GetHeight() const
+int RenderWindow::GetHeight() const
 { 
 	return 1024;
 }

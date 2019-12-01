@@ -1,4 +1,4 @@
-#include "..\Public\Device.h"
+#include "..\Public\DX12Device.h"
 
 DX12Device::DX12Device()
 {

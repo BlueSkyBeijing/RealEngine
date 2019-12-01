@@ -1,52 +1,105 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Engine\Private\Engine.cpp">
-      <Filter>Engine\Private</Filter>
+    <ClCompile Include="Engine\Frame\Private\Device.cpp">
+      <Filter>Frame\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Private\Globals.cpp">
-      <Filter>Engine\Private</Filter>
+    <ClCompile Include="Engine\Frame\Private\Engine.cpp">
+      <Filter>Frame\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Private\Renderer.cpp">
-      <Filter>Engine\Private</Filter>
+    <ClCompile Include="Engine\Frame\Private\Globals.cpp">
+      <Filter>Frame\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Private\Device.cpp">
-      <Filter>Engine\Private</Filter>
+    <ClCompile Include="Engine\Frame\Private\Renderer.cpp">
+      <Filter>Frame\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Private\RenderTarget.cpp">
-      <Filter>Engine\Private</Filter>
+    <ClCompile Include="Engine\Frame\Private\RenderTarget.cpp">
+      <Filter>Frame\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Platforms\Windows\Private\RenderWindow.cpp">
+      <Filter>Platforms\Windows\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\RenderDevices\Private\DX12Device.cpp">
+      <Filter>RenderDevices\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Platforms\Windows\Private\EngineWindows.cpp">
+      <Filter>Platforms\Windows\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Platforms\Windows\Private\LanucherWindows.cpp">
+      <Filter>Platforms\Windows\Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine\Public\Engine.h">
-      <Filter>Engine\Public</Filter>
+    <ClInclude Include="Engine\Frame\Public\Device.h">
+      <Filter>Frame\Public</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Public\Globals.h">
-      <Filter>Engine\Public</Filter>
+    <ClInclude Include="Engine\Frame\Public\Engine.h">
+      <Filter>Frame\Public</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Public\Renderer.h">
-      <Filter>Engine\Public</Filter>
+    <ClInclude Include="Engine\Frame\Public\Globals.h">
+      <Filter>Frame\Public</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Public\Device.h">
-      <Filter>Engine\Public</Filter>
+    <ClInclude Include="Engine\Frame\Public\Renderer.h">
+      <Filter>Frame\Public</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Public\Singleton.h">
-      <Filter>Engine\Public</Filter>
+    <ClInclude Include="Engine\Frame\Public\RenderTarget.h">
+      <Filter>Frame\Public</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Public\RenderTarget.h">
-      <Filter>Engine\Public</Filter>
+    <ClInclude Include="Engine\Platforms\Windows\Public\RenderWindow.h">
+      <Filter>Platforms\Windows\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\RenderDevices\Public\DX12Device.h">
+      <Filter>RenderDevices\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Utility\Public\Prerequisites.h">
+      <Filter>Utility\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Utility\Public\Singleton.h">
+      <Filter>Utility\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Platforms\Windows\Public\EngineWindows.h">
+      <Filter>Platforms\Windows\Public</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Engine">
-      <UniqueIdentifier>{96a2a5db-587c-49c1-a3f8-8cc98196a6c8}</UniqueIdentifier>
+    <Filter Include="Frame">
+      <UniqueIdentifier>{a9fb89a5-3eda-4596-95cb-98d94e3f9ac2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Private">
-      <UniqueIdentifier>{cb1154bc-8a02-4614-b5dd-65156d91e071}</UniqueIdentifier>
+    <Filter Include="Platforms">
+      <UniqueIdentifier>{0f3d3686-6c03-42f1-8116-33378a9a732e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Public">
-      <UniqueIdentifier>{1ea6f131-890d-46f3-bfca-1e430ba2f724}</UniqueIdentifier>
+    <Filter Include="Platforms\Windows">
+      <UniqueIdentifier>{20e6dafb-2174-435b-bd77-6cf59518010c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Frame\Public">
+      <UniqueIdentifier>{740d38be-5189-49e0-866e-6569936160b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Frame\Private">
+      <UniqueIdentifier>{deb82dda-a6d3-41d4-982e-615b89245783}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platforms\Windows\Private">
+      <UniqueIdentifier>{22d2693e-0448-45de-a635-a627fcc14d49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platforms\Windows\Public">
+      <UniqueIdentifier>{ed281632-74e5-43a8-971d-b4fb8f80e58a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderDevices">
+      <UniqueIdentifier>{b4f20315-1f1f-4533-b1da-0d9014860cda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderDevices\Public">
+      <UniqueIdentifier>{92a27137-d046-471d-b40b-b023bf45a993}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderDevices\Private">
+      <UniqueIdentifier>{a0a66033-1072-4e88-8e2c-702541a1c6a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utility">
+      <UniqueIdentifier>{dbfbfe77-bac8-429f-a4f0-193367dfc674}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utility\Public">
+      <UniqueIdentifier>{c424da66-b8fa-4b02-ac49-552dbed74fb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utility\Private">
+      <UniqueIdentifier>{575c5790-55c1-47bb-915f-23b8dad31ef3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

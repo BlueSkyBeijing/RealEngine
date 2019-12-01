@@ -14,7 +14,7 @@ RealRenderer::~RealRenderer()
 
 int RealRenderer::Render()
 {
-	IDevice* Device = RealEngine::GetInstance()->GetDevice();
+	IDevice* Device = RealEngine::GetDevice();
 	assert(Device != nullptr);
 	Device->Draw();
 

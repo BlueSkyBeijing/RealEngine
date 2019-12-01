@@ -18,6 +18,29 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Engine\Frame\Private\Device.cpp" />
+    <ClCompile Include="Engine\Frame\Private\Engine.cpp" />
+    <ClCompile Include="Engine\Frame\Private\Globals.cpp" />
+    <ClCompile Include="Engine\Frame\Private\Renderer.cpp" />
+    <ClCompile Include="Engine\Frame\Private\RenderTarget.cpp" />
+    <ClCompile Include="Engine\Platforms\Windows\Private\EngineWindows.cpp" />
+    <ClCompile Include="Engine\Platforms\Windows\Private\LanucherWindows.cpp" />
+    <ClCompile Include="Engine\Platforms\Windows\Private\RenderWindow.cpp" />
+    <ClCompile Include="Engine\RenderDevices\Private\DX12Device.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Engine\Frame\Public\Device.h" />
+    <ClInclude Include="Engine\Frame\Public\Engine.h" />
+    <ClInclude Include="Engine\Frame\Public\Globals.h" />
+    <ClInclude Include="Engine\Frame\Public\Renderer.h" />
+    <ClInclude Include="Engine\Frame\Public\RenderTarget.h" />
+    <ClInclude Include="Engine\Platforms\Windows\Public\EngineWindows.h" />
+    <ClInclude Include="Engine\Platforms\Windows\Public\RenderWindow.h" />
+    <ClInclude Include="Engine\RenderDevices\Public\DX12Device.h" />
+    <ClInclude Include="Engine\Utility\Public\Prerequisites.h" />
+    <ClInclude Include="Engine\Utility\Public\Singleton.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{0823EAA8-BB9A-46D6-BA9B-BB54030DEC9C}</ProjectGuid>
@@ -114,22 +137,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="Engine\Private\Device.cpp" />
-    <ClCompile Include="Engine\Private\Engine.cpp" />
-    <ClCompile Include="Engine\Private\Globals.cpp" />
-    <ClCompile Include="Engine\Private\Renderer.cpp" />
-    <ClCompile Include="Engine\Private\RenderTarget.cpp" />
-    <ClCompile Include="Main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Engine\Public\Device.h" />
-    <ClInclude Include="Engine\Public\Engine.h" />
-    <ClInclude Include="Engine\Public\Globals.h" />
-    <ClInclude Include="Engine\Public\Renderer.h" />
-    <ClInclude Include="Engine\Public\RenderTarget.h" />
-    <ClInclude Include="Engine\Public\Singleton.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
