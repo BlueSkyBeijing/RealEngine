@@ -32,7 +32,7 @@ int EngineWindows::Tick()
 	}
 	else
 	{
-		Renderer->Render();
+		__super::Tick();
 	}
 
 	return 0;
@@ -40,10 +40,7 @@ int EngineWindows::Tick()
 
 int EngineWindows::Exit()
 {
-	if (Renderer != nullptr)
-	{
-		delete Renderer;
-	}
+	__super::Exit();
 
 	return 0;
 }
@@ -56,4 +53,23 @@ HINSTANCE EngineWindows::GetInstanceHandle()
 void EngineWindows::SetInstanceHandle(HINSTANCE Instance)
 {
 	InstanceHandle = Instance;
+}
+
+LRESULT EngineWindows::MessageProcess(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	switch (msg)
+	{
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		return 0;
+	case WM_KEYUP:
+		if (wParam == VK_ESCAPE)
+		{
+			PostQuitMessage(0);
+		}
+	default:
+		break;
+	}
+
+	return DefWindowProc(hwnd, msg, wParam, lParam);
 }

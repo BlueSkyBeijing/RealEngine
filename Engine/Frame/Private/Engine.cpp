@@ -27,6 +27,16 @@ int RealEngine::Exit()
 		delete Renderer;
 	}
 
+	if (RenderTarget != nullptr)
+	{
+		delete RenderTarget;
+	}
+
+	if (Device != nullptr)
+	{
+		delete Device;
+	}
+
 	return 0;
 }
 
