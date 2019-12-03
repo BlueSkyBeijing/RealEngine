@@ -16,16 +16,16 @@
     <ClCompile Include="Engine\Frame\Private\RenderTarget.cpp">
       <Filter>Frame\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Platforms\Windows\Private\RenderWindow.cpp">
-      <Filter>Platforms\Windows\Private</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\RenderDevices\Private\DX12Device.cpp">
       <Filter>RenderDevices\Private</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Platforms\Windows\Private\EngineWindows.cpp">
       <Filter>Platforms\Windows\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Platforms\Windows\Private\LanucherWindows.cpp">
+    <ClCompile Include="Engine\Platforms\Windows\Private\RenderWindowWindows.cpp">
+      <Filter>Platforms\Windows\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Platforms\Windows\Private\LauncherWindows.cpp">
       <Filter>Platforms\Windows\Private</Filter>
     </ClCompile>
   </ItemGroup>
@@ -45,9 +45,6 @@
     <ClInclude Include="Engine\Frame\Public\RenderTarget.h">
       <Filter>Frame\Public</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Platforms\Windows\Public\RenderWindow.h">
-      <Filter>Platforms\Windows\Public</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\RenderDevices\Public\DX12Device.h">
       <Filter>RenderDevices\Public</Filter>
     </ClInclude>
@@ -58,6 +55,9 @@
       <Filter>Utility\Public</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Platforms\Windows\Public\EngineWindows.h">
+      <Filter>Platforms\Windows\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Platforms\Windows\Public\RenderWindowWindows.h">
       <Filter>Platforms\Windows\Public</Filter>
     </ClInclude>
   </ItemGroup>

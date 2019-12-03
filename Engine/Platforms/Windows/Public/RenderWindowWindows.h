@@ -1,13 +1,13 @@
 #pragma once
 #include"..\..\..\Frame\Public\RenderTarget.h"
 
-class RenderWindow : public IRenderTarget
+class RenderWindowWindows : public IRenderTarget
 {
 public:
-	RenderWindow();
-	virtual ~RenderWindow();
+	RenderWindowWindows();
+	virtual ~RenderWindowWindows();
 
-	virtual int Initialize() override;
+	virtual int Init() override;
 	virtual int GetWidth() const override;
 	virtual int GetHeight() const override;
 

@@ -1,7 +1,7 @@
 #include "..\Public\EngineWindows.h"
 #include "..\..\..\Frame\Public\Renderer.h"
 #include "..\..\..\Frame\Public\Globals.h"
-#include "..\Public\RenderWindow.h"
+#include "..\Public\RenderWindowWindows.h"
 #include "..\..\..\RenderDevices\Public\DX12Device.h"
 
 template<> EngineWindows* EngineWindows::Singleton<EngineWindows>::Instance = nullptr;
@@ -10,8 +10,8 @@ int EngineWindows::Init()
 {
 	Device = new DX12Device();
 	Renderer = new RealRenderer();
-	RenderTarget = new RenderWindow();
-	RenderTarget->Initialize();
+	RenderTarget = new RenderWindowWindows();
+	RenderTarget->Init();
 
 	return 0;
 }

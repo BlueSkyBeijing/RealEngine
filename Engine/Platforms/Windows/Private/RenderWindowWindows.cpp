@@ -1,6 +1,6 @@
 #include "..\..\..\Frame\Public\RenderTarget.h"
 #include "..\..\..\Frame\Public\Engine.h"
-#include "..\Public\RenderWindow.h"
+#include "..\Public\RenderWindowWindows.h"
 #include "..\Public\EngineWindows.h"
 
 LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -8,17 +8,17 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	return EngineWindows::GetInstance()->MessageProcess(hwnd, msg, wParam, lParam);
 }
 
-RenderWindow::RenderWindow()
+RenderWindowWindows::RenderWindowWindows()
 {
 
 }
 
-RenderWindow::~RenderWindow()
+RenderWindowWindows::~RenderWindowWindows()
 {
 
 }
 
-int RenderWindow::Initialize()
+int RenderWindowWindows::Init()
 {
 	HINSTANCE  Instacne = EngineWindows::GetInstance()->GetInstanceHandle();
 
@@ -56,12 +56,12 @@ int RenderWindow::Initialize()
 	return 0;
 }
 
-int RenderWindow::GetWidth() const
+int RenderWindowWindows::GetWidth() const
 {
 	return 1024;
 }
 
-int RenderWindow::GetHeight() const
+int RenderWindowWindows::GetHeight() const
 { 
 	return 768;
 }

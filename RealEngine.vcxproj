@@ -25,8 +25,8 @@
     <ClCompile Include="Engine\Frame\Private\Renderer.cpp" />
     <ClCompile Include="Engine\Frame\Private\RenderTarget.cpp" />
     <ClCompile Include="Engine\Platforms\Windows\Private\EngineWindows.cpp" />
-    <ClCompile Include="Engine\Platforms\Windows\Private\LanucherWindows.cpp" />
-    <ClCompile Include="Engine\Platforms\Windows\Private\RenderWindow.cpp" />
+    <ClCompile Include="Engine\Platforms\Windows\Private\LauncherWindows.cpp" />
+    <ClCompile Include="Engine\Platforms\Windows\Private\RenderWindowWindows.cpp" />
     <ClCompile Include="Engine\RenderDevices\Private\DX12Device.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -36,7 +36,7 @@
     <ClInclude Include="Engine\Frame\Public\Renderer.h" />
     <ClInclude Include="Engine\Frame\Public\RenderTarget.h" />
     <ClInclude Include="Engine\Platforms\Windows\Public\EngineWindows.h" />
-    <ClInclude Include="Engine\Platforms\Windows\Public\RenderWindow.h" />
+    <ClInclude Include="Engine\Platforms\Windows\Public\RenderWindowWindows.h" />
     <ClInclude Include="Engine\RenderDevices\Public\DX12Device.h" />
     <ClInclude Include="Engine\Utility\Public\Prerequisites.h" />
     <ClInclude Include="Engine\Utility\Public\Singleton.h" />

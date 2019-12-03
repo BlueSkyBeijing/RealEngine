@@ -1,7 +1,7 @@
 #include "..\Public\Engine.h"
 #include "..\Public\Renderer.h"
 #include "..\Public\Globals.h"
-#include "..\..\Platforms\Windows\Public\RenderWindow.h"
+#include "..\..\Platforms\Windows\Public\RenderWindowWindows.h"
 
 IDevice* RealEngine::Device = nullptr;
 
