@@ -20,4 +20,11 @@ private:
 	IDXGIFactory2*  IDXGIFactory;
 	IDXGIAdapter1* IAdapter;
 	ID3D12Device* IDX12Device;
+	ID3D12CommandQueue* IDX12CommandQueue;
+	IDXGISwapChain1* IDXGISwapChain;
+	ID3D12RootSignature* IDX12RootSignature;
+	ID3D12PipelineState* IDX12PipleLineState;
+	ID3D12Fence* IDX12Fence;
+	ID3D12DescriptorHeap* IDX12DescriptorHeap;
+	ID3D12Resource* IRenderTargets[2];
 };

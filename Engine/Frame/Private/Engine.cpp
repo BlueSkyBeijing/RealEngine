@@ -44,3 +44,8 @@ IDevice* RealEngine::GetDevice()
 {
 	return Device;
 }
+
+IRenderTarget* RealEngine::GetRenderTarget()
+{
+	return RenderTarget;
+}

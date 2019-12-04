@@ -11,6 +11,8 @@ public:
 	virtual int GetWidth() const override;
 	virtual int GetHeight() const override;
 
+	HWND GetRenderWindowHandle();
+
 protected:
 	HWND  RenderWindowHandle;
 };

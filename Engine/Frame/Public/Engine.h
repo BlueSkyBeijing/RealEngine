@@ -28,6 +28,8 @@ public:
 
 	static IDevice* GetDevice();
 
+	IRenderTarget* GetRenderTarget();
+
 protected:
 	static IDevice* Device;
 	IRenderer* Renderer;

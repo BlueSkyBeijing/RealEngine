@@ -66,3 +66,7 @@ int RenderWindowWindows::GetHeight() const
 	return 768;
 }
 
+HWND RenderWindowWindows::GetRenderWindowHandle()
+{
+	return RenderWindowHandle;
+}
