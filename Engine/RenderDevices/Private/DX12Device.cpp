@@ -96,6 +96,12 @@ int DX12Device::Init()
 
 	IDX12Device->CreateGraphicsPipelineState(&PSODesc, IID_PPV_ARGS(&IDX12PipleLineState));
 
+	// Create command allocator
+	IDX12Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&IDX12CommandAllocator));
+
+	// Create command list
+	IDX12Device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, IDX12CommandAllocator, IDX12PipleLineState, IID_PPV_ARGS(&IDX12CommandList));
+
 	// Crete fence
 	IDX12Device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&IDX12Fence));
 
@@ -104,5 +110,28 @@ int DX12Device::Init()
 
 int DX12Device::Draw()
 {
+	// Reset command list
+	IDX12CommandList->Reset(IDX12CommandAllocator, IDX12PipleLineState);
+
+	// Clear color and depth stencil
+	IDX12CommandList->ClearRenderTargetView();
+	IDX12CommandList->ClearDepthStencilView();
+
+	// Set render target
+	IDX12CommandList->OMSetRenderTargets();
+
+	// Draw
+	IDX12CommandList->DrawIndexedInstanced(0, 1, 0, 0, 0);
+
+	// Close command
+	IDX12CommandList->Close();
+
+	// Execute command list
+	ID3D12CommandList* CommandLists[] = { IDX12CommandList };
+	IDX12CommandQueue->ExecuteCommandLists(1, &CommandLists);
+
+	// Present
+	IDXGISwapChain->Present(0, 0);
+
 	return 0;
 }

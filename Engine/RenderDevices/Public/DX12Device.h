@@ -21,6 +21,8 @@ private:
 	IDXGIAdapter1* IAdapter;
 	ID3D12Device* IDX12Device;
 	ID3D12CommandQueue* IDX12CommandQueue;
+	ID3D12CommandAllocator* IDX12CommandAllocator;
+	ID3D12GraphicsCommandList* IDX12CommandList;
 	IDXGISwapChain1* IDXGISwapChain;
 	ID3D12RootSignature* IDX12RootSignature;
 	ID3D12PipelineState* IDX12PipleLineState;
