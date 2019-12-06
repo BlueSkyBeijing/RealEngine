@@ -83,11 +83,18 @@ int DX12Device::Init()
 	D3D12SerializeRootSignature(&RootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &Signature, &Error);
 	IDX12Device->CreateRootSignature(0, Signature->GetBufferPointer(), Signature->GetBufferSize(), IID_PPV_ARGS(&IDX12RootSignature));
 
+	UINT CompileFlags = 0;
+	TCHAR ShaderFileName[] = _T("Shader\\Basic.hlsl");
+	D3DCompileFromFile(ShaderFileName, nullptr, nullptr, "VSMain", "vs_5_0", CompileFlags, 0, &VertexShader, nullptr));
+	D3DCompileFromFile(ShaderFileName, nullptr, nullptr, "PSMain", "ps_5_0", CompileFlags, 0, &PixelShader, nullptr));
+
 	// Create graphic pipeline state 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC PSODesc = {};
 	PSODesc.pRootSignature = IDX12RootSignature;
 	PSODesc.DepthStencilState.DepthEnable = FALSE;
 	PSODesc.DepthStencilState.StencilEnable = FALSE;
+	PSODesc.VS = D3D12_SHADER_BYTECODE(VertexShader.Get());
+	PSODesc.PS = D3D12_SHADER_BYTECODE(PixelShader.Get());
 	PSODesc.SampleMask = UINT_MAX;
 	PSODesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 	PSODesc.NumRenderTargets = 1;
@@ -104,6 +111,10 @@ int DX12Device::Init()
 
 	// Crete fence
 	IDX12Device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&IDX12Fence));
+	FenceValue = 1;
+
+	// Create event
+	EventHandle = CreateEventEx(nullptr, FALSE, FALSE, EVENT_ALL_ACCESS);
 
 	return 0;
 }
@@ -132,6 +143,16 @@ int DX12Device::Draw()
 
 	// Present
 	IDXGISwapChain->Present(0, 0);
+
+	const UINT64 CmdFence = FenceValue;
+	IDX12CommandQueue->Signal(IDX12Fence.Get(), CmdFence));
+	FenceValue++;
+
+	if (IDX12Fence->GetCompletedValue() < CmdFence)
+	{
+		IDX12Fence->SetEventOnCompletion(CmdFence, EventHandle);
+		WaitForSingleObject(EventHandle, INFINITE);
+	}
 
 	return 0;
 }
