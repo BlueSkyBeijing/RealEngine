@@ -14,7 +14,7 @@ PSInput VSMain(float4 Position : POSITION, float4 Color : COLOR)
  
     return Result;
 }
- 
+
 float4 PSMain(PSInput Input) : SV_TARGET
 {
     return Input.Color;

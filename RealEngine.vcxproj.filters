@@ -101,5 +101,13 @@
     <Filter Include="Utility\Private">
       <UniqueIdentifier>{575c5790-55c1-47bb-915f-23b8dad31ef3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{91850a62-a494-4822-aed6-b07e42a9b6d2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Engine\Shaders\Basic.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

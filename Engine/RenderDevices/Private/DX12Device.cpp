@@ -10,6 +10,12 @@
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 
+struct VERTEX 
+{ 
+	FLOAT X, Y, Z; 
+	FLOAT Color[4]; 
+};
+
 DX12Device::DX12Device()
 {
 
@@ -76,6 +82,12 @@ int DX12Device::Init()
 	IDX12Device->CreateRenderTargetView(IRenderTargets[0], nullptr, DescriptorHandle);
 	IDX12Device->CreateRenderTargetView(IRenderTargets[1], nullptr, DescriptorHandle);
 
+	// viewport
+	ViewPort = { 0.0f, 0.0f, static_cast<float>(RenderTarget->GetWidth()), static_cast<float>(RenderTarget->GetHeight()), 0.0f, 1.0f };
+
+	// Scissor Rectangle
+	RectScissor = { 0, 0, RenderTarget->GetWidth(), RenderTarget->GetHeight() };
+
 	// Create root signature
 	D3D12_ROOT_SIGNATURE_DESC RootSignatureDesc;
 	ID3DBlob* Signature;
@@ -88,8 +100,35 @@ int DX12Device::Init()
 	D3DCompileFromFile(ShaderFileName, nullptr, nullptr, "VSMain", "vs_5_0", CompileFlags, 0, &VertexShader, nullptr));
 	D3DCompileFromFile(ShaderFileName, nullptr, nullptr, "PSMain", "ps_5_0", CompileFlags, 0, &PixelShader, nullptr));
 
+	// Input Layout
+	D3D12_INPUT_ELEMENT_DESC InputLayout[] = {
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 } };
+
+	UINT NumElements = sizeof(InputLayout) / sizeof(InputLayout[0]);
+
+	// Create vertex
+	IDX12Device->CreateCommittedResource(&D3D12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), D3D12_HEAP_FLAG_NONE, &D3D12_RESOURCE_DESC::Buffer(3 * sizeof(VERTEX)), D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&VertexBuffer));
+
+	VERTEX TriangleVertexes[] = {
+	{ 0.0f, 0.5f, 0.0f,{ 1.0f, 0.0f, 0.0f, 1.0f } },
+	{ 0.5f, -0.5, 0.0f,{ 0.0f, 1.0f, 0.0f, 1.0f } },
+	{ -0.5f, -0.5f, 0.0f,{ 0.0f, 0.0f, 1.0f, 1.0f } } };
+
+	// Copy data
+	UINT8* VertexBufferData;
+	VertexBuffer->Map(0, nullptr, reinterpret_cast<void**>(&VertexBufferData));
+	memcpy(VertexBufferData, TriangleVertexes, sizeof(TriangleVertexes));
+	VertexBuffer->Unmap(0, nullptr);
+
+	// Vertex buffer view
+	VertexBufferView.BufferLocation = VertexBuffer->GetGPUVirtualAddress();
+	VertexBufferView.StrideInBytes = sizeof(VERTEX);
+	VertexBufferView.SizeInBytes = sizeof(TriangleVertexes);
+
 	// Create graphic pipeline state 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC PSODesc = {};
+	PSODesc.InputLayout = { InputLayout, NumElements };
 	PSODesc.pRootSignature = IDX12RootSignature;
 	PSODesc.DepthStencilState.DepthEnable = FALSE;
 	PSODesc.DepthStencilState.StencilEnable = FALSE;
@@ -116,11 +155,16 @@ int DX12Device::Init()
 	// Create event
 	EventHandle = CreateEventEx(nullptr, FALSE, FALSE, EVENT_ALL_ACCESS);
 
+
 	return 0;
 }
 
 int DX12Device::Draw()
 {
+	IDX12CommandList->SetGraphicsRootSignature(IDX12RootSignature);
+	IDX12CommandList->RSSetViewports(1, &ViewPort);
+	IDX12CommandList->RSSetScissorRects(1, &ScissorRect);
+
 	// Reset command list
 	IDX12CommandList->Reset(IDX12CommandAllocator, IDX12PipleLineState);
 
@@ -145,7 +189,7 @@ int DX12Device::Draw()
 	IDXGISwapChain->Present(0, 0);
 
 	const UINT64 CmdFence = FenceValue;
-	IDX12CommandQueue->Signal(IDX12Fence.Get(), CmdFence));
+	IDX12CommandQueue->Signal(IDX12Fence.Get(), CmdFence);
 	FenceValue++;
 
 	if (IDX12Fence->GetCompletedValue() < CmdFence)

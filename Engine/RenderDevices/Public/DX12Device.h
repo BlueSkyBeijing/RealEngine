@@ -29,4 +29,13 @@ private:
 	ID3D12Fence* IDX12Fence;
 	ID3D12DescriptorHeap* IDX12DescriptorHeap;
 	ID3D12Resource* IRenderTargets[2];
+	HANDLE EventHandle;
+	UINT64 FenceValue;
+	ID3DBlob* VertexShader;
+	ID3DBlob *PixelShader;
+	ID3D12Resource* VertexBuffer;
+	D3D12_VIEWPORT ViewPort;
+	D3D12_RECT RectScissor;
+	D3D12_VERTEX_BUFFER_VIEW VertexBufferView;
+
 };

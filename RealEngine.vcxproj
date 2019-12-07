@@ -41,6 +41,9 @@
     <ClInclude Include="Engine\Utility\Public\Prerequisites.h" />
     <ClInclude Include="Engine\Utility\Public\Singleton.h" />
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Engine\Shaders\Basic.hlsl" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{0823EAA8-BB9A-46D6-BA9B-BB54030DEC9C}</ProjectGuid>
