@@ -4,7 +4,7 @@
 #include "..\..\Platforms\Windows\Public\RenderWindowWindows.h"
 
 #include <assert.h>
-
+#include <atlstr.h >
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3d12.lib")
@@ -81,12 +81,13 @@ int DX12Device::Init()
 	D3D12_CPU_DESCRIPTOR_HANDLE DescriptorHandle(IDX12DescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 	IDX12Device->CreateRenderTargetView(IRenderTargets[0], nullptr, DescriptorHandle);
 	IDX12Device->CreateRenderTargetView(IRenderTargets[1], nullptr, DescriptorHandle);
+	FrameIndex = 0;
 
 	// viewport
 	ViewPort = { 0.0f, 0.0f, static_cast<float>(RenderTarget->GetWidth()), static_cast<float>(RenderTarget->GetHeight()), 0.0f, 1.0f };
 
 	// Scissor Rectangle
-	RectScissor = { 0, 0, RenderTarget->GetWidth(), RenderTarget->GetHeight() };
+	ScissorRect = { 0, 0, RenderTarget->GetWidth(), RenderTarget->GetHeight() };
 
 	// Create root signature
 	D3D12_ROOT_SIGNATURE_DESC RootSignatureDesc;
@@ -97,8 +98,8 @@ int DX12Device::Init()
 
 	UINT CompileFlags = 0;
 	TCHAR ShaderFileName[] = _T("Shader\\Basic.hlsl");
-	D3DCompileFromFile(ShaderFileName, nullptr, nullptr, "VSMain", "vs_5_0", CompileFlags, 0, &VertexShader, nullptr));
-	D3DCompileFromFile(ShaderFileName, nullptr, nullptr, "PSMain", "ps_5_0", CompileFlags, 0, &PixelShader, nullptr));
+	D3DCompileFromFile(ShaderFileName, nullptr, nullptr, "VSMain", "vs_5_0", CompileFlags, 0, &VertexShader, nullptr);
+	D3DCompileFromFile(ShaderFileName, nullptr, nullptr, "PSMain", "ps_5_0", CompileFlags, 0, &PixelShader, nullptr);
 
 	// Input Layout
 	D3D12_INPUT_ELEMENT_DESC InputLayout[] = {
@@ -161,24 +162,35 @@ int DX12Device::Init()
 
 int DX12Device::Draw()
 {
+	// Set root signature
 	IDX12CommandList->SetGraphicsRootSignature(IDX12RootSignature);
+
+	// Set view port
 	IDX12CommandList->RSSetViewports(1, &ViewPort);
+
+	// Set scissor
 	IDX12CommandList->RSSetScissorRects(1, &ScissorRect);
 
 	// Reset command list
 	IDX12CommandList->Reset(IDX12CommandAllocator, IDX12PipleLineState);
 
+	FrameIndex = IDXGISwapChain->GetCurrentBackBufferIndex();
+	IDX12CommandList->ResourceBarrier(1, &D3D12_RESOURCE_BARRIER::Transition(IRenderTargets[FrameIndex], D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
+
 	// Clear color and depth stencil
-	IDX12CommandList->ClearRenderTargetView();
-	IDX12CommandList->ClearDepthStencilView();
+	float ClearColor[] = { 0.0f, 0.2f, 0.4f, 1.0f };
+	IDX12CommandList->ClearRenderTargetView(IDX12DescriptorHeap->GetCPUDescriptorHandleForHeapStart(), ClearColor, 0, nullptr);
+	IDX12CommandList->ClearDepthStencilView(DepthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
+
 
 	// Set render target
-	IDX12CommandList->OMSetRenderTargets();
+	IDX12CommandList->OMSetRenderTargets(1, nullptr, true, &DepthStencilView());
 
 	// Draw
 	IDX12CommandList->DrawIndexedInstanced(0, 1, 0, 0, 0);
 
-	// Close command
+	IDX12CommandList->ResourceBarrier(1, &D3D12_RESOURCE_BARRIER::Transition(IRenderTargets[FrameIndex], D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
+
 	IDX12CommandList->Close();
 
 	// Execute command list

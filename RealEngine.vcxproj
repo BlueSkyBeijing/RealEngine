@@ -42,7 +42,9 @@
     <ClInclude Include="Engine\Utility\Public\Singleton.h" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Engine\Shaders\Basic.hlsl" />
+    <FxCompile Include="Engine\Shaders\Basic.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

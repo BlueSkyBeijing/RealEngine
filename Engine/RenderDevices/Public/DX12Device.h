@@ -35,7 +35,7 @@ private:
 	ID3DBlob *PixelShader;
 	ID3D12Resource* VertexBuffer;
 	D3D12_VIEWPORT ViewPort;
-	D3D12_RECT RectScissor;
+	D3D12_RECT ScissorRect;
 	D3D12_VERTEX_BUFFER_VIEW VertexBufferView;
-
+	UINT FrameIndex;
 };
