@@ -2,7 +2,7 @@
 #include "..\..\..\Frame\Public\Renderer.h"
 #include "..\..\..\Frame\Public\Globals.h"
 #include "..\Public\RenderWindowWindows.h"
-#include "..\..\..\RenderDevices\Public\DX12Device.h"
+#include "..\..\..\RenderDevices\DX12\Public\DX12Device.h"
 
 template<> EngineWindows* EngineWindows::Singleton<EngineWindows>::Instance = nullptr;
 

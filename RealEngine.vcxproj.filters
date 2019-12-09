@@ -16,9 +16,6 @@
     <ClCompile Include="Engine\Frame\Private\RenderTarget.cpp">
       <Filter>Frame\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\RenderDevices\Private\DX12Device.cpp">
-      <Filter>RenderDevices\Private</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Platforms\Windows\Private\EngineWindows.cpp">
       <Filter>Platforms\Windows\Private</Filter>
     </ClCompile>
@@ -27,6 +24,9 @@
     </ClCompile>
     <ClCompile Include="Engine\Platforms\Windows\Private\LauncherWindows.cpp">
       <Filter>Platforms\Windows\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\RenderDevices\DX12\Private\DX12Device.cpp">
+      <Filter>RenderDevices\DX12\Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -45,9 +45,6 @@
     <ClInclude Include="Engine\Frame\Public\RenderTarget.h">
       <Filter>Frame\Public</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\RenderDevices\Public\DX12Device.h">
-      <Filter>RenderDevices\Public</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Utility\Public\Prerequisites.h">
       <Filter>Utility\Public</Filter>
     </ClInclude>
@@ -59,6 +56,12 @@
     </ClInclude>
     <ClInclude Include="Engine\Platforms\Windows\Public\RenderWindowWindows.h">
       <Filter>Platforms\Windows\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\RenderDevices\DX12\Public\DX12Device.h">
+      <Filter>RenderDevices\DX12\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\RenderDevices\DX12\Public\d3dx12.h">
+      <Filter>RenderDevices\DX12\Public</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -86,12 +89,6 @@
     <Filter Include="RenderDevices">
       <UniqueIdentifier>{b4f20315-1f1f-4533-b1da-0d9014860cda}</UniqueIdentifier>
     </Filter>
-    <Filter Include="RenderDevices\Public">
-      <UniqueIdentifier>{92a27137-d046-471d-b40b-b023bf45a993}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="RenderDevices\Private">
-      <UniqueIdentifier>{a0a66033-1072-4e88-8e2c-702541a1c6a8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Utility">
       <UniqueIdentifier>{dbfbfe77-bac8-429f-a4f0-193367dfc674}</UniqueIdentifier>
     </Filter>
@@ -103,6 +100,15 @@
     </Filter>
     <Filter Include="Shaders">
       <UniqueIdentifier>{91850a62-a494-4822-aed6-b07e42a9b6d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderDevices\DX12">
+      <UniqueIdentifier>{8ed55d34-a832-4fff-8ee2-84fd899a6913}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderDevices\DX12\Private">
+      <UniqueIdentifier>{a0a66033-1072-4e88-8e2c-702541a1c6a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderDevices\DX12\Public">
+      <UniqueIdentifier>{92a27137-d046-471d-b40b-b023bf45a993}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
