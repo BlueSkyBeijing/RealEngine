@@ -35,7 +35,7 @@ int DX12Device::Init()
 	CreateDXGIFactory2(0, IID_PPV_ARGS(&IDXGIFactory));
 
 	// Create DX12 device
-	for (UINT AdapterIndex = 1; DXGI_ERROR_NOT_FOUND != IDXGIFactory->EnumAdapters1(AdapterIndex, &IAdapter); ++AdapterIndex)
+	for (UINT AdapterIndex = 0; DXGI_ERROR_NOT_FOUND != IDXGIFactory->EnumAdapters1(AdapterIndex, &IAdapter); ++AdapterIndex)
 	{
 		DXGI_ADAPTER_DESC1 Desc = {};
 		IAdapter->GetDesc1(&Desc);
@@ -44,7 +44,7 @@ int DX12Device::Init()
 		{
 			continue;
 		}
-		if (SUCCEEDED(D3D12CreateDevice(IAdapter, D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS(&IDX12Device))))
+		if (SUCCEEDED(D3D12CreateDevice(IAdapter, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&IDX12Device))))
 		{
 			break;
 		}
@@ -120,7 +120,15 @@ int DX12Device::Init()
 	ScissorRect = { 0, 0, RenderTarget->GetWidth(), RenderTarget->GetHeight() };
 
 	// Create root signature
-	D3D12_ROOT_SIGNATURE_DESC RootSignatureDesc;
+	CD3DX12_ROOT_PARAMETER SlotRootParameter[1];
+
+	CD3DX12_DESCRIPTOR_RANGE CVBTable;
+	CVBTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
+	SlotRootParameter[0].InitAsDescriptorTable(1, &CVBTable);
+
+	CD3DX12_ROOT_SIGNATURE_DESC RootSignatureDesc(1, SlotRootParameter, 0, nullptr,
+		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+
 	ID3DBlob* Signature;
 	ID3DBlob* Error;
 	D3D12SerializeRootSignature(&RootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &Signature, &Error);
@@ -138,13 +146,19 @@ int DX12Device::Init()
 
 	UINT NumElements = sizeof(InputLayout) / sizeof(InputLayout[0]);
 
-	// Create vertex
-	IDX12Device->CreateCommittedResource(&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), D3D12_HEAP_FLAG_NONE, &CD3DX12_RESOURCE_DESC::Buffer(3 * sizeof(VERTEX)), D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&VertexBuffer));
-
 	VERTEX TriangleVertexes[] = {
 	{ 0.0f, 0.5f, 0.0f,{ 1.0f, 0.0f, 0.0f, 1.0f } },
 	{ 0.5f, -0.5, 0.0f,{ 0.0f, 1.0f, 0.0f, 1.0f } },
 	{ -0.5f, -0.5f, 0.0f,{ 0.0f, 0.0f, 1.0f, 1.0f } } };
+
+	// Create vertex buffer
+	HRESULT Result = IDX12Device->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), 
+		D3D12_HEAP_FLAG_NONE, 
+		&CD3DX12_RESOURCE_DESC::Buffer(sizeof(TriangleVertexes)), 
+		D3D12_RESOURCE_STATE_GENERIC_READ, 
+		nullptr, 
+		IID_PPV_ARGS(&VertexBuffer));
 
 	// Copy data
 	UINT8* VertexBufferData;
@@ -185,7 +199,6 @@ int DX12Device::Init()
 
 	// Create event
 	EventHandle = CreateEventEx(nullptr, FALSE, FALSE, EVENT_ALL_ACCESS);
-
 
 	return 0;
 }
