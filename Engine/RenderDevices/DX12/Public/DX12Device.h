@@ -2,6 +2,7 @@
 #include "..\..\..\Frame\Public\Device.h"
 #include "..\..\..\Frame\Public\Device.h"
 #include "d3dx12.h"
+#include "DX12Utility.h"
 
 #include <dxgi1_6.h>
 #include <d3d12.h>

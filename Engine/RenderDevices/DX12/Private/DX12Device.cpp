@@ -44,7 +44,8 @@ int DX12Device::Init()
 		{
 			continue;
 		}
-		if (SUCCEEDED(D3D12CreateDevice(IAdapter, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&IDX12Device))))
+		HRESULT Result = D3D12CreateDevice(IAdapter, D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS(&IDX12Device));
+		if (SUCCEEDED(Result))
 		{
 			break;
 		}
