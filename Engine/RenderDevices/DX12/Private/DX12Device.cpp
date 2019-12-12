@@ -76,7 +76,7 @@ int DX12Device::Init()
 	SwapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	SwapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	SwapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-	SwapChainDesc.SampleDesc.Count = 4;
+	SwapChainDesc.SampleDesc.Count = 1;
 	SwapChainDesc.SampleDesc.Quality = 0;
 	SwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	SwapChainDesc.BufferCount = 2;
@@ -85,7 +85,7 @@ int DX12Device::Init()
 	SwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 	SwapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
-	IDXGIFactory->CreateSwapChain(
+	HRESULT Result = IDXGIFactory->CreateSwapChain(
 		IDX12CommandQueue,
 		&SwapChainDesc,
 		&IDXGISwapChain);
@@ -109,9 +109,14 @@ int DX12Device::Init()
 
 	// Create render view
 	int RTVDescriptorSize = IDX12Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-	D3D12_CPU_DESCRIPTOR_HANDLE DescriptorHandle(IDX12DescriptorHeapRenderTarget->GetCPUDescriptorHandleForHeapStart());
-	IDX12Device->CreateRenderTargetView(IRenderTargets[0], nullptr, DescriptorHandle);
-	IDX12Device->CreateRenderTargetView(IRenderTargets[1], nullptr, DescriptorHandle);
+	CD3DX12_CPU_DESCRIPTOR_HANDLE DescriptorHandle(IDX12DescriptorHeapRenderTarget->GetCPUDescriptorHandleForHeapStart());
+	int BackBufferCount = 2;
+	for (UINT i = 0; i < BackBufferCount; i++)
+	{
+		IDXGISwapChain->GetBuffer(i, IID_PPV_ARGS(&IRenderTargets[i]));
+		IDX12Device->CreateRenderTargetView(IRenderTargets[i], nullptr, DescriptorHandle);
+		DescriptorHandle.Offset(1, RTVDescriptorSize);
+	}
 	FrameIndex = 0;
 
 	// viewport
@@ -136,9 +141,10 @@ int DX12Device::Init()
 	IDX12Device->CreateRootSignature(0, Signature->GetBufferPointer(), Signature->GetBufferSize(), IID_PPV_ARGS(&IDX12RootSignature));
 
 	UINT CompileFlags = 0;
-	std::wstring ShaderFileName(L"Shader\\Basic.hlsl");
-	D3DCompileFromFile(ShaderFileName.c_str(), nullptr, nullptr, "VSMain", "vs_5_0", CompileFlags, 0, &VertexShader, nullptr);
-	D3DCompileFromFile(ShaderFileName.c_str(), nullptr, nullptr, "PSMain", "ps_5_0", CompileFlags, 0, &PixelShader, nullptr);
+	std::wstring ShaderFileName(L"Engine\\Shaders\\Basic.hlsl");
+
+	Result = D3DCompileFromFile(ShaderFileName.c_str(), nullptr, nullptr, "VSMain", "vs_5_0", CompileFlags, 0, &VertexShader, nullptr);
+	Result = D3DCompileFromFile(ShaderFileName.c_str(), nullptr, nullptr, "PSMain", "ps_5_0", CompileFlags, 0, &PixelShader, nullptr);
 
 	// Input Layout
 	D3D12_INPUT_ELEMENT_DESC InputLayout[] = {
@@ -153,7 +159,7 @@ int DX12Device::Init()
 	{ -0.5f, -0.5f, 0.0f,{ 0.0f, 0.0f, 1.0f, 1.0f } } };
 
 	// Create vertex buffer
-	HRESULT Result = IDX12Device->CreateCommittedResource(
+	Result = IDX12Device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), 
 		D3D12_HEAP_FLAG_NONE, 
 		&CD3DX12_RESOURCE_DESC::Buffer(sizeof(TriangleVertexes)), 
@@ -173,19 +179,32 @@ int DX12Device::Init()
 	VertexBufferView.SizeInBytes = sizeof(TriangleVertexes);
 
 	// Create graphic pipeline state 
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC PSODesc = {};
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC PSODesc;
+	ZeroMemory(&PSODesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
 	PSODesc.InputLayout = { InputLayout, NumElements };
 	PSODesc.pRootSignature = IDX12RootSignature;
 	PSODesc.DepthStencilState.DepthEnable = FALSE;
 	PSODesc.DepthStencilState.StencilEnable = FALSE;
-	//PSODesc.VS = CD3DX12_SHADER_BYTECODE(VertexShader);
-	//PSODesc.PS = CD3DX12_SHADER_BYTECODE(PixelShader);
+	PSODesc.VS =
+	{
+		reinterpret_cast<BYTE*>(VertexShader->GetBufferPointer()),
+		VertexShader->GetBufferSize()
+	};
+	PSODesc.PS =
+	{
+		reinterpret_cast<BYTE*>(PixelShader->GetBufferPointer()),
+		PixelShader->GetBufferSize()
+	};
+	PSODesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+	PSODesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
+	PSODesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
 	PSODesc.SampleMask = UINT_MAX;
 	PSODesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 	PSODesc.NumRenderTargets = 1;
 	PSODesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 	PSODesc.SampleDesc.Count = 1;
-
+	PSODesc.SampleDesc.Quality = 0;
+	PSODesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	IDX12Device->CreateGraphicsPipelineState(&PSODesc, IID_PPV_ARGS(&IDX12PipleLineState));
 
 	// Create command allocator
@@ -229,8 +248,11 @@ int DX12Device::Draw()
 	// Set render target
 	IDX12CommandList->OMSetRenderTargets(1, &GetBackBufferView(), true, &GetDepthStencilView());
 
+	IDX12CommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	IDX12CommandList->IASetVertexBuffers(0, 1, &VertexBufferView);
+
 	// Draw
-	IDX12CommandList->DrawIndexedInstanced(0, 1, 0, 0, 0);
+	IDX12CommandList->DrawInstanced(3, 1, 0, 0);
 
 	IDX12CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(IRenderTargets[FrameIndex], D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 
@@ -264,7 +286,7 @@ ID3D12Resource* DX12Device::GetBackBuffer() const
 D3D12_CPU_DESCRIPTOR_HANDLE DX12Device::GetBackBufferView() const
 {
 	return CD3DX12_CPU_DESCRIPTOR_HANDLE(
-		IDX12DescriptorHeapDepthStencil->GetCPUDescriptorHandleForHeapStart(),
+		IDX12DescriptorHeapRenderTarget->GetCPUDescriptorHandleForHeapStart(),
 		FrameIndex,
 		RTVDescriptorSize);
 
@@ -272,5 +294,5 @@ D3D12_CPU_DESCRIPTOR_HANDLE DX12Device::GetBackBufferView() const
 
 D3D12_CPU_DESCRIPTOR_HANDLE DX12Device::GetDepthStencilView() const
 {
-	return IDX12DescriptorHeapRenderTarget->GetCPUDescriptorHandleForHeapStart();
+	return IDX12DescriptorHeapDepthStencil->GetCPUDescriptorHandleForHeapStart();
 }
