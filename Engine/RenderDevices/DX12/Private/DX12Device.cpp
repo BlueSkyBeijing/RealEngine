@@ -3,20 +3,16 @@
 #include "..\..\..\Platforms\Windows\Public\EngineWindows.h"
 #include "..\..\..\Platforms\Windows\Public\RenderWindowWindows.h"
 
-#include <assert.h>
-#include <atlstr.h >
-#include <comdef.h>
-#include <fstream>
-
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 
-struct VERTEX 
-{ 
-	FLOAT X, Y, Z; 
-	FLOAT Color[4]; 
+
+struct Vertex
+{
+	XMFLOAT3 Pos;
+	XMFLOAT4 Color;
 };
 
 DX12Device::DX12Device()
@@ -153,30 +149,132 @@ int DX12Device::Init()
 
 	UINT NumElements = sizeof(InputLayout) / sizeof(InputLayout[0]);
 
-	VERTEX TriangleVertexes[] = {
-	{ 0.0f, 0.5f, 0.0f,{ 1.0f, 0.0f, 0.0f, 1.0f } },
-	{ 0.5f, -0.5, 0.0f,{ 0.0f, 1.0f, 0.0f, 1.0f } },
-	{ -0.5f, -0.5f, 0.0f,{ 0.0f, 0.0f, 1.0f, 1.0f } } };
+	std::array<Vertex, 8> Vertexes =
+	{
+		Vertex({ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(Colors::White) }),
+		Vertex({ XMFLOAT3(-1.0f, +1.0f, -1.0f), XMFLOAT4(Colors::Black) }),
+		Vertex({ XMFLOAT3(+1.0f, +1.0f, -1.0f), XMFLOAT4(Colors::Red) }),
+		Vertex({ XMFLOAT3(+1.0f, -1.0f, -1.0f), XMFLOAT4(Colors::Green) }),
+		Vertex({ XMFLOAT3(-1.0f, -1.0f, +1.0f), XMFLOAT4(Colors::Blue) }),
+		Vertex({ XMFLOAT3(-1.0f, +1.0f, +1.0f), XMFLOAT4(Colors::Yellow) }),
+		Vertex({ XMFLOAT3(+1.0f, +1.0f, +1.0f), XMFLOAT4(Colors::Cyan) }),
+		Vertex({ XMFLOAT3(+1.0f, -1.0f, +1.0f), XMFLOAT4(Colors::Magenta) })
+	};
+
+	std::array<std::uint16_t, 36> Indexes =
+	{
+		// front face
+		0, 1, 2,
+		0, 2, 3,
+
+		// back face
+		4, 6, 5,
+		4, 7, 6,
+
+		// left face
+		4, 5, 1,
+		4, 1, 0,
+
+		// right face
+		3, 2, 6,
+		3, 6, 7,
+
+		// top face
+		1, 5, 6,
+		1, 6, 2,
+
+		// bottom face
+		4, 0, 3,
+		4, 3, 7
+	};
+
+	float x = 6.0f * sinf(0.0);
+	float z = 6.0f * sinf(0.0);
+	float y = 6.0f * cosf(0.0);
+
+	// Build view matrix.
+	XMVECTOR pos = XMVectorSet(x, y, z, 1.0f);
+	XMVECTOR target = XMVectorZero();
+	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
+	XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
+	XMStoreFloat4x4(&ViewMatrix, view);
+
+	XMMATRIX world = XMLoadFloat4x4(&WorldMatrix);
+	XMMATRIX proj = XMLoadFloat4x4(&ViewMatrix);
+	XMMATRIX worldViewProj = world * view * proj;
+
+	XMFLOAT4X4 WorldViewProj;
+	XMStoreFloat4x4(&WorldViewProj, XMMatrixTranspose(worldViewProj));
 
 	// Create vertex buffer
 	Result = IDX12Device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), 
 		D3D12_HEAP_FLAG_NONE, 
-		&CD3DX12_RESOURCE_DESC::Buffer(sizeof(TriangleVertexes)), 
+		&CD3DX12_RESOURCE_DESC::Buffer(sizeof(Vertexes)),
 		D3D12_RESOURCE_STATE_GENERIC_READ, 
 		nullptr, 
 		IID_PPV_ARGS(&VertexBuffer));
 
+	// Create index buffer
+	Result = IDX12Device->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+		D3D12_HEAP_FLAG_NONE,
+		&CD3DX12_RESOURCE_DESC::Buffer(sizeof(Indexes)),
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&IndexBuffer));
+
+	// Create constant buffer
+	Result = IDX12Device->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+		D3D12_HEAP_FLAG_NONE,
+		&CD3DX12_RESOURCE_DESC::Buffer(sizeof(WorldViewProj)),
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&ConstantBuffer));
+
 	// Copy data
 	UINT8* VertexBufferData;
 	VertexBuffer->Map(0, nullptr, reinterpret_cast<void**>(&VertexBufferData));
-	memcpy(VertexBufferData, TriangleVertexes, sizeof(TriangleVertexes));
+	memcpy(VertexBufferData, &Vertexes, sizeof(Vertexes));
 	VertexBuffer->Unmap(0, nullptr);
+
+	UINT8* IndexBufferData;
+	VertexBuffer->Map(0, nullptr, reinterpret_cast<void**>(&IndexBufferData));
+	memcpy(IndexBufferData, &Vertexes, sizeof(Vertexes));
+	VertexBuffer->Unmap(0, nullptr);
+
+	UINT8* ConstantBufferData;
+	ConstantBuffer->Map(0, nullptr, reinterpret_cast<void**>(&ConstantBufferData));
+	memcpy(ConstantBufferData, &WorldViewProj, sizeof(WorldViewProj));
+	ConstantBuffer->Unmap(0, nullptr);
 
 	// Vertex buffer view
 	VertexBufferView.BufferLocation = VertexBuffer->GetGPUVirtualAddress();
-	VertexBufferView.StrideInBytes = sizeof(VERTEX);
-	VertexBufferView.SizeInBytes = sizeof(TriangleVertexes);
+	VertexBufferView.StrideInBytes = sizeof(Vertex);
+	VertexBufferView.SizeInBytes = sizeof(Vertexes);
+
+	IndexBufferView.BufferLocation = IndexBuffer->GetGPUVirtualAddress();
+	IndexBufferView.Format = DXGI_FORMAT_R16_UINT;
+	IndexBufferView.SizeInBytes = (UINT)Indexes.size() * sizeof(std::uint16_t);;
+
+
+	D3D12_DESCRIPTOR_HEAP_DESC CBVHeapDesc;
+	CBVHeapDesc.NumDescriptors = 1;
+	CBVHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	CBVHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	CBVHeapDesc.NodeMask = 0;
+	IDX12Device->CreateDescriptorHeap(&CBVHeapDesc,
+		IID_PPV_ARGS(&ConstantBufferHeap));
+
+	D3D12_CONSTANT_BUFFER_VIEW_DESC CBVDesc;
+	CBVDesc.BufferLocation = ConstantBuffer->GetGPUVirtualAddress();
+	CBVDesc.SizeInBytes = sizeof(XMMATRIX);
+
+	IDX12Device->CreateConstantBufferView(
+		&CBVDesc,
+		ConstantBufferHeap->GetCPUDescriptorHandleForHeapStart());
 
 	// Create graphic pipeline state 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC PSODesc;
@@ -247,9 +345,12 @@ int DX12Device::Draw()
 
 	// Set render target
 	IDX12CommandList->OMSetRenderTargets(1, &GetBackBufferView(), true, &GetDepthStencilView());
+	IDX12CommandList->SetDescriptorHeaps(1, &ConstantBufferHeap);
 
 	IDX12CommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	IDX12CommandList->IASetVertexBuffers(0, 1, &VertexBufferView);
+	IDX12CommandList->IASetIndexBuffer(&IndexBufferView);
+	IDX12CommandList->SetGraphicsRootDescriptorTable(0, ConstantBufferHeap->GetGPUDescriptorHandleForHeapStart());
 
 	// Draw
 	IDX12CommandList->DrawInstanced(3, 1, 0, 0);

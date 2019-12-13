@@ -1,21 +1,34 @@
 
-struct PSInput
+cbuffer CBObject : register(b0)
 {
-    float4 Position : SV_POSITION;
+    float4x4 WorldViewProj;
+};
+
+struct VertexIn
+{
+    float3 Pos : POSITION;
     float4 Color : COLOR;
 };
- 
-PSInput VSMain(float4 Position : POSITION, float4 Color : COLOR)
+
+struct VertexOut
 {
-    PSInput Result;
- 
-    Result.Position = Position;
-    Result.Color = Color;
- 
-    return Result;
+    float4 Pos : SV_POSITION;
+    float4 Color : COLOR;
+};
+
+VertexOut VS(VertexIn VIn)
+{
+    VertexOut VOut;
+	
+    VOut.Pos = mul(float4(VIn.Pos, 1.0f), WorldViewProj);
+	
+    VOut.Color = VIn.Color;
+    
+    return VOut;
 }
 
-float4 PSMain(PSInput Input) : SV_TARGET
+float4 PS(VertexOut PIn) : SV_Target
 {
-    return Input.Color;
+    return PIn.Color;
 }
+

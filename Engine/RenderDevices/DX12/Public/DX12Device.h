@@ -8,6 +8,16 @@
 #include <d3d12.h>
 #include <d3d12shader.h>
 #include <d3dcompiler.h>
+#include <DirectXMath.h>
+#include <DirectXColors.h>
+
+#include <assert.h>
+#include <atlstr.h >
+#include <comdef.h>
+#include <fstream>
+#include <array>
+
+using namespace DirectX;
 
 class DX12Device : public IDevice
 {
@@ -37,16 +47,23 @@ private:
 	ID3D12Fence* IDX12Fence;
 	ID3D12DescriptorHeap* IDX12DescriptorHeapRenderTarget;
 	ID3D12DescriptorHeap* IDX12DescriptorHeapDepthStencil;
+	ID3D12DescriptorHeap* ConstantBufferHeap;
 	ID3D12Resource* IRenderTargets[2];
 	HANDLE EventHandle;
 	UINT64 FenceValue;
 	ID3DBlob* VertexShader;
 	ID3DBlob *PixelShader;
 	ID3D12Resource* VertexBuffer;
+	ID3D12Resource* IndexBuffer;
+	ID3D12Resource* ConstantBuffer;
 	D3D12_VIEWPORT ViewPort;
 	D3D12_RECT ScissorRect;
 	D3D12_VERTEX_BUFFER_VIEW VertexBufferView;
+	D3D12_INDEX_BUFFER_VIEW IndexBufferView;
 	UINT FrameIndex;
 	UINT RTVDescriptorSize;
 	UINT DSVDescriptorSize;
+	XMFLOAT4X4 WorldMatrix;
+	XMFLOAT4X4 ViewMatrix;
+	XMFLOAT4X4 ProjMatrix;
 };
