@@ -66,4 +66,5 @@ private:
 	XMFLOAT4X4 WorldMatrix;
 	XMFLOAT4X4 ViewMatrix;
 	XMFLOAT4X4 ProjMatrix;
+	UINT IndexCount;
 };

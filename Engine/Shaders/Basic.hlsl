@@ -16,7 +16,7 @@ struct VertexOut
     float4 Color : COLOR;
 };
 
-VertexOut VS(VertexIn VIn)
+VertexOut VSMain(VertexIn VIn)
 {
     VertexOut VOut;
 	
@@ -27,7 +27,7 @@ VertexOut VS(VertexIn VIn)
     return VOut;
 }
 
-float4 PS(VertexOut PIn) : SV_Target
+float4 PSMain(VertexOut PIn) : SV_Target
 {
     return PIn.Color;
 }

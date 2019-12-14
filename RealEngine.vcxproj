@@ -19,9 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Frame\Private\Camera.cpp" />
     <ClCompile Include="Engine\Frame\Private\Device.cpp" />
     <ClCompile Include="Engine\Frame\Private\Engine.cpp" />
     <ClCompile Include="Engine\Frame\Private\Globals.cpp" />
+    <ClCompile Include="Engine\Frame\Private\Light.cpp" />
     <ClCompile Include="Engine\Frame\Private\Renderer.cpp" />
     <ClCompile Include="Engine\Frame\Private\RenderTarget.cpp" />
     <ClCompile Include="Engine\Platforms\Windows\Private\EngineWindows.cpp" />
@@ -31,9 +33,11 @@
     <ClCompile Include="Engine\RenderDevices\DX12\Private\DX12Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Frame\Public\Camera.h" />
     <ClInclude Include="Engine\Frame\Public\Device.h" />
     <ClInclude Include="Engine\Frame\Public\Engine.h" />
     <ClInclude Include="Engine\Frame\Public\Globals.h" />
+    <ClInclude Include="Engine\Frame\Public\Light.h" />
     <ClInclude Include="Engine\Frame\Public\Renderer.h" />
     <ClInclude Include="Engine\Frame\Public\RenderTarget.h" />
     <ClInclude Include="Engine\Platforms\Windows\Public\EngineWindows.h" />
@@ -41,6 +45,7 @@
     <ClInclude Include="Engine\RenderDevices\DX12\Public\d3dx12.h" />
     <ClInclude Include="Engine\RenderDevices\DX12\Public\DX12Device.h" />
     <ClInclude Include="Engine\RenderDevices\DX12\Public\DX12Utility.h" />
+    <ClInclude Include="Engine\Utility\Public\Math.h" />
     <ClInclude Include="Engine\Utility\Public\Prerequisites.h" />
     <ClInclude Include="Engine\Utility\Public\Singleton.h" />
   </ItemGroup>

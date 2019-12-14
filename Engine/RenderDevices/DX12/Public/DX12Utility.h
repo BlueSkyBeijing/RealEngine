@@ -33,6 +33,11 @@ inline std::wstring ANSIToWString(const std::string& str)
 	return std::wstring(buffer);
 }
 
+inline UINT CalcConstantBufferByteSize(UINT byteSize)
+{
+	return (byteSize + 255) & ~255;
+}
+
 #define THROW_IF_FAILED(Res)												       \
 {																				   \
     HRESULT Result = (Res);														   \

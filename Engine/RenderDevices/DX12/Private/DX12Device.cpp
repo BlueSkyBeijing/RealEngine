@@ -139,8 +139,8 @@ int DX12Device::Init()
 	UINT CompileFlags = 0;
 	std::wstring ShaderFileName(L"Engine\\Shaders\\Basic.hlsl");
 
-	Result = D3DCompileFromFile(ShaderFileName.c_str(), nullptr, nullptr, "VSMain", "vs_5_0", CompileFlags, 0, &VertexShader, nullptr);
-	Result = D3DCompileFromFile(ShaderFileName.c_str(), nullptr, nullptr, "PSMain", "ps_5_0", CompileFlags, 0, &PixelShader, nullptr);
+	Result = D3DCompileFromFile(ShaderFileName.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "VSMain", "vs_5_0", CompileFlags, 0, &VertexShader, nullptr);
+	Result = D3DCompileFromFile(ShaderFileName.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "PSMain", "ps_5_0", CompileFlags, 0, &PixelShader, nullptr);
 
 	// Input Layout
 	D3D12_INPUT_ELEMENT_DESC InputLayout[] = {
@@ -188,6 +188,8 @@ int DX12Device::Init()
 		4, 3, 7
 	};
 
+	IndexCount = Indexes.size();
+
 	float x = 6.0f * sinf(0.0);
 	float z = 6.0f * sinf(0.0);
 	float y = 6.0f * cosf(0.0);
@@ -229,7 +231,7 @@ int DX12Device::Init()
 	Result = IDX12Device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer(sizeof(WorldViewProj)),
+		&CD3DX12_RESOURCE_DESC::Buffer(CalcConstantBufferByteSize(sizeof(XMMATRIX))),
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(&ConstantBuffer));
@@ -265,12 +267,12 @@ int DX12Device::Init()
 	CBVHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	CBVHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	CBVHeapDesc.NodeMask = 0;
-	IDX12Device->CreateDescriptorHeap(&CBVHeapDesc,
+	Result = IDX12Device->CreateDescriptorHeap(&CBVHeapDesc,
 		IID_PPV_ARGS(&ConstantBufferHeap));
 
 	D3D12_CONSTANT_BUFFER_VIEW_DESC CBVDesc;
 	CBVDesc.BufferLocation = ConstantBuffer->GetGPUVirtualAddress();
-	CBVDesc.SizeInBytes = sizeof(XMMATRIX);
+	CBVDesc.SizeInBytes = CalcConstantBufferByteSize(sizeof(XMMATRIX));
 
 	IDX12Device->CreateConstantBufferView(
 		&CBVDesc,
@@ -339,7 +341,7 @@ int DX12Device::Draw()
 	IDX12CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(IRenderTargets[FrameIndex], D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
 
 	// Clear color and depth stencil
-	float ClearColor[] = { 0.0f, 0.2f, 0.4f, 1.0f };
+	float ClearColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	IDX12CommandList->ClearRenderTargetView(GetBackBufferView(), ClearColor, 0, nullptr);
 	IDX12CommandList->ClearDepthStencilView(GetDepthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 
@@ -353,7 +355,7 @@ int DX12Device::Draw()
 	IDX12CommandList->SetGraphicsRootDescriptorTable(0, ConstantBufferHeap->GetGPUDescriptorHandleForHeapStart());
 
 	// Draw
-	IDX12CommandList->DrawInstanced(3, 1, 0, 0);
+	IDX12CommandList->DrawIndexedInstanced(IndexCount, 1, 0, 0, 0);
 
 	IDX12CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(IRenderTargets[FrameIndex], D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 

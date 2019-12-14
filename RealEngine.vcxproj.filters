@@ -31,6 +31,12 @@
     <ClCompile Include="Engine\RenderDevices\DX12\Private\DX12Utility.cpp">
       <Filter>RenderDevices\DX12\Private</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Frame\Private\Camera.cpp">
+      <Filter>Frame\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Frame\Private\Light.cpp">
+      <Filter>Frame\Private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Frame\Public\Device.h">
@@ -68,6 +74,15 @@
     </ClInclude>
     <ClInclude Include="Engine\RenderDevices\DX12\Public\DX12Utility.h">
       <Filter>RenderDevices\DX12\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Frame\Public\Camera.h">
+      <Filter>Frame\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Frame\Public\Light.h">
+      <Filter>Frame\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Utility\Public\Math.h">
+      <Filter>Utility\Public</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
