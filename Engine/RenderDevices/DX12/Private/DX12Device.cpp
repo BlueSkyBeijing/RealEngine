@@ -27,6 +27,15 @@ DX12Device::~DX12Device()
 
 int DX12Device::Init()
 {
+#if defined(DEBUG) || defined(_DEBUG) 
+	// Enable DX12 debug layer
+	{
+		ID3D12Debug* DebugController;
+		D3D12GetDebugInterface(IID_PPV_ARGS(&DebugController));
+		DebugController->EnableDebugLayer();
+	}
+#endif
+
 	// Create DXGI factory
 	CreateDXGIFactory2(0, IID_PPV_ARGS(&IDXGIFactory));
 
@@ -106,7 +115,7 @@ int DX12Device::Init()
 	// Create render view
 	int RTVDescriptorSize = IDX12Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	CD3DX12_CPU_DESCRIPTOR_HANDLE DescriptorHandle(IDX12DescriptorHeapRenderTarget->GetCPUDescriptorHandleForHeapStart());
-	int BackBufferCount = 2;
+	UINT BackBufferCount = 2;
 	for (UINT i = 0; i < BackBufferCount; i++)
 	{
 		IDXGISwapChain->GetBuffer(i, IID_PPV_ARGS(&IRenderTargets[i]));
@@ -188,7 +197,7 @@ int DX12Device::Init()
 		4, 3, 7
 	};
 
-	IndexCount = Indexes.size();
+	IndexCount = (UINT)Indexes.size();
 
 	float x = 6.0f * sinf(0.0);
 	float z = 6.0f * sinf(0.0);
@@ -236,16 +245,19 @@ int DX12Device::Init()
 		nullptr,
 		IID_PPV_ARGS(&ConstantBuffer));
 
+	const UINT VBByteSize = (UINT)Vertexes.size() * sizeof(Vertex);
+	const UINT IBByteSize = (UINT)Indexes.size() * sizeof(std::uint16_t);
+
 	// Copy data
 	UINT8* VertexBufferData;
 	VertexBuffer->Map(0, nullptr, reinterpret_cast<void**>(&VertexBufferData));
-	memcpy(VertexBufferData, &Vertexes, sizeof(Vertexes));
+	memcpy(VertexBufferData, Vertexes.data(), VBByteSize);
 	VertexBuffer->Unmap(0, nullptr);
 
 	UINT8* IndexBufferData;
-	VertexBuffer->Map(0, nullptr, reinterpret_cast<void**>(&IndexBufferData));
-	memcpy(IndexBufferData, &Vertexes, sizeof(Vertexes));
-	VertexBuffer->Unmap(0, nullptr);
+	IndexBuffer->Map(0, nullptr, reinterpret_cast<void**>(&IndexBufferData));
+	memcpy(IndexBufferData, Indexes.data(), IBByteSize);
+	IndexBuffer->Unmap(0, nullptr);
 
 	UINT8* ConstantBufferData;
 	ConstantBuffer->Map(0, nullptr, reinterpret_cast<void**>(&ConstantBufferData));
@@ -255,11 +267,11 @@ int DX12Device::Init()
 	// Vertex buffer view
 	VertexBufferView.BufferLocation = VertexBuffer->GetGPUVirtualAddress();
 	VertexBufferView.StrideInBytes = sizeof(Vertex);
-	VertexBufferView.SizeInBytes = sizeof(Vertexes);
+	VertexBufferView.SizeInBytes = VBByteSize;
 
 	IndexBufferView.BufferLocation = IndexBuffer->GetGPUVirtualAddress();
 	IndexBufferView.Format = DXGI_FORMAT_R16_UINT;
-	IndexBufferView.SizeInBytes = (UINT)Indexes.size() * sizeof(std::uint16_t);;
+	IndexBufferView.SizeInBytes = IBByteSize;;
 
 
 	D3D12_DESCRIPTOR_HEAP_DESC CBVHeapDesc;
@@ -283,8 +295,8 @@ int DX12Device::Init()
 	ZeroMemory(&PSODesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
 	PSODesc.InputLayout = { InputLayout, NumElements };
 	PSODesc.pRootSignature = IDX12RootSignature;
-	PSODesc.DepthStencilState.DepthEnable = FALSE;
-	PSODesc.DepthStencilState.StencilEnable = FALSE;
+	PSODesc.DepthStencilState.DepthEnable = TRUE;
+	PSODesc.DepthStencilState.StencilEnable = TRUE;
 	PSODesc.VS =
 	{
 		reinterpret_cast<BYTE*>(VertexShader->GetBufferPointer()),

@@ -27,9 +27,9 @@ int RealEngine::Exit()
 		delete Renderer;
 	}
 
-	if (RenderTarget != nullptr)
+	if (RenderTargetMain != nullptr)
 	{
-		delete RenderTarget;
+		delete RenderTargetMain;
 	}
 
 	if (Device != nullptr)
@@ -47,5 +47,5 @@ IDevice* RealEngine::GetDevice()
 
 IRenderTarget* RealEngine::GetRenderTarget()
 {
-	return RenderTarget;
+	return RenderTargetMain;
 }

@@ -33,6 +33,6 @@ public:
 protected:
 	static IDevice* Device;
 	IRenderer* Renderer;
-	IRenderTarget* RenderTarget;
+	IRenderTarget* RenderTargetMain;
 };
 

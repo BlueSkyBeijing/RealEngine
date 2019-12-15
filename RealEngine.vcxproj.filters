@@ -37,6 +37,21 @@
     <ClCompile Include="Engine\Frame\Private\Light.cpp">
       <Filter>Frame\Private</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Frame\Private\Material.cpp">
+      <Filter>Frame\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Frame\Private\Mesh.cpp">
+      <Filter>Frame\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Frame\Private\Texture.cpp">
+      <Filter>Frame\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Frame\Private\Scene.cpp">
+      <Filter>Frame\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Frame\Private\Shader.cpp">
+      <Filter>Frame\Private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Frame\Public\Device.h">
@@ -83,6 +98,21 @@
     </ClInclude>
     <ClInclude Include="Engine\Utility\Public\Math.h">
       <Filter>Utility\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Frame\Public\Material.h">
+      <Filter>Frame\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Frame\Public\Mesh.h">
+      <Filter>Frame\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Frame\Public\Scene.h">
+      <Filter>Frame\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Frame\Public\Texture.h">
+      <Filter>Frame\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Frame\Public\Shader.h">
+      <Filter>Frame\Public</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
