@@ -20,8 +20,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Frame\Private\Camera.cpp" />
+    <ClCompile Include="Engine\Frame\Private\DeferredShadingRenderer.cpp" />
     <ClCompile Include="Engine\Frame\Private\Device.cpp" />
     <ClCompile Include="Engine\Frame\Private\Engine.cpp" />
+    <ClCompile Include="Engine\Frame\Private\ForwardShadingRenderer.cpp" />
     <ClCompile Include="Engine\Frame\Private\Globals.cpp" />
     <ClCompile Include="Engine\Frame\Private\Light.cpp" />
     <ClCompile Include="Engine\Frame\Private\Material.cpp" />
@@ -39,8 +41,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Frame\Public\Camera.h" />
+    <ClInclude Include="Engine\Frame\Public\DeferredShadingRenderer.h" />
     <ClInclude Include="Engine\Frame\Public\Device.h" />
     <ClInclude Include="Engine\Frame\Public\Engine.h" />
+    <ClInclude Include="Engine\Frame\Public\ForwardShadingRenderer.h" />
     <ClInclude Include="Engine\Frame\Public\Globals.h" />
     <ClInclude Include="Engine\Frame\Public\Light.h" />
     <ClInclude Include="Engine\Frame\Public\Material.h" />

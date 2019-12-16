@@ -52,6 +52,12 @@
     <ClCompile Include="Engine\Frame\Private\Shader.cpp">
       <Filter>Frame\Private</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Frame\Private\DeferredShadingRenderer.cpp">
+      <Filter>Frame\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Frame\Private\ForwardShadingRenderer.cpp">
+      <Filter>Frame\Private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Frame\Public\Device.h">
@@ -112,6 +118,12 @@
       <Filter>Frame\Public</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Frame\Public\Shader.h">
+      <Filter>Frame\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Frame\Public\DeferredShadingRenderer.h">
+      <Filter>Frame\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Frame\Public\ForwardShadingRenderer.h">
       <Filter>Frame\Public</Filter>
     </ClInclude>
   </ItemGroup>
