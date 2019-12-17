@@ -49,6 +49,7 @@ private:
 	ID3D12DescriptorHeap* IDX12DescriptorHeapDepthStencil;
 	ID3D12DescriptorHeap* ConstantBufferHeap;
 	ID3D12Resource* IRenderTargets[2];
+	ID3D12Resource* DepthStencilBuffer;
 	HANDLE EventHandle;
 	UINT64 FenceValue;
 	ID3DBlob* VertexShader;
@@ -60,11 +61,14 @@ private:
 	D3D12_RECT ScissorRect;
 	D3D12_VERTEX_BUFFER_VIEW VertexBufferView;
 	D3D12_INDEX_BUFFER_VIEW IndexBufferView;
-	UINT FrameIndex;
+	UINT ChainBufferndex;
+	UINT SwapChainBufferCount;
 	UINT RTVDescriptorSize;
 	UINT DSVDescriptorSize;
 	XMFLOAT4X4 WorldMatrix;
 	XMFLOAT4X4 ViewMatrix;
 	XMFLOAT4X4 ProjMatrix;
 	UINT IndexCount;
+	DXGI_FORMAT BackBufferFormat;
+	DXGI_FORMAT DepthStencilFormat;
 };

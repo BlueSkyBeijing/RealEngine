@@ -36,6 +36,10 @@ int DX12Device::Init()
 	}
 #endif
 
+	SwapChainBufferCount = 2;
+	BackBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
+	DepthStencilFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
+
 	// Create DXGI factory
 	CreateDXGIFactory2(0, IID_PPV_ARGS(&IDXGIFactory));
 
@@ -78,7 +82,7 @@ int DX12Device::Init()
 	SwapChainDesc.BufferDesc.Height = RenderTarget->GetHeight();
 	SwapChainDesc.BufferDesc.RefreshRate.Numerator = 60;
 	SwapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
-	SwapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	SwapChainDesc.BufferDesc.Format = BackBufferFormat;
 	SwapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	SwapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 	SwapChainDesc.SampleDesc.Count = 1;
@@ -96,10 +100,11 @@ int DX12Device::Init()
 		&IDXGISwapChain);
 
 	// Create render view description
-	D3D12_DESCRIPTOR_HEAP_DESC RTDescriptorHeapDesc = {};
+	D3D12_DESCRIPTOR_HEAP_DESC RTDescriptorHeapDesc;
 	RTDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
 	RTDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-	RTDescriptorHeapDesc.NumDescriptors = 2;
+	RTDescriptorHeapDesc.NumDescriptors = SwapChainBufferCount;
+	RTDescriptorHeapDesc.NodeMask = 0;
 	IDX12Device->CreateDescriptorHeap(&RTDescriptorHeapDesc, IID_PPV_ARGS(&IDX12DescriptorHeapRenderTarget));
 
 	D3D12_DESCRIPTOR_HEAP_DESC DSDescriptorHeapDesc;
@@ -113,16 +118,48 @@ int DX12Device::Init()
 	DSVDescriptorSize = IDX12Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 
 	// Create render view
-	int RTVDescriptorSize = IDX12Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	CD3DX12_CPU_DESCRIPTOR_HANDLE DescriptorHandle(IDX12DescriptorHeapRenderTarget->GetCPUDescriptorHandleForHeapStart());
-	UINT BackBufferCount = 2;
-	for (UINT i = 0; i < BackBufferCount; i++)
+	for (UINT i = 0; i < SwapChainBufferCount; i++)
 	{
 		IDXGISwapChain->GetBuffer(i, IID_PPV_ARGS(&IRenderTargets[i]));
 		IDX12Device->CreateRenderTargetView(IRenderTargets[i], nullptr, DescriptorHandle);
 		DescriptorHandle.Offset(1, RTVDescriptorSize);
 	}
-	FrameIndex = 0;
+	ChainBufferndex = 0;
+
+	// Create the depth/stencil buffer and view.
+	D3D12_RESOURCE_DESC DepthStencilDesc;
+	DepthStencilDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+	DepthStencilDesc.Alignment = 0;
+	DepthStencilDesc.Width = RenderTarget->GetWidth();
+	DepthStencilDesc.Height = RenderTarget->GetHeight();
+	DepthStencilDesc.DepthOrArraySize = 1;
+	DepthStencilDesc.MipLevels = 1;
+	DepthStencilDesc.Format = DepthStencilFormat;
+	DepthStencilDesc.SampleDesc.Count = 1;
+	DepthStencilDesc.SampleDesc.Quality = 0;
+	DepthStencilDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+	DepthStencilDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
+
+	D3D12_CLEAR_VALUE ClearValue;
+	ClearValue.Format = DepthStencilFormat;
+	ClearValue.DepthStencil.Depth = 1.0f;
+	ClearValue.DepthStencil.Stencil = 0;
+	Result = IDX12Device->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+		D3D12_HEAP_FLAG_NONE,
+		&DepthStencilDesc,
+		D3D12_RESOURCE_STATE_COMMON,
+		&ClearValue,
+		IID_PPV_ARGS(&DepthStencilBuffer));
+
+	// Create descriptor to mip level 0 of entire resource using the format of the resource.
+	D3D12_DEPTH_STENCIL_VIEW_DESC DSVDesc;
+	DSVDesc.Flags = D3D12_DSV_FLAG_NONE;
+	DSVDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
+	DSVDesc.Format = DepthStencilFormat;
+	DSVDesc.Texture2D.MipSlice = 0;
+	IDX12Device->CreateDepthStencilView(DepthStencilBuffer, &DSVDesc, GetDepthStencilView());
 
 	// viewport
 	ViewPort = { 0.0f, 0.0f, static_cast<float>(RenderTarget->GetWidth()), static_cast<float>(RenderTarget->GetHeight()), 0.0f, 1.0f };
@@ -313,10 +350,10 @@ int DX12Device::Init()
 	PSODesc.SampleMask = UINT_MAX;
 	PSODesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 	PSODesc.NumRenderTargets = 1;
-	PSODesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+	PSODesc.RTVFormats[0] = BackBufferFormat;
 	PSODesc.SampleDesc.Count = 1;
 	PSODesc.SampleDesc.Quality = 0;
-	PSODesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	PSODesc.DSVFormat = DepthStencilFormat;
 	IDX12Device->CreateGraphicsPipelineState(&PSODesc, IID_PPV_ARGS(&IDX12PipleLineState));
 
 	// Create command allocator
@@ -337,8 +374,10 @@ int DX12Device::Init()
 
 int DX12Device::Draw()
 {
-	// Set root signature
-	IDX12CommandList->SetGraphicsRootSignature(IDX12RootSignature);
+	IDX12CommandAllocator->Reset();
+
+	// Reset command list
+	IDX12CommandList->Reset(IDX12CommandAllocator, IDX12PipleLineState);
 
 	// Set view port
 	IDX12CommandList->RSSetViewports(1, &ViewPort);
@@ -346,20 +385,20 @@ int DX12Device::Draw()
 	// Set scissor
 	IDX12CommandList->RSSetScissorRects(1, &ScissorRect);
 
-	// Reset command list
-	IDX12CommandList->Reset(IDX12CommandAllocator, IDX12PipleLineState);
-
-	FrameIndex = 0;
-	IDX12CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(IRenderTargets[FrameIndex], D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
+	ChainBufferndex = 0;
+	IDX12CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(IRenderTargets[ChainBufferndex], D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
 
 	// Clear color and depth stencil
-	float ClearColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	float ClearColor[] = { 0.690196097f, 0.768627524f, 0.870588303f, 1.000000000f };
 	IDX12CommandList->ClearRenderTargetView(GetBackBufferView(), ClearColor, 0, nullptr);
 	IDX12CommandList->ClearDepthStencilView(GetDepthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 
 	// Set render target
 	IDX12CommandList->OMSetRenderTargets(1, &GetBackBufferView(), true, &GetDepthStencilView());
 	IDX12CommandList->SetDescriptorHeaps(1, &ConstantBufferHeap);
+
+	// Set root signature
+	IDX12CommandList->SetGraphicsRootSignature(IDX12RootSignature);
 
 	IDX12CommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	IDX12CommandList->IASetVertexBuffers(0, 1, &VertexBufferView);
@@ -369,7 +408,7 @@ int DX12Device::Draw()
 	// Draw
 	IDX12CommandList->DrawIndexedInstanced(IndexCount, 1, 0, 0, 0);
 
-	IDX12CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(IRenderTargets[FrameIndex], D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
+	IDX12CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(IRenderTargets[ChainBufferndex], D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 
 	IDX12CommandList->Close();
 
@@ -390,19 +429,21 @@ int DX12Device::Draw()
 		WaitForSingleObject(EventHandle, INFINITE);
 	}
 
+	ChainBufferndex = (ChainBufferndex + 1) % SwapChainBufferCount;
+
 	return 0;
 }
 
 ID3D12Resource* DX12Device::GetBackBuffer() const
 {
-	return IRenderTargets[FrameIndex];
+	return IRenderTargets[ChainBufferndex];
 }
 
 D3D12_CPU_DESCRIPTOR_HANDLE DX12Device::GetBackBufferView() const
 {
 	return CD3DX12_CPU_DESCRIPTOR_HANDLE(
 		IDX12DescriptorHeapRenderTarget->GetCPUDescriptorHandleForHeapStart(),
-		FrameIndex,
+		ChainBufferndex,
 		RTVDescriptorSize);
 
 }
