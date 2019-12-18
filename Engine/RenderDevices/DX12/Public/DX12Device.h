@@ -30,9 +30,15 @@ public:
 	virtual int Draw() override;
 
 protected:
+	void CreateDevice();
+	void CreateCommandObjects();
+	void CreateSwapChain();
+	void CreateGeometry();
+
 	ID3D12Resource* GetBackBuffer() const;
 	D3D12_CPU_DESCRIPTOR_HANDLE GetBackBufferView() const;
 	D3D12_CPU_DESCRIPTOR_HANDLE GetDepthStencilView() const;
+	void FlushCommandQueue();
 
 private:
 	IDXGIFactory2*  IDXGIFactory;

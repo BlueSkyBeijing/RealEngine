@@ -41,64 +41,13 @@ int DX12Device::Init()
 	BackBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 	DepthStencilFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
-	// Create DXGI factory
-	CreateDXGIFactory2(0, IID_PPV_ARGS(&IDXGIFactory));
-
-	// Create DX12 device
-	for (UINT AdapterIndex = 0; DXGI_ERROR_NOT_FOUND != IDXGIFactory->EnumAdapters1(AdapterIndex, &IAdapter); ++AdapterIndex)
-	{
-		DXGI_ADAPTER_DESC1 Desc = {};
-		IAdapter->GetDesc1(&Desc);
-
-		if (Desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
-		{
-			continue;
-		}
-		HRESULT Result = D3D12CreateDevice(IAdapter, D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS(&IDX12Device));
-		if (SUCCEEDED(Result))
-		{
-			break;
-		}
-	}
-
-	// Create command queue
-	D3D12_COMMAND_QUEUE_DESC QueueDesc = {};
-	QueueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
-	IDX12Device->CreateCommandQueue(&QueueDesc, IID_PPV_ARGS(&IDX12CommandQueue));
+	CreateDevice();
+	CreateCommandObjects();
+	CreateSwapChain();
 
 	// Create swipe chain
 	IRenderTarget* RenderTarget = EngineWindows::GetInstance()->GetRenderTarget();
 	assert(RenderTarget != nullptr);
-
-	HWND WindowHandle = nullptr;
-	RenderWindowWindows *RenderWindow = dynamic_cast<RenderWindowWindows*>(EngineWindows::GetInstance()->GetRenderTarget());
-	if (nullptr != RenderWindow)
-	{
-		WindowHandle = RenderWindow->GetRenderWindowHandle();
-	}
-	assert(WindowHandle != nullptr);
-
-	DXGI_SWAP_CHAIN_DESC SwapChainDesc;
-	SwapChainDesc.BufferDesc.Width = RenderTarget->GetWidth();
-	SwapChainDesc.BufferDesc.Height = RenderTarget->GetHeight();
-	SwapChainDesc.BufferDesc.RefreshRate.Numerator = 60;
-	SwapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
-	SwapChainDesc.BufferDesc.Format = BackBufferFormat;
-	SwapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-	SwapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-	SwapChainDesc.SampleDesc.Count = 1;
-	SwapChainDesc.SampleDesc.Quality = 0;
-	SwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	SwapChainDesc.BufferCount = 2;
-	SwapChainDesc.OutputWindow = WindowHandle;
-	SwapChainDesc.Windowed = true;
-	SwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-	SwapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-
-	HRESULT Result = IDXGIFactory->CreateSwapChain(
-		IDX12CommandQueue,
-		&SwapChainDesc,
-		&IDXGISwapChain);
 
 	// Create render view description
 	D3D12_DESCRIPTOR_HEAP_DESC RTDescriptorHeapDesc;
@@ -146,21 +95,13 @@ int DX12Device::Init()
 	ClearValue.Format = DepthStencilFormat;
 	ClearValue.DepthStencil.Depth = 1.0f;
 	ClearValue.DepthStencil.Stencil = 0;
-	Result = IDX12Device->CreateCommittedResource(
+	HRESULT Result = IDX12Device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 		D3D12_HEAP_FLAG_NONE,
 		&DepthStencilDesc,
 		D3D12_RESOURCE_STATE_COMMON,
 		&ClearValue,
 		IID_PPV_ARGS(&DepthStencilBuffer));
-
-	// Create descriptor to mip level 0 of entire resource using the format of the resource.
-	D3D12_DEPTH_STENCIL_VIEW_DESC DSVDesc;
-	DSVDesc.Flags = D3D12_DSV_FLAG_NONE;
-	DSVDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
-	DSVDesc.Format = DepthStencilFormat;
-	DSVDesc.Texture2D.MipSlice = 0;
-	IDX12Device->CreateDepthStencilView(DepthStencilBuffer, &DSVDesc, GetDepthStencilView());
 
 	// viewport
 	ViewPort = { 0.0f, 0.0f, static_cast<float>(RenderTarget->GetWidth()), static_cast<float>(RenderTarget->GetHeight()), 0.0f, 1.0f };
@@ -367,18 +308,33 @@ int DX12Device::Init()
 	PSODesc.DSVFormat = DepthStencilFormat;
 	IDX12Device->CreateGraphicsPipelineState(&PSODesc, IID_PPV_ARGS(&IDX12PipleLineState));
 
-	// Create command allocator
-	IDX12Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&IDX12CommandAllocator));
-
-	// Create command list
-	IDX12Device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, IDX12CommandAllocator, IDX12PipleLineState, IID_PPV_ARGS(&IDX12CommandList));
-
 	// Crete fence
 	IDX12Device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&IDX12Fence));
 	FenceValue = 1;
 
 	// Create event
 	EventHandle = CreateEventEx(nullptr, FALSE, FALSE, EVENT_ALL_ACCESS);
+
+	FlushCommandQueue();
+
+	// Create descriptor to mip level 0 of entire resource using the format of the resource.
+	D3D12_DEPTH_STENCIL_VIEW_DESC DSVDesc;
+	DSVDesc.Flags = D3D12_DSV_FLAG_NONE;
+	DSVDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
+	DSVDesc.Format = DepthStencilFormat;
+	DSVDesc.Texture2D.MipSlice = 0;
+	IDX12Device->CreateDepthStencilView(DepthStencilBuffer, &DSVDesc, GetDepthStencilView());
+
+	IDX12CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(DepthStencilBuffer,
+		D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_DEPTH_WRITE));
+
+	IDX12CommandList->Close();
+
+	// Execute command list
+	ID3D12CommandList* CommandLists[] = { IDX12CommandList };
+	IDX12CommandQueue->ExecuteCommandLists(1, CommandLists);
+
+	FlushCommandQueue();
 
 	return 0;
 }
@@ -429,19 +385,92 @@ int DX12Device::Draw()
 	// Present
 	IDXGISwapChain->Present(0, 0);
 
-	const UINT64 CmdFence = FenceValue;
-	IDX12CommandQueue->Signal(IDX12Fence, CmdFence);
-	FenceValue++;
-
-	if (IDX12Fence->GetCompletedValue() < CmdFence)
-	{
-		IDX12Fence->SetEventOnCompletion(CmdFence, EventHandle);
-		WaitForSingleObject(EventHandle, INFINITE);
-	}
-
 	ChainBufferndex = (ChainBufferndex + 1) % SwapChainBufferCount;
 
+	FlushCommandQueue();
+
 	return 0;
+}
+
+void DX12Device::CreateDevice()
+{
+	// Create DXGI factory
+	CreateDXGIFactory2(0, IID_PPV_ARGS(&IDXGIFactory));
+
+	// Create DX12 device
+	for (UINT AdapterIndex = 0; DXGI_ERROR_NOT_FOUND != IDXGIFactory->EnumAdapters1(AdapterIndex, &IAdapter); ++AdapterIndex)
+	{
+		DXGI_ADAPTER_DESC1 Desc = {};
+		IAdapter->GetDesc1(&Desc);
+
+		if (Desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
+		{
+			continue;
+		}
+		HRESULT Result = D3D12CreateDevice(IAdapter, D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS(&IDX12Device));
+		if (SUCCEEDED(Result))
+		{
+			break;
+		}
+	}
+}
+
+void DX12Device::CreateCommandObjects()
+{
+	// Create command queue
+	D3D12_COMMAND_QUEUE_DESC QueueDesc = {};
+	QueueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
+	IDX12Device->CreateCommandQueue(&QueueDesc, IID_PPV_ARGS(&IDX12CommandQueue));
+
+	// Create command allocator
+	IDX12Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&IDX12CommandAllocator));
+
+	// Create command list
+	IDX12Device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, IDX12CommandAllocator, IDX12PipleLineState, IID_PPV_ARGS(&IDX12CommandList));
+
+	IDX12CommandList->Close();
+}
+
+void DX12Device::CreateSwapChain()
+{
+	HWND WindowHandle = nullptr;
+	RenderWindowWindows *RenderWindow = dynamic_cast<RenderWindowWindows*>(EngineWindows::GetInstance()->GetRenderTarget());
+	if (nullptr != RenderWindow)
+	{
+		WindowHandle = RenderWindow->GetRenderWindowHandle();
+	}
+	assert(WindowHandle != nullptr);
+
+	IRenderTarget* RenderTarget = EngineWindows::GetInstance()->GetRenderTarget();
+	assert(RenderTarget != nullptr);
+
+	DXGI_SWAP_CHAIN_DESC SwapChainDesc;
+	SwapChainDesc.BufferDesc.Width = RenderTarget->GetWidth();
+	SwapChainDesc.BufferDesc.Height = RenderTarget->GetHeight();
+	SwapChainDesc.BufferDesc.RefreshRate.Numerator = 60;
+	SwapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
+	SwapChainDesc.BufferDesc.Format = BackBufferFormat;
+	SwapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+	SwapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+	SwapChainDesc.SampleDesc.Count = 1;
+	SwapChainDesc.SampleDesc.Quality = 0;
+	SwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	SwapChainDesc.BufferCount = 2;
+	SwapChainDesc.OutputWindow = WindowHandle;
+	SwapChainDesc.Windowed = true;
+	SwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+	SwapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+
+	HRESULT Result = IDXGIFactory->CreateSwapChain(
+		IDX12CommandQueue,
+		&SwapChainDesc,
+		&IDXGISwapChain);
+
+}
+
+void DX12Device::CreateGeometry()
+{
+
 }
 
 ID3D12Resource* DX12Device::GetBackBuffer() const
@@ -461,4 +490,17 @@ D3D12_CPU_DESCRIPTOR_HANDLE DX12Device::GetBackBufferView() const
 D3D12_CPU_DESCRIPTOR_HANDLE DX12Device::GetDepthStencilView() const
 {
 	return IDX12DescriptorHeapDepthStencil->GetCPUDescriptorHandleForHeapStart();
+}
+
+void DX12Device::FlushCommandQueue()
+{
+	const UINT64 CmdFence = FenceValue;
+	IDX12CommandQueue->Signal(IDX12Fence, CmdFence);
+	FenceValue++;
+
+	if (IDX12Fence->GetCompletedValue() < CmdFence)
+	{
+		IDX12Fence->SetEventOnCompletion(CmdFence, EventHandle);
+		WaitForSingleObject(EventHandle, INFINITE);
+	}
 }
