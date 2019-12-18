@@ -1,10 +1,11 @@
 #pragma once
 #include "..\..\Utility\Public\Math.h"
+#include <Eigen/Dense>
 
 class ILight
 {
 public:
-	virtual Vector3 GetPosition() = 0;
-	virtual Vector3 GetDirection() = 0;
+	virtual Eigen::Vector3f GetPosition() = 0;
+	virtual Eigen::Vector3f GetDirection() = 0;
 };
 

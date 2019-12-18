@@ -37,6 +37,7 @@ int DX12Device::Init()
 #endif
 
 	SwapChainBufferCount = 2;
+	ChainBufferndex = 0;
 	BackBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 	DepthStencilFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
@@ -167,21 +168,6 @@ int DX12Device::Init()
 	// Scissor Rectangle
 	ScissorRect = { 0, 0, RenderTarget->GetWidth(), RenderTarget->GetHeight() };
 
-	// Create root signature
-	CD3DX12_ROOT_PARAMETER SlotRootParameter[1];
-
-	CD3DX12_DESCRIPTOR_RANGE CVBTable;
-	CVBTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
-	SlotRootParameter[0].InitAsDescriptorTable(1, &CVBTable);
-
-	CD3DX12_ROOT_SIGNATURE_DESC RootSignatureDesc(1, SlotRootParameter, 0, nullptr,
-		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
-
-	ID3DBlob* Signature;
-	ID3DBlob* Error;
-	D3D12SerializeRootSignature(&RootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &Signature, &Error);
-	IDX12Device->CreateRootSignature(0, Signature->GetBufferPointer(), Signature->GetBufferSize(), IID_PPV_ARGS(&IDX12RootSignature));
-
 	UINT CompileFlags = 0;
 	std::wstring ShaderFileName(L"Engine\\Shaders\\Basic.hlsl");
 
@@ -248,8 +234,18 @@ int DX12Device::Init()
 	XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
 	XMStoreFloat4x4(&ViewMatrix, view);
 
+	const float PI = 3.1415926f;
+	float AspectRatio = (float) RenderTarget->GetWidth() / (float) RenderTarget->GetHeight();
+	XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f * PI, AspectRatio, 1.0f, 1000.0f);
+	XMStoreFloat4x4(&ProjMatrix, P);
+
+	WorldMatrix = DirectX::XMFLOAT4X4(
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f);
 	XMMATRIX world = XMLoadFloat4x4(&WorldMatrix);
-	XMMATRIX proj = XMLoadFloat4x4(&ViewMatrix);
+	XMMATRIX proj = XMLoadFloat4x4(&ProjMatrix);
 	XMMATRIX worldViewProj = world * view * proj;
 
 	XMFLOAT4X4 WorldViewProj;
@@ -327,6 +323,21 @@ int DX12Device::Init()
 		&CBVDesc,
 		ConstantBufferHeap->GetCPUDescriptorHandleForHeapStart());
 
+	// Create root signature
+	CD3DX12_ROOT_PARAMETER SlotRootParameter[1];
+
+	CD3DX12_DESCRIPTOR_RANGE CVBTable;
+	CVBTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
+	SlotRootParameter[0].InitAsDescriptorTable(1, &CVBTable);
+
+	CD3DX12_ROOT_SIGNATURE_DESC RootSignatureDesc(1, SlotRootParameter, 0, nullptr,
+		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+
+	ID3DBlob* Signature;
+	ID3DBlob* Error;
+	D3D12SerializeRootSignature(&RootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &Signature, &Error);
+	IDX12Device->CreateRootSignature(0, Signature->GetBufferPointer(), Signature->GetBufferSize(), IID_PPV_ARGS(&IDX12RootSignature));
+
 	// Create graphic pipeline state 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC PSODesc;
 	ZeroMemory(&PSODesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
@@ -385,8 +396,7 @@ int DX12Device::Draw()
 	// Set scissor
 	IDX12CommandList->RSSetScissorRects(1, &ScissorRect);
 
-	ChainBufferndex = 0;
-	IDX12CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(IRenderTargets[ChainBufferndex], D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
+	IDX12CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(GetBackBuffer(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
 
 	// Clear color and depth stencil
 	float ClearColor[] = { 0.690196097f, 0.768627524f, 0.870588303f, 1.000000000f };
@@ -408,7 +418,7 @@ int DX12Device::Draw()
 	// Draw
 	IDX12CommandList->DrawIndexedInstanced(IndexCount, 1, 0, 0, 0);
 
-	IDX12CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(IRenderTargets[ChainBufferndex], D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
+	IDX12CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(GetBackBuffer(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 
 	IDX12CommandList->Close();
 
