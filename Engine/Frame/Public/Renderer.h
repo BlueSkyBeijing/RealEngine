@@ -7,11 +7,11 @@ public:
 };
 
 
-class RealRenderer : public IRenderer
+class Renderer : public IRenderer
 {
 public:
-	RealRenderer();
-	virtual ~RealRenderer();
+	Renderer();
+	virtual ~Renderer();
 
 	virtual int Render() override;
 };

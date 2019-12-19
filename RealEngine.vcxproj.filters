@@ -58,6 +58,9 @@
     <ClCompile Include="Engine\Frame\Private\ForwardShadingRenderer.cpp">
       <Filter>Frame\Private</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\RenderDevices\DX12\Private\DDSTextureLoader12.cpp">
+      <Filter>RenderDevices\DX12\Private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Frame\Public\Device.h">
@@ -125,6 +128,9 @@
     </ClInclude>
     <ClInclude Include="Engine\Frame\Public\ForwardShadingRenderer.h">
       <Filter>Frame\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\RenderDevices\DX12\Public\DDSTextureLoader12.h">
+      <Filter>RenderDevices\DX12\Public</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

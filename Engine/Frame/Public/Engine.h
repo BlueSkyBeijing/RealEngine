@@ -16,7 +16,7 @@ public:
 };
 
 
-class RealEngine : public IEngine
+class Engine : public IEngine
 {
 public:
 
@@ -32,7 +32,7 @@ public:
 
 protected:
 	static IDevice* Device;
-	IRenderer* Renderer;
-	IRenderTarget* RenderTargetMain;
+	IRenderer* mRenderer;
+	IRenderTarget* mRenderTargetMain;
 };
 

@@ -3,33 +3,33 @@
 #include "..\Public\Globals.h"
 #include "..\..\Platforms\Windows\Public\RenderWindowWindows.h"
 
-IDevice* RealEngine::Device = nullptr;
+IDevice* Engine::Device = nullptr;
 
-int RealEngine::Init()
+int Engine::Init()
 {
 	return 0;
 }
 
-int RealEngine::Tick()
+int Engine::Tick()
 {
-	if (Renderer != nullptr)
+	if (mRenderer != nullptr)
 	{
-		Renderer->Render();
+		mRenderer->Render();
 	}
 
 	return 0;
 }
 
-int RealEngine::Exit()
+int Engine::Exit()
 {
-	if (Renderer != nullptr)
+	if (mRenderer != nullptr)
 	{
-		delete Renderer;
+		delete mRenderer;
 	}
 
-	if (RenderTargetMain != nullptr)
+	if (mRenderTargetMain != nullptr)
 	{
-		delete RenderTargetMain;
+		delete mRenderTargetMain;
 	}
 
 	if (Device != nullptr)
@@ -40,12 +40,12 @@ int RealEngine::Exit()
 	return 0;
 }
 
-IDevice* RealEngine::GetDevice()
+IDevice* Engine::GetDevice()
 {
 	return Device;
 }
 
-IRenderTarget* RealEngine::GetRenderTarget()
+IRenderTarget* Engine::GetRenderTarget()
 {
-	return RenderTargetMain;
+	return mRenderTargetMain;
 }

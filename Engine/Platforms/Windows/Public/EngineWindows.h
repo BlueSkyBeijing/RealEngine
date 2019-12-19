@@ -8,7 +8,7 @@
 #include <windows.h>
 
 
-class EngineWindows : public RealEngine, public Singleton<EngineWindows>
+class EngineWindows : public Engine, public Singleton<EngineWindows>
 {
 public:
 

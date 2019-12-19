@@ -2,19 +2,19 @@
 #include "..\Public\Engine.h"
 #include <assert.h>
 
-RealRenderer::RealRenderer()
+Renderer::Renderer()
 {
 
 }
 
-RealRenderer::~RealRenderer()
+Renderer::~Renderer()
 {
 
 }
 
-int RealRenderer::Render()
+int Renderer::Render()
 {
-	IDevice* Device = RealEngine::GetDevice();
+	IDevice* Device = Engine::GetDevice();
 	assert(Device != nullptr);
 	Device->Draw();
 

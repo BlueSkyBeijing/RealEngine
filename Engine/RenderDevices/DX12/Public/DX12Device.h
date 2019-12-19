@@ -1,6 +1,5 @@
 #pragma once
 #include "..\..\..\Frame\Public\Device.h"
-#include "..\..\..\Frame\Public\Device.h"
 #include "d3dx12.h"
 #include "DX12Utility.h"
 
@@ -41,40 +40,41 @@ protected:
 	void FlushCommandQueue();
 
 private:
-	IDXGIFactory2*  IDXGIFactory;
-	IDXGIAdapter1* IAdapter;
-	ID3D12Device* IDX12Device;
-	ID3D12CommandQueue* IDX12CommandQueue;
-	ID3D12CommandAllocator* IDX12CommandAllocator;
-	ID3D12GraphicsCommandList* IDX12CommandList;
-	IDXGISwapChain* IDXGISwapChain;
-	ID3D12RootSignature* IDX12RootSignature;
-	ID3D12PipelineState* IDX12PipleLineState;
-	ID3D12Fence* IDX12Fence;
-	ID3D12DescriptorHeap* IDX12DescriptorHeapRenderTarget;
-	ID3D12DescriptorHeap* IDX12DescriptorHeapDepthStencil;
-	ID3D12DescriptorHeap* ConstantBufferHeap;
-	ID3D12Resource* IRenderTargets[2];
-	ID3D12Resource* DepthStencilBuffer;
-	HANDLE EventHandle;
-	UINT64 FenceValue;
-	ID3DBlob* VertexShader;
-	ID3DBlob *PixelShader;
-	ID3D12Resource* VertexBuffer;
-	ID3D12Resource* IndexBuffer;
-	ID3D12Resource* ConstantBuffer;
-	D3D12_VIEWPORT ViewPort;
-	D3D12_RECT ScissorRect;
-	D3D12_VERTEX_BUFFER_VIEW VertexBufferView;
-	D3D12_INDEX_BUFFER_VIEW IndexBufferView;
-	UINT ChainBufferndex;
-	UINT SwapChainBufferCount;
-	UINT RTVDescriptorSize;
-	UINT DSVDescriptorSize;
-	XMFLOAT4X4 WorldMatrix;
-	XMFLOAT4X4 ViewMatrix;
-	XMFLOAT4X4 ProjMatrix;
-	UINT IndexCount;
-	DXGI_FORMAT BackBufferFormat;
-	DXGI_FORMAT DepthStencilFormat;
+	Microsoft::WRL::ComPtr <IDXGIFactory2>  mDXGIFactory;
+	Microsoft::WRL::ComPtr <IDXGIAdapter1> mAdapter;
+	Microsoft::WRL::ComPtr <ID3D12Device> mDX12Device;
+	Microsoft::WRL::ComPtr <ID3D12CommandQueue> mDX12CommandQueue;
+	Microsoft::WRL::ComPtr <ID3D12CommandAllocator> mDX12CommandAllocator;
+	Microsoft::WRL::ComPtr <ID3D12GraphicsCommandList> mDX12CommandList;
+	Microsoft::WRL::ComPtr <IDXGISwapChain> mDXGISwapChain;
+	Microsoft::WRL::ComPtr <ID3D12RootSignature> mDX12RootSignature;
+	Microsoft::WRL::ComPtr <ID3D12PipelineState> mIDX12PipleLineState;
+	Microsoft::WRL::ComPtr <ID3D12Fence> mDX12Fence;
+	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> mDX12DescriptorHeapRenderTarget;
+	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> mDX12DescriptorHeapDepthStencil;
+	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> mConstantBufferHeap;
+	Microsoft::WRL::ComPtr <ID3D12Resource> mRenderTargets[2];
+	Microsoft::WRL::ComPtr <ID3D12Resource> mDepthStencilBuffer;
+	Microsoft::WRL::ComPtr <ID3DBlob> mVertexShader;
+	Microsoft::WRL::ComPtr <ID3DBlob> mPixelShader;
+	Microsoft::WRL::ComPtr <ID3D12Resource> mVertexBuffer;
+	Microsoft::WRL::ComPtr <ID3D12Resource> mIndexBuffer;
+	Microsoft::WRL::ComPtr <ID3D12Resource> mConstantBuffer;
+
+	HANDLE mEventHandle;
+	UINT64 mFenceValue;
+	D3D12_VIEWPORT mViewPort;
+	D3D12_RECT mScissorRect;
+	D3D12_VERTEX_BUFFER_VIEW mVertexBufferView;
+	D3D12_INDEX_BUFFER_VIEW mIndexBufferView;
+	UINT mChainBufferndex;
+	UINT mSwapChainBufferCount;
+	UINT mRTVDescriptorSize;
+	UINT mDSVDescriptorSize;
+	XMFLOAT4X4 mWorldMatrix;
+	XMFLOAT4X4 mViewMatrix;
+	XMFLOAT4X4 mProjMatrix;
+	UINT mIndexCount;
+	DXGI_FORMAT mBackBufferFormat;
+	DXGI_FORMAT mDepthStencilFormat;
 };

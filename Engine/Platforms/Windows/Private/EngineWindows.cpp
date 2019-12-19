@@ -8,11 +8,11 @@ template<> EngineWindows* EngineWindows::Singleton<EngineWindows>::Instance = nu
 
 int EngineWindows::Init()
 {
-	RenderTargetMain = new RenderWindowWindows();
-	RenderTargetMain->Init();
+	mRenderTargetMain = new RenderWindowWindows();
+	mRenderTargetMain->Init();
 	Device = new DX12Device();
 	Device->Init();
-	Renderer = new RealRenderer();
+	mRenderer = new Renderer();
 
 	return 0;
 }

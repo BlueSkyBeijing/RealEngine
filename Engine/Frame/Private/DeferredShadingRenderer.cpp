@@ -14,7 +14,7 @@ DeferredShadingRenderer::~DeferredShadingRenderer()
 
 int DeferredShadingRenderer::Render()
 {
-	IDevice* Device = RealEngine::GetDevice();
+	IDevice* Device = Engine::GetDevice();
 	assert(Device != nullptr);
 	Device->Draw();
 
