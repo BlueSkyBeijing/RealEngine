@@ -2,7 +2,7 @@
 
 #include "..\Public\Renderer.h"
 
-class ForwardShadingRenderer : public IRenderer
+class ForwardShadingRenderer : public Renderer
 {
 public:
 	ForwardShadingRenderer();

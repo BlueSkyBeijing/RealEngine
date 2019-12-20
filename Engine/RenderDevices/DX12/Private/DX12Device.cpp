@@ -163,21 +163,16 @@ int DX12Device::Init()
 
 	mIndexCount = (UINT)indexes.size();
 
-	float x = 6.0f * sinf(0.0);
-	float z = 6.0f * sinf(0.0);
-	float y = 6.0f * cosf(0.0);
-
 	// Build view matrix.
-	XMVECTOR pos = XMVectorSet(x, y, z, 1.0f);
+	XMVECTOR pos = XMVectorSet(5.0f, 5.0f, 5.0f, 1.0f);
 	XMVECTOR target = XMVectorZero();
 	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
 	XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
 	XMStoreFloat4x4(&mViewMatrix, view);
 
-	const float PI = 3.1415926f;
 	float AspectRatio = (float) renderTarget->GetWidth() / (float) renderTarget->GetHeight();
-	XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f * PI, AspectRatio, 1.0f, 1000.0f);
+	XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f * XM_PI, AspectRatio, 1.0f, 1000.0f);
 	XMStoreFloat4x4(&mProjMatrix, P);
 
 	mWorldMatrix = DirectX::XMFLOAT4X4(
@@ -189,8 +184,8 @@ int DX12Device::Init()
 	XMMATRIX proj = XMLoadFloat4x4(&mProjMatrix);
 	XMMATRIX worldViewProj = world * view * proj;
 
-	XMFLOAT4X4 worldViewProjNew;
-	XMStoreFloat4x4(&worldViewProjNew, XMMatrixTranspose(worldViewProj));
+	XMFLOAT4X4 worldViewProjMatrix;
+	XMStoreFloat4x4(&worldViewProjMatrix, XMMatrixTranspose(worldViewProj));
 
 	// Create vertex buffer
 	result = mDX12Device->CreateCommittedResource(
@@ -235,7 +230,7 @@ int DX12Device::Init()
 
 	UINT8* constantBufferData;
 	mConstantBuffer->Map(0, nullptr, reinterpret_cast<void**>(&constantBufferData));
-	memcpy(constantBufferData, &worldViewProj, sizeof(worldViewProj));
+	memcpy(constantBufferData, &worldViewProjMatrix, sizeof(worldViewProjMatrix));
 	mConstantBuffer->Unmap(0, nullptr);
 
 	// Vertex buffer view
@@ -316,6 +311,11 @@ int DX12Device::Init()
 	mEventHandle = CreateEventEx(nullptr, FALSE, FALSE, EVENT_ALL_ACCESS);
 
 	FlushCommandQueue();
+
+	mDX12CommandAllocator->Reset();
+
+	// Reset command list
+	mDX12CommandList->Reset(mDX12CommandAllocator.Get(), mIDX12PipleLineState.Get());
 
 	// Create descriptor to mip level 0 of entire resource using the format of the resource.
 	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc;

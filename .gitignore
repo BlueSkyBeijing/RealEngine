@@ -1,0 +1,13 @@
+/.vs/RealEngine/v15/*.db
+/.vs/RealEngine/v15/ipch/AutoPCH/298bd282b302b47a/*.ipch
+/.vs/RealEngine/v15/ipch/AutoPCH/30a3430bd39e975a/*.ipch
+/.vs/RealEngine/v15/ipch/AutoPCH/3c8e100f94452f64/*.ipch
+/x64/Debug/RealEngine.tlog/*.tlog
+/x64/Debug/RealEngine.tlog/*.lastbuildstate
+/x64/Debug/*.idb
+/.vs/RealEngine/v15/*.opendb
+/.vs/RealEngine/v15/ipch/AutoPCH/48bbcd78b4ce7b99/*.ipch
+/.vs/RealEngine/v15/ipch/AutoPCH/56df2017f46ab804/*.ipch
+/.vs/RealEngine/v15/ipch/AutoPCH/184915dec409eaa2/*.ipch
+/.vs
+/x64

@@ -2,7 +2,7 @@
 
 #include "..\Public\Renderer.h"
 
-class DeferredShadingRenderer : public IRenderer
+class DeferredShadingRenderer : public Renderer
 {
 public:
 	DeferredShadingRenderer();
