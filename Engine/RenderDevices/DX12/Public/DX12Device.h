@@ -33,6 +33,7 @@ protected:
 	void CreateCommandObjects();
 	void CreateSwapChain();
 	void CreateGeometry();
+	void LoadTexture();
 
 	ID3D12Resource* GetBackBuffer() const;
 	D3D12_CPU_DESCRIPTOR_HANDLE GetBackBufferView() const;
@@ -52,9 +53,12 @@ private:
 	Microsoft::WRL::ComPtr <ID3D12Fence> mDX12Fence;
 	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> mDX12DescriptorHeapRenderTarget;
 	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> mDX12DescriptorHeapDepthStencil;
+	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> mSRVDescriptorHeap;
 	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> mConstantBufferHeap;
 	Microsoft::WRL::ComPtr <ID3D12Resource> mRenderTargets[2];
 	Microsoft::WRL::ComPtr <ID3D12Resource> mDepthStencilBuffer;
+	Microsoft::WRL::ComPtr <ID3D12Resource> mTestTexture;
+	Microsoft::WRL::ComPtr <ID3D12Resource> mTestTextureUploadHeap;
 	Microsoft::WRL::ComPtr <ID3DBlob> mVertexShader;
 	Microsoft::WRL::ComPtr <ID3DBlob> mPixelShader;
 	Microsoft::WRL::ComPtr <ID3D12Resource> mVertexBuffer;

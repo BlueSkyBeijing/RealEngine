@@ -2,6 +2,7 @@
 #include "..\..\..\Frame\Public\RenderTarget.h"
 #include "..\..\..\Platforms\Windows\Public\EngineWindows.h"
 #include "..\..\..\Platforms\Windows\Public\RenderWindowWindows.h"
+#include "..\Public\DDSTextureLoader12.h"
 
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -13,6 +14,7 @@ struct Vertex
 {
 	XMFLOAT3 Pos;
 	XMFLOAT4 Color;
+	XMFLOAT2 TexCoord;
 };
 
 DX12Device::DX12Device()
@@ -109,6 +111,26 @@ int DX12Device::Init()
 	// Scissor Rectangle
 	mScissorRect = { 0, 0, renderTarget->GetWidth(), renderTarget->GetHeight() };
 
+	LoadTexture();
+
+	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
+	srvHeapDesc.NumDescriptors = 1;
+	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	mDX12Device->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&mSRVDescriptorHeap));
+
+	CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(mSRVDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.Format = mTestTexture->GetDesc().Format;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MostDetailedMip = 0;
+	srvDesc.Texture2D.MipLevels = mTestTexture->GetDesc().MipLevels;
+	srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
+
+	mDX12Device->CreateShaderResourceView(mTestTexture.Get(), &srvDesc, hDescriptor);
+
 	UINT compileFlags = 0;
 	std::wstring ShaderFileName(L"Engine\\Shaders\\Basic.hlsl");
 
@@ -118,20 +140,21 @@ int DX12Device::Init()
 	// Input Layout
 	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 } };
+		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 } };
 
 	UINT NumElements = sizeof(inputLayout) / sizeof(inputLayout[0]);
 
 	std::array<Vertex, 8> vertexes =
 	{
-		Vertex({ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(Colors::White) }),
-		Vertex({ XMFLOAT3(-1.0f, +1.0f, -1.0f), XMFLOAT4(Colors::Black) }),
-		Vertex({ XMFLOAT3(+1.0f, +1.0f, -1.0f), XMFLOAT4(Colors::Red) }),
-		Vertex({ XMFLOAT3(+1.0f, -1.0f, -1.0f), XMFLOAT4(Colors::Green) }),
-		Vertex({ XMFLOAT3(-1.0f, -1.0f, +1.0f), XMFLOAT4(Colors::Blue) }),
-		Vertex({ XMFLOAT3(-1.0f, +1.0f, +1.0f), XMFLOAT4(Colors::Yellow) }),
-		Vertex({ XMFLOAT3(+1.0f, +1.0f, +1.0f), XMFLOAT4(Colors::Cyan) }),
-		Vertex({ XMFLOAT3(+1.0f, -1.0f, +1.0f), XMFLOAT4(Colors::Magenta) })
+		Vertex({ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(Colors::White), XMFLOAT2(0.0f, 1.0f) }),
+		Vertex({ XMFLOAT3(-1.0f, +1.0f, -1.0f), XMFLOAT4(Colors::Black), XMFLOAT2(0.0f, 0.0f) }),
+		Vertex({ XMFLOAT3(+1.0f, +1.0f, -1.0f), XMFLOAT4(Colors::Red), XMFLOAT2(1.0f, 0.0f) }),
+		Vertex({ XMFLOAT3(+1.0f, -1.0f, -1.0f), XMFLOAT4(Colors::Green), XMFLOAT2(1.0f, 1.0f) }),
+		Vertex({ XMFLOAT3(-1.0f, -1.0f, +1.0f), XMFLOAT4(Colors::Blue), XMFLOAT2(0.0f, 1.0f) }),
+		Vertex({ XMFLOAT3(-1.0f, +1.0f, +1.0f), XMFLOAT4(Colors::Yellow), XMFLOAT2(0.0f, 0.0f) }),
+		Vertex({ XMFLOAT3(+1.0f, +1.0f, +1.0f), XMFLOAT4(Colors::Cyan), XMFLOAT2(1.0f, 0.0f) }),
+		Vertex({ XMFLOAT3(+1.0f, -1.0f, +1.0f), XMFLOAT4(Colors::Magenta), XMFLOAT2(1.0f, 1.0f) })
 	};
 
 	std::array<std::uint16_t, 36> indexes =
@@ -260,10 +283,17 @@ int DX12Device::Init()
 		mConstantBufferHeap->GetCPUDescriptorHandleForHeapStart());
 
 	// Create root signature
-	CD3DX12_ROOT_PARAMETER slotRootParameter[1];
+	CD3DX12_DESCRIPTOR_RANGE texTable;
+	texTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+
+	// Root parameter can be a table, root descriptor or root constants.
+	CD3DX12_ROOT_PARAMETER slotRootParameter[4];
+
+	slotRootParameter[1].InitAsDescriptorTable(1, &texTable, D3D12_SHADER_VISIBILITY_PIXEL);
 
 	CD3DX12_DESCRIPTOR_RANGE CVBTable;
 	CVBTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
+
 	slotRootParameter[0].InitAsDescriptorTable(1, &CVBTable);
 
 	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc(1, slotRootParameter, 0, nullptr,
@@ -361,8 +391,9 @@ int DX12Device::Draw()
 
 	// Set render target
 	mDX12CommandList->OMSetRenderTargets(1, &GetBackBufferView(), true, &GetDepthStencilView());
-	ID3D12DescriptorHeap* descriptorHeaps[] = { mConstantBufferHeap.Get() };
+	ID3D12DescriptorHeap* descriptorHeaps[] = { mSRVDescriptorHeap.Get() };
 	mDX12CommandList->SetDescriptorHeaps(1, descriptorHeaps);
+	mDX12CommandList->SetGraphicsRootConstantBufferView(1, mConstantBuffer->GetGPUVirtualAddress());
 
 	// Set root signature
 	mDX12CommandList->SetGraphicsRootSignature(mDX12RootSignature.Get());
@@ -472,6 +503,27 @@ void DX12Device::CreateSwapChain()
 void DX12Device::CreateGeometry()
 {
 
+}
+
+void DX12Device::LoadTexture()
+{
+	std::wstring szFileName(L"..\\Content\\Textures\\oldwood.dds");
+	size_t maxsize = 0;
+	DDS_ALPHA_MODE* alphaMode = nullptr;
+
+	if (alphaMode)
+	{
+		*alphaMode = DDS_ALPHA_MODE_UNKNOWN;
+	}
+
+	std::unique_ptr<D3D12_SUBRESOURCE_DATA[]> initData(
+		new (std::nothrow) D3D12_SUBRESOURCE_DATA[mipCount * arraySize]
+	);
+
+	uint8_t* bitData = nullptr;
+	size_t bitSize = 0;
+	std::unique_ptr<uint8_t[]> ddsData;
+	LoadDDSTextureFromFileEx(mDX12Device.Get(), szFileName.c_str(), maxsize, D3D12_RESOURCE_FLAG_NONE, 0, &mTestTexture, ddsData, initData);
 }
 
 ID3D12Resource* DX12Device::GetBackBuffer() const
