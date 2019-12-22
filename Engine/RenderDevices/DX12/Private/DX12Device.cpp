@@ -51,6 +51,26 @@ int DX12Device::Init()
 	IRenderTarget* renderTarget = EngineWindows::GetInstance()->GetRenderTarget();
 	assert(renderTarget != nullptr);
 
+	// viewport
+	mViewPort = { 0.0f, 0.0f, static_cast<float>(renderTarget->GetWidth()), static_cast<float>(renderTarget->GetHeight()), 0.0f, 1.0f };
+
+	// Scissor Rectangle
+	mScissorRect = { 0, 0, renderTarget->GetWidth(), renderTarget->GetHeight() };
+
+	// Crete fence
+	mDX12Device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&mDX12Fence));
+	mFenceValue = 1;
+
+	// Create event
+	mEventHandle = CreateEventEx(nullptr, FALSE, FALSE, EVENT_ALL_ACCESS);
+
+	FlushCommandQueue();
+
+	mDX12CommandAllocator->Reset();
+	// Reset command list
+	mDX12CommandList->Reset(mDX12CommandAllocator.Get(), mIDX12PipleLineState.Get());
+
+
 	// Create render view description
 	D3D12_DESCRIPTOR_HEAP_DESC rtDescriptorHeapDesc;
 	rtDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
@@ -68,6 +88,7 @@ int DX12Device::Init()
 
 	mRTVDescriptorSize = mDX12Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	mDSVDescriptorSize = mDX12Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
+	mCBVSRVDescriptorSize = mDX12Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
 	// Create render view
 	CD3DX12_CPU_DESCRIPTOR_HANDLE descriptorHandle(mDX12DescriptorHeapRenderTarget->GetCPUDescriptorHandleForHeapStart());
@@ -105,12 +126,6 @@ int DX12Device::Init()
 		&clearValue,
 		IID_PPV_ARGS(&mDepthStencilBuffer));
 
-	// viewport
-	mViewPort = { 0.0f, 0.0f, static_cast<float>(renderTarget->GetWidth()), static_cast<float>(renderTarget->GetHeight()), 0.0f, 1.0f };
-
-	// Scissor Rectangle
-	mScissorRect = { 0, 0, renderTarget->GetWidth(), renderTarget->GetHeight() };
-
 	LoadTexture();
 
 	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
@@ -141,7 +156,7 @@ int DX12Device::Init()
 	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 } };
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 } };
 
 	UINT NumElements = sizeof(inputLayout) / sizeof(inputLayout[0]);
 
@@ -265,7 +280,6 @@ int DX12Device::Init()
 	mIndexBufferView.Format = DXGI_FORMAT_R16_UINT;
 	mIndexBufferView.SizeInBytes = ibByteSize;;
 
-
 	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;
 	cbvHeapDesc.NumDescriptors = 1;
 	cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
@@ -287,16 +301,19 @@ int DX12Device::Init()
 	texTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
 
 	// Root parameter can be a table, root descriptor or root constants.
-	CD3DX12_ROOT_PARAMETER slotRootParameter[4];
+	CD3DX12_ROOT_PARAMETER slotRootParameter[2];
 
-	slotRootParameter[1].InitAsDescriptorTable(1, &texTable, D3D12_SHADER_VISIBILITY_PIXEL);
+	slotRootParameter[0].InitAsDescriptorTable(1, &texTable, D3D12_SHADER_VISIBILITY_PIXEL);
+	slotRootParameter[1].InitAsConstantBufferView(0);
 
-	CD3DX12_DESCRIPTOR_RANGE CVBTable;
-	CVBTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
+	const CD3DX12_STATIC_SAMPLER_DESC pointWrap(
+		0, // shaderRegister
+		D3D12_FILTER_MIN_MAG_MIP_POINT, // filter
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP,  // addressU
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP,  // addressV
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP); // addressW
 
-	slotRootParameter[0].InitAsDescriptorTable(1, &CVBTable);
-
-	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc(1, slotRootParameter, 0, nullptr,
+	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc(2, slotRootParameter, 1, &pointWrap,
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
 	Microsoft::WRL::ComPtr <ID3DBlob> signature;
@@ -333,14 +350,14 @@ int DX12Device::Init()
 	psoDesc.DSVFormat = mDepthStencilFormat;
 	mDX12Device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&mIDX12PipleLineState));
 
-	// Crete fence
-	mDX12Device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&mDX12Fence));
-	mFenceValue = 1;
+	mDX12CommandList->Close();
 
-	// Create event
-	mEventHandle = CreateEventEx(nullptr, FALSE, FALSE, EVENT_ALL_ACCESS);
+	// Execute command list
+	ID3D12CommandList* CommandLists[] = { mDX12CommandList.Get() };
+	mDX12CommandQueue->ExecuteCommandLists(1, CommandLists);
 
 	FlushCommandQueue();
+
 
 	mDX12CommandAllocator->Reset();
 
@@ -361,7 +378,6 @@ int DX12Device::Init()
 	mDX12CommandList->Close();
 
 	// Execute command list
-	ID3D12CommandList* CommandLists[] = { mDX12CommandList.Get() };
 	mDX12CommandQueue->ExecuteCommandLists(1, CommandLists);
 
 	FlushCommandQueue();
@@ -391,9 +407,6 @@ int DX12Device::Draw()
 
 	// Set render target
 	mDX12CommandList->OMSetRenderTargets(1, &GetBackBufferView(), true, &GetDepthStencilView());
-	ID3D12DescriptorHeap* descriptorHeaps[] = { mSRVDescriptorHeap.Get() };
-	mDX12CommandList->SetDescriptorHeaps(1, descriptorHeaps);
-	mDX12CommandList->SetGraphicsRootConstantBufferView(1, mConstantBuffer->GetGPUVirtualAddress());
 
 	// Set root signature
 	mDX12CommandList->SetGraphicsRootSignature(mDX12RootSignature.Get());
@@ -401,7 +414,10 @@ int DX12Device::Draw()
 	mDX12CommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	mDX12CommandList->IASetVertexBuffers(0, 1, &mVertexBufferView);
 	mDX12CommandList->IASetIndexBuffer(&mIndexBufferView);
-	mDX12CommandList->SetGraphicsRootDescriptorTable(0, mConstantBufferHeap->GetGPUDescriptorHandleForHeapStart());
+	//mDX12CommandList->SetGraphicsRootDescriptorTable(0, mSRVDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+	ID3D12DescriptorHeap* descriptorHeaps[] = { mSRVDescriptorHeap.Get() };
+	mDX12CommandList->SetDescriptorHeaps(1, descriptorHeaps);
+	mDX12CommandList->SetGraphicsRootConstantBufferView(1, mConstantBuffer->GetGPUVirtualAddress());
 
 	// Draw
 	mDX12CommandList->DrawIndexedInstanced(mIndexCount, 1, 0, 0, 0);
@@ -507,23 +523,11 @@ void DX12Device::CreateGeometry()
 
 void DX12Device::LoadTexture()
 {
-	std::wstring szFileName(L"..\\Content\\Textures\\oldwood.dds");
-	size_t maxsize = 0;
-	DDS_ALPHA_MODE* alphaMode = nullptr;
+	std::wstring szFileName(L"Content\\Textures\\oldwood.dds");
 
-	if (alphaMode)
-	{
-		*alphaMode = DDS_ALPHA_MODE_UNKNOWN;
-	}
-
-	std::unique_ptr<D3D12_SUBRESOURCE_DATA[]> initData(
-		new (std::nothrow) D3D12_SUBRESOURCE_DATA[mipCount * arraySize]
-	);
-
-	uint8_t* bitData = nullptr;
-	size_t bitSize = 0;
-	std::unique_ptr<uint8_t[]> ddsData;
-	LoadDDSTextureFromFileEx(mDX12Device.Get(), szFileName.c_str(), maxsize, D3D12_RESOURCE_FLAG_NONE, 0, &mTestTexture, ddsData, initData);
+	CreateDDSTextureFromFile12(mDX12Device.Get(),
+		mDX12CommandList.Get(), szFileName.c_str(),
+		mTestTexture, mTestTextureUploadHeap);
 }
 
 ID3D12Resource* DX12Device::GetBackBuffer() const

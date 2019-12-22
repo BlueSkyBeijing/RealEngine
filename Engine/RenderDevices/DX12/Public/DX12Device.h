@@ -75,6 +75,7 @@ private:
 	UINT mSwapChainBufferCount;
 	UINT mRTVDescriptorSize;
 	UINT mDSVDescriptorSize;
+	UINT mCBVSRVDescriptorSize;
 	XMFLOAT4X4 mWorldMatrix;
 	XMFLOAT4X4 mViewMatrix;
 	XMFLOAT4X4 mProjMatrix;

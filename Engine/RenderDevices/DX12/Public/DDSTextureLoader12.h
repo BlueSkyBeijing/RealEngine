@@ -21,6 +21,7 @@
 #include <memory>
 #include <vector>
 #include <stdint.h>
+#include <wrl.h>
 
 
 namespace DirectX
@@ -89,4 +90,13 @@ namespace DirectX
         std::vector<D3D12_SUBRESOURCE_DATA>& subresources,
         _Out_opt_ DDS_ALPHA_MODE* alphaMode = nullptr,
         _Out_opt_ bool* isCubeMap = nullptr);
+
+	HRESULT __cdecl CreateDDSTextureFromFile12(_In_ ID3D12Device* device,
+		_In_ ID3D12GraphicsCommandList* cmdList,
+		_In_z_ const wchar_t* szFileName,
+		_Out_ Microsoft::WRL::ComPtr<ID3D12Resource>& texture,
+		_Out_ Microsoft::WRL::ComPtr<ID3D12Resource>& textureUploadHeap,
+		_In_ size_t maxsize = 0,
+		_Out_opt_ DDS_ALPHA_MODE* alphaMode = nullptr);
+
 }
