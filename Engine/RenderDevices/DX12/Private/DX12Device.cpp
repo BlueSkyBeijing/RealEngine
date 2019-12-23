@@ -414,9 +414,9 @@ int DX12Device::Draw()
 	mDX12CommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	mDX12CommandList->IASetVertexBuffers(0, 1, &mVertexBufferView);
 	mDX12CommandList->IASetIndexBuffer(&mIndexBufferView);
-	//mDX12CommandList->SetGraphicsRootDescriptorTable(0, mSRVDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 	ID3D12DescriptorHeap* descriptorHeaps[] = { mSRVDescriptorHeap.Get() };
 	mDX12CommandList->SetDescriptorHeaps(1, descriptorHeaps);
+	mDX12CommandList->SetGraphicsRootDescriptorTable(0, mSRVDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 	mDX12CommandList->SetGraphicsRootConstantBufferView(1, mConstantBuffer->GetGPUVirtualAddress());
 
 	// Draw
