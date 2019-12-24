@@ -36,6 +36,7 @@
     <ClCompile Include="Engine\Platforms\Windows\Private\EngineWindows.cpp" />
     <ClCompile Include="Engine\Platforms\Windows\Private\LauncherWindows.cpp" />
     <ClCompile Include="Engine\Platforms\Windows\Private\RenderWindowWindows.cpp" />
+    <ClCompile Include="Engine\Platforms\Windows\Private\WindowsUtility.cpp" />
     <ClCompile Include="Engine\RenderDevices\DX12\Private\DDSTextureLoader12.cpp" />
     <ClCompile Include="Engine\RenderDevices\DX12\Private\DX12Device.cpp" />
     <ClCompile Include="Engine\RenderDevices\DX12\Private\DX12Utility.cpp" />
@@ -57,6 +58,7 @@
     <ClInclude Include="Engine\Frame\Public\Texture.h" />
     <ClInclude Include="Engine\Platforms\Windows\Public\EngineWindows.h" />
     <ClInclude Include="Engine\Platforms\Windows\Public\RenderWindowWindows.h" />
+    <ClInclude Include="Engine\Platforms\Windows\Public\WindowsUtility.h" />
     <ClInclude Include="Engine\RenderDevices\DX12\Public\d3dx12.h" />
     <ClInclude Include="Engine\RenderDevices\DX12\Public\DDSTextureLoader12.h" />
     <ClInclude Include="Engine\RenderDevices\DX12\Public\DX12Device.h" />

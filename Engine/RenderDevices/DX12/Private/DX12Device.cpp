@@ -2,6 +2,7 @@
 #include "..\..\..\Frame\Public\RenderTarget.h"
 #include "..\..\..\Platforms\Windows\Public\EngineWindows.h"
 #include "..\..\..\Platforms\Windows\Public\RenderWindowWindows.h"
+#include "..\..\..\Platforms\Windows\Public\WindowsUtility.h"
 #include "..\Public\DDSTextureLoader12.h"
 
 #pragma comment(lib, "dxguid.lib")
@@ -443,7 +444,7 @@ int DX12Device::Draw()
 void DX12Device::CreateDevice()
 {
 	// Create DXGI factory
-	CreateDXGIFactory2(0, IID_PPV_ARGS(&mDXGIFactory));
+	THROW_IF_FAILED(CreateDXGIFactory2(0, IID_PPV_ARGS(&mDXGIFactory)));
 
 	// Create DX12 device
 	for (UINT adapterIndex = 0; DXGI_ERROR_NOT_FOUND != mDXGIFactory->EnumAdapters1(adapterIndex, &mAdapter); ++adapterIndex)
@@ -468,15 +469,15 @@ void DX12Device::CreateCommandObjects()
 	// Create command queue
 	D3D12_COMMAND_QUEUE_DESC queueDesc = {};
 	queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
-	mDX12Device->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&mDX12CommandQueue));
+	THROW_IF_FAILED(mDX12Device->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&mDX12CommandQueue)));
 
 	// Create command allocator
-	mDX12Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&mDX12CommandAllocator));
+	THROW_IF_FAILED(mDX12Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&mDX12CommandAllocator)));
 
 	// Create command list
-	mDX12Device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, mDX12CommandAllocator.Get(), mIDX12PipleLineState.Get(), IID_PPV_ARGS(&mDX12CommandList));
+	THROW_IF_FAILED(mDX12Device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, mDX12CommandAllocator.Get(), mIDX12PipleLineState.Get(), IID_PPV_ARGS(&mDX12CommandList)));
 
-	mDX12CommandList->Close();
+	THROW_IF_FAILED(mDX12CommandList->Close());
 }
 
 void DX12Device::CreateSwapChain()
@@ -509,10 +510,10 @@ void DX12Device::CreateSwapChain()
 	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 	swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
-	HRESULT result = mDXGIFactory->CreateSwapChain(
+	THROW_IF_FAILED(mDXGIFactory->CreateSwapChain(
 		mDX12CommandQueue.Get(),
 		&swapChainDesc,
-		&mDXGISwapChain);
+		&mDXGISwapChain));
 
 }
 

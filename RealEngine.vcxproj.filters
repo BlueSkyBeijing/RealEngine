@@ -61,6 +61,9 @@
     <ClCompile Include="Engine\RenderDevices\DX12\Private\DDSTextureLoader12.cpp">
       <Filter>RenderDevices\DX12\Private</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Platforms\Windows\Private\WindowsUtility.cpp">
+      <Filter>Platforms\Windows\Private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Frame\Public\Device.h">
@@ -131,6 +134,9 @@
     </ClInclude>
     <ClInclude Include="Engine\RenderDevices\DX12\Public\DDSTextureLoader12.h">
       <Filter>RenderDevices\DX12\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Platforms\Windows\Public\WindowsUtility.h">
+      <Filter>Platforms\Windows\Public</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
