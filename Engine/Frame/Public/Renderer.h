@@ -4,6 +4,9 @@ class IRenderer
 {
 public:
 	virtual int Render() = 0;
+
+protected:
+	virtual void ComputeVisibility() = 0;
 };
 
 
@@ -14,4 +17,8 @@ public:
 	virtual ~Renderer();
 
 	virtual int Render() override;
+
+protected:
+	virtual void ComputeVisibility() override;
+
 };

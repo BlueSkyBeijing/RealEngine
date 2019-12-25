@@ -20,3 +20,13 @@ int ForwardShadingRenderer::Render()
 
 	return 0;
 }
+
+bool ForwardShadingRenderer::RenderOpaquePass()
+{
+	return true;
+}
+
+bool ForwardShadingRenderer::RenderTranslucency()
+{
+	return true;
+}

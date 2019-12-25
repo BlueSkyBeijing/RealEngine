@@ -9,4 +9,10 @@ public:
 	virtual ~DeferredShadingRenderer();
 
 	virtual int Render() override;
+
+	bool RenderOpaquePass();
+
+	bool RenderLights();
+
+	bool RenderTranslucency();
 };

@@ -20,3 +20,8 @@ int Renderer::Render()
 
 	return 0;
 }
+
+void Renderer::ComputeVisibility()
+{
+
+}

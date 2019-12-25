@@ -9,4 +9,8 @@ public:
 	virtual ~ForwardShadingRenderer();
 
 	virtual int Render() override;
+
+	bool RenderOpaquePass();
+
+	bool RenderTranslucency();
 };

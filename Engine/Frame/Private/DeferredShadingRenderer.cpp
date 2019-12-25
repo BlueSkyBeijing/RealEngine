@@ -20,3 +20,18 @@ int DeferredShadingRenderer::Render()
 
 	return 0;
 }
+
+bool DeferredShadingRenderer::RenderOpaquePass()
+{
+	return true;
+}
+
+bool DeferredShadingRenderer::RenderLights()
+{
+	return true;
+}
+
+bool DeferredShadingRenderer::RenderTranslucency()
+{
+	return true;
+}

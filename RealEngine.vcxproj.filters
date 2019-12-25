@@ -64,6 +64,9 @@
     <ClCompile Include="Engine\Platforms\Windows\Private\WindowsUtility.cpp">
       <Filter>Platforms\Windows\Private</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Frame\Private\PostProcessing.cpp">
+      <Filter>Frame\Private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Frame\Public\Device.h">
@@ -138,6 +141,9 @@
     <ClInclude Include="Engine\Platforms\Windows\Public\WindowsUtility.h">
       <Filter>Platforms\Windows\Public</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Frame\Public\PostProcessing.h">
+      <Filter>Frame\Public</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Frame">
@@ -188,6 +194,27 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\Shaders\Basic.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Engine\Shaders\Common.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Engine\Shaders\DeferredShadingCommon.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Engine\Shaders\DeferredShadingPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Engine\Shaders\DeferredShadingVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Engine\Shaders\ForwardShadingCommon.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Engine\Shaders\ForwardShadingPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Engine\Shaders\ForwardShadingVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>
