@@ -10,9 +10,6 @@
     <ClCompile Include="Engine\Frame\Private\Globals.cpp">
       <Filter>Frame\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Frame\Private\Renderer.cpp">
-      <Filter>Frame\Private</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Frame\Private\RenderTarget.cpp">
       <Filter>Frame\Private</Filter>
     </ClCompile>
@@ -52,12 +49,6 @@
     <ClCompile Include="Engine\Frame\Private\Shader.cpp">
       <Filter>Frame\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Frame\Private\DeferredShadingRenderer.cpp">
-      <Filter>Frame\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Frame\Private\ForwardShadingRenderer.cpp">
-      <Filter>Frame\Private</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\RenderDevices\DX12\Private\DDSTextureLoader12.cpp">
       <Filter>RenderDevices\DX12\Private</Filter>
     </ClCompile>
@@ -66,6 +57,24 @@
     </ClCompile>
     <ClCompile Include="Engine\Frame\Private\PostProcessing.cpp">
       <Filter>Frame\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Frame\Renderer\Private\DeferredShadingRenderer.cpp">
+      <Filter>Frame\Renderer\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Frame\Renderer\Private\ForwardShadingRenderer.cpp">
+      <Filter>Frame\Renderer\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Frame\Renderer\Private\Renderer.cpp">
+      <Filter>Frame\Renderer\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Frame\Renderer\Private\LightPrePassShadingRenderer.cpp">
+      <Filter>Frame\Renderer\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Frame\Renderer\Private\TiledBasedDeferredShadingRenderer.cpp">
+      <Filter>Frame\Renderer\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Frame\Renderer\Private\TiledForwardShadingRenderer.cpp">
+      <Filter>Frame\Renderer\Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -76,9 +85,6 @@
       <Filter>Frame\Public</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Frame\Public\Globals.h">
-      <Filter>Frame\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Frame\Public\Renderer.h">
       <Filter>Frame\Public</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Frame\Public\RenderTarget.h">
@@ -129,12 +135,6 @@
     <ClInclude Include="Engine\Frame\Public\Shader.h">
       <Filter>Frame\Public</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Frame\Public\DeferredShadingRenderer.h">
-      <Filter>Frame\Public</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Frame\Public\ForwardShadingRenderer.h">
-      <Filter>Frame\Public</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\RenderDevices\DX12\Public\DDSTextureLoader12.h">
       <Filter>RenderDevices\DX12\Public</Filter>
     </ClInclude>
@@ -143,6 +143,24 @@
     </ClInclude>
     <ClInclude Include="Engine\Frame\Public\PostProcessing.h">
       <Filter>Frame\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Frame\Renderer\Public\DeferredShadingRenderer.h">
+      <Filter>Frame\Renderer\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Frame\Renderer\Public\ForwardShadingRenderer.h">
+      <Filter>Frame\Renderer\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Frame\Renderer\Public\Renderer.h">
+      <Filter>Frame\Renderer\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Frame\Renderer\Public\LightPrePassShadingRenderer.h">
+      <Filter>Frame\Renderer\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Frame\Renderer\Public\TiledBasedDeferredShadingRenderer.h">
+      <Filter>Frame\Renderer\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Frame\Renderer\Public\TiledForwardShadingRenderer.h">
+      <Filter>Frame\Renderer\Public</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -190,6 +208,15 @@
     </Filter>
     <Filter Include="RenderDevices\DX12\Public">
       <UniqueIdentifier>{92a27137-d046-471d-b40b-b023bf45a993}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Frame\Renderer">
+      <UniqueIdentifier>{c8e4c044-369a-40d9-a56f-a956e4fc5a58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Frame\Renderer\Public">
+      <UniqueIdentifier>{85c6b918-af6f-450e-bca1-e846e7da73c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Frame\Renderer\Private">
+      <UniqueIdentifier>{a8418b1d-e985-43e3-819d-be90f0e3c8f1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

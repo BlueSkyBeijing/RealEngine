@@ -1,5 +1,5 @@
 #include "..\Public\DeferredShadingRenderer.h"
-#include "..\Public\Engine.h"
+#include "..\..\Public\Engine.h"
 #include <assert.h>
 
 DeferredShadingRenderer::DeferredShadingRenderer()

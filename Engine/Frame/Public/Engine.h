@@ -1,5 +1,5 @@
 #pragma once
-#include "..\Public\Renderer.h"
+#include "..\Renderer\Public\Renderer.h"
 #include "..\Public\Device.h"
 #include "..\..\Utility\Public\Singleton.h"
 #include "..\Public\RenderTarget.h"

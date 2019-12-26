@@ -20,20 +20,23 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Frame\Private\Camera.cpp" />
-    <ClCompile Include="Engine\Frame\Private\DeferredShadingRenderer.cpp" />
     <ClCompile Include="Engine\Frame\Private\Device.cpp" />
     <ClCompile Include="Engine\Frame\Private\Engine.cpp" />
-    <ClCompile Include="Engine\Frame\Private\ForwardShadingRenderer.cpp" />
     <ClCompile Include="Engine\Frame\Private\Globals.cpp" />
     <ClCompile Include="Engine\Frame\Private\Light.cpp" />
     <ClCompile Include="Engine\Frame\Private\Material.cpp" />
     <ClCompile Include="Engine\Frame\Private\Mesh.cpp" />
     <ClCompile Include="Engine\Frame\Private\PostProcessing.cpp" />
-    <ClCompile Include="Engine\Frame\Private\Renderer.cpp" />
     <ClCompile Include="Engine\Frame\Private\RenderTarget.cpp" />
     <ClCompile Include="Engine\Frame\Private\Scene.cpp" />
     <ClCompile Include="Engine\Frame\Private\Shader.cpp" />
     <ClCompile Include="Engine\Frame\Private\Texture.cpp" />
+    <ClCompile Include="Engine\Frame\Renderer\Private\DeferredShadingRenderer.cpp" />
+    <ClCompile Include="Engine\Frame\Renderer\Private\ForwardShadingRenderer.cpp" />
+    <ClCompile Include="Engine\Frame\Renderer\Private\LightPrePassShadingRenderer.cpp" />
+    <ClCompile Include="Engine\Frame\Renderer\Private\Renderer.cpp" />
+    <ClCompile Include="Engine\Frame\Renderer\Private\TiledBasedDeferredShadingRenderer.cpp" />
+    <ClCompile Include="Engine\Frame\Renderer\Private\TiledForwardShadingRenderer.cpp" />
     <ClCompile Include="Engine\Platforms\Windows\Private\EngineWindows.cpp" />
     <ClCompile Include="Engine\Platforms\Windows\Private\LauncherWindows.cpp" />
     <ClCompile Include="Engine\Platforms\Windows\Private\RenderWindowWindows.cpp" />
@@ -44,20 +47,23 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Frame\Public\Camera.h" />
-    <ClInclude Include="Engine\Frame\Public\DeferredShadingRenderer.h" />
     <ClInclude Include="Engine\Frame\Public\Device.h" />
     <ClInclude Include="Engine\Frame\Public\Engine.h" />
-    <ClInclude Include="Engine\Frame\Public\ForwardShadingRenderer.h" />
     <ClInclude Include="Engine\Frame\Public\Globals.h" />
     <ClInclude Include="Engine\Frame\Public\Light.h" />
     <ClInclude Include="Engine\Frame\Public\Material.h" />
     <ClInclude Include="Engine\Frame\Public\Mesh.h" />
     <ClInclude Include="Engine\Frame\Public\PostProcessing.h" />
-    <ClInclude Include="Engine\Frame\Public\Renderer.h" />
     <ClInclude Include="Engine\Frame\Public\RenderTarget.h" />
     <ClInclude Include="Engine\Frame\Public\Scene.h" />
     <ClInclude Include="Engine\Frame\Public\Shader.h" />
     <ClInclude Include="Engine\Frame\Public\Texture.h" />
+    <ClInclude Include="Engine\Frame\Renderer\Public\DeferredShadingRenderer.h" />
+    <ClInclude Include="Engine\Frame\Renderer\Public\ForwardShadingRenderer.h" />
+    <ClInclude Include="Engine\Frame\Renderer\Public\LightPrePassShadingRenderer.h" />
+    <ClInclude Include="Engine\Frame\Renderer\Public\Renderer.h" />
+    <ClInclude Include="Engine\Frame\Renderer\Public\TiledBasedDeferredShadingRenderer.h" />
+    <ClInclude Include="Engine\Frame\Renderer\Public\TiledForwardShadingRenderer.h" />
     <ClInclude Include="Engine\Platforms\Windows\Public\EngineWindows.h" />
     <ClInclude Include="Engine\Platforms\Windows\Public\RenderWindowWindows.h" />
     <ClInclude Include="Engine\Platforms\Windows\Public\WindowsUtility.h" />

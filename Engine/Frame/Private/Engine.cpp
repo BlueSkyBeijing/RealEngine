@@ -1,5 +1,5 @@
 #include "..\Public\Engine.h"
-#include "..\Public\Renderer.h"
+#include "..\Renderer\Public\Renderer.h"
 #include "..\Public\Globals.h"
 #include "..\..\Platforms\Windows\Public\RenderWindowWindows.h"
 
