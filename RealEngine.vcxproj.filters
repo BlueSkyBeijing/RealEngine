@@ -76,6 +76,9 @@
     <ClCompile Include="Engine\Frame\Renderer\Private\TiledForwardShadingRenderer.cpp">
       <Filter>Frame\Renderer\Private</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Frame\Private\SceneManager.cpp">
+      <Filter>Frame\Private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Frame\Public\Device.h">
@@ -161,6 +164,9 @@
     </ClInclude>
     <ClInclude Include="Engine\Frame\Renderer\Public\TiledForwardShadingRenderer.h">
       <Filter>Frame\Renderer\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Frame\Public\SceneManager.h">
+      <Filter>Frame\Public</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

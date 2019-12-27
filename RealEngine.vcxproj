@@ -29,6 +29,7 @@
     <ClCompile Include="Engine\Frame\Private\PostProcessing.cpp" />
     <ClCompile Include="Engine\Frame\Private\RenderTarget.cpp" />
     <ClCompile Include="Engine\Frame\Private\Scene.cpp" />
+    <ClCompile Include="Engine\Frame\Private\SceneManager.cpp" />
     <ClCompile Include="Engine\Frame\Private\Shader.cpp" />
     <ClCompile Include="Engine\Frame\Private\Texture.cpp" />
     <ClCompile Include="Engine\Frame\Renderer\Private\DeferredShadingRenderer.cpp" />
@@ -56,6 +57,7 @@
     <ClInclude Include="Engine\Frame\Public\PostProcessing.h" />
     <ClInclude Include="Engine\Frame\Public\RenderTarget.h" />
     <ClInclude Include="Engine\Frame\Public\Scene.h" />
+    <ClInclude Include="Engine\Frame\Public\SceneManager.h" />
     <ClInclude Include="Engine\Frame\Public\Shader.h" />
     <ClInclude Include="Engine\Frame\Public\Texture.h" />
     <ClInclude Include="Engine\Frame\Renderer\Public\DeferredShadingRenderer.h" />
