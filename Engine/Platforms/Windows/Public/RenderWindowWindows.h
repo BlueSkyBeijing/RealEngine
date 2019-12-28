@@ -1,5 +1,8 @@
 #pragma once
 #include"..\..\..\Frame\Public\RenderTarget.h"
+#if WINDOWS_RENDER_DEVICE == USE_VULKAN
+#include <GLFW/glfw3.h>
+#endif
 
 class RenderWindowWindows : public IRenderTarget
 {
@@ -15,4 +18,11 @@ public:
 
 protected:
 	HWND  RenderWindowHandle;
+
+#if WINDOWS_RENDER_DEVICE == USE_VULKAN
+	GLFWwindow* mMainWindow;
+public:
+	void Update();
+#endif
+
 };

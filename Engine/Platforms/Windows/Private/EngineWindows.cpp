@@ -10,17 +10,21 @@ int EngineWindows::Init()
 {
 	mRenderTargetMain = new RenderWindowWindows();
 	mRenderTargetMain->Init();
+
+#if WINDOWS_RENDER_DEVICE == USE_DX12
 	Device = new DX12Device();
 	Device->Init();
 	mRenderer = new Renderer();
+#endif
 
 	return 0;
 }
 
 int EngineWindows::Tick()
 {
+#if WINDOWS_RENDER_DEVICE == USE_DX12
 	MSG Message = {};
-	
+
 	if (PeekMessage(&Message, 0, 0, 0, PM_REMOVE))
 	{
 		TranslateMessage(&Message);
@@ -35,6 +39,9 @@ int EngineWindows::Tick()
 	{
 		__super::Tick();
 	}
+#else
+	static_cast<RenderWindowWindows*>(mRenderTargetMain)->Update();
+#endif
 
 	return 0;
 }

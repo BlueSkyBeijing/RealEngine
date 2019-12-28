@@ -15,8 +15,10 @@ Renderer::~Renderer()
 int Renderer::Render()
 {
 	IDevice* Device = Engine::GetDevice();
-	assert(Device != nullptr);
-	Device->Draw();
+	if (Device != nullptr)
+	{
+		Device->Draw();
+	}
 
 	return 0;
 }
