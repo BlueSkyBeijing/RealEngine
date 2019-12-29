@@ -45,6 +45,14 @@
     <ClCompile Include="Engine\RenderDevices\DX12\Private\DDSTextureLoader12.cpp" />
     <ClCompile Include="Engine\RenderDevices\DX12\Private\DX12Device.cpp" />
     <ClCompile Include="Engine\RenderDevices\DX12\Private\DX12Utility.cpp" />
+    <ClCompile Include="Engine\RenderDevices\GL4\Private\GL4Device.cpp" />
+    <ClCompile Include="Engine\RenderDevices\GL4\Private\GLUtility.cpp" />
+    <ClCompile Include="Engine\RenderDevices\GLES3\Private\GLES3Device.cpp" />
+    <ClCompile Include="Engine\RenderDevices\GLES3\Private\GLES3Utility.cpp" />
+    <ClCompile Include="Engine\RenderDevices\Metal3\Private\Metal3Device.cpp" />
+    <ClCompile Include="Engine\RenderDevices\Metal3\Private\Metal3Utility.cpp" />
+    <ClCompile Include="Engine\RenderDevices\Vulkan1\Private\Vulkan1Device.cpp" />
+    <ClCompile Include="Engine\RenderDevices\Vulkan1\Private\Vulkan1Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Frame\Public\Camera.h" />
@@ -73,6 +81,14 @@
     <ClInclude Include="Engine\RenderDevices\DX12\Public\DDSTextureLoader12.h" />
     <ClInclude Include="Engine\RenderDevices\DX12\Public\DX12Device.h" />
     <ClInclude Include="Engine\RenderDevices\DX12\Public\DX12Utility.h" />
+    <ClInclude Include="Engine\RenderDevices\GL4\Public\GL4Device.h" />
+    <ClInclude Include="Engine\RenderDevices\GL4\Public\GL4Utility.h" />
+    <ClInclude Include="Engine\RenderDevices\GLES3\Public\GLES3Device.h" />
+    <ClInclude Include="Engine\RenderDevices\GLES3\Public\GLES3Utility.h" />
+    <ClInclude Include="Engine\RenderDevices\Metal3\Public\Metal3Device.h" />
+    <ClInclude Include="Engine\RenderDevices\Metal3\Public\Metal3Utility.h" />
+    <ClInclude Include="Engine\RenderDevices\Vulkan1\Public\Vulkan1Device.h" />
+    <ClInclude Include="Engine\RenderDevices\Vulkan1\Public\Vulkan1Utility.h" />
     <ClInclude Include="Engine\Utility\Public\Math.h" />
     <ClInclude Include="Engine\Utility\Public\Prerequisites.h" />
     <ClInclude Include="Engine\Utility\Public\Singleton.h" />
