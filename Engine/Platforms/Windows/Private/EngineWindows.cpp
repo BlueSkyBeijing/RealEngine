@@ -23,22 +23,29 @@ int EngineWindows::Init()
 int EngineWindows::Tick()
 {
 #if WINDOWS_RENDER_DEVICE == USE_DX12
-	MSG Message = {};
+	//MSG Message = {};
 
-	if (PeekMessage(&Message, 0, 0, 0, PM_REMOVE))
-	{
-		TranslateMessage(&Message);
-		DispatchMessage(&Message);
+	//if (PeekMessage(&Message, 0, 0, 0, PM_REMOVE))
+	//{
+	//	TranslateMessage(&Message);
+	//	DispatchMessage(&Message);
 
-		if (Message.message == WM_QUIT)
-		{
-			GExit = true;
-		}
-	}
-	else
+	//	if (Message.message == WM_QUIT)
+	//	{
+	//		GExit = true;
+	//	}
+	//}
+	//else
+	//{
+	//	__super::Tick();
+	//}
+
+	static_cast<RenderWindowWindows*>(mRenderTargetMain)->Update();
+	if (!GExit)
 	{
 		__super::Tick();
 	}
+
 #else
 	static_cast<RenderWindowWindows*>(mRenderTargetMain)->Update();
 #endif

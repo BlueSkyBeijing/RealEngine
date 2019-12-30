@@ -86,10 +86,10 @@
       <Filter>RenderDevices\GL4\Private</Filter>
     </ClCompile>
     <ClCompile Include="Engine\RenderDevices\Metal3\Private\Metal3Device.cpp">
-      <Filter>RenderDevices\Metal1\Private</Filter>
+      <Filter>RenderDevices\Metal3\Private</Filter>
     </ClCompile>
     <ClCompile Include="Engine\RenderDevices\Metal3\Private\Metal3Utility.cpp">
-      <Filter>RenderDevices\Metal1\Private</Filter>
+      <Filter>RenderDevices\Metal3\Private</Filter>
     </ClCompile>
     <ClCompile Include="Engine\RenderDevices\Vulkan1\Private\Vulkan1Device.cpp">
       <Filter>RenderDevices\Vulkan1\Private</Filter>
@@ -205,10 +205,10 @@
       <Filter>RenderDevices\GLES3\Public</Filter>
     </ClInclude>
     <ClInclude Include="Engine\RenderDevices\Metal3\Public\Metal3Device.h">
-      <Filter>RenderDevices\Metal1\Public</Filter>
+      <Filter>RenderDevices\Metal3\Public</Filter>
     </ClInclude>
     <ClInclude Include="Engine\RenderDevices\Metal3\Public\Metal3Utility.h">
-      <Filter>RenderDevices\Metal1\Public</Filter>
+      <Filter>RenderDevices\Metal3\Public</Filter>
     </ClInclude>
     <ClInclude Include="Engine\RenderDevices\Vulkan1\Public\Vulkan1Device.h">
       <Filter>RenderDevices\Vulkan1\Public</Filter>
@@ -281,9 +281,6 @@
     <Filter Include="RenderDevices\Vulkan1">
       <UniqueIdentifier>{0cb6d633-a8f4-4dca-90b8-aaefd1a49645}</UniqueIdentifier>
     </Filter>
-    <Filter Include="RenderDevices\Metal1">
-      <UniqueIdentifier>{5907a0f4-c402-4464-ac0f-62defef2f3fd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="RenderDevices\GL4\Public">
       <UniqueIdentifier>{4d0cd112-59d2-4852-88c5-012baf96c93c}</UniqueIdentifier>
     </Filter>
@@ -296,17 +293,20 @@
     <Filter Include="RenderDevices\GLES3\Private">
       <UniqueIdentifier>{2dc9968d-cb46-42dc-957b-e5d40d896d26}</UniqueIdentifier>
     </Filter>
-    <Filter Include="RenderDevices\Metal1\Public">
-      <UniqueIdentifier>{c9f12245-ed8b-4a41-bec1-5c55c23ef84a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="RenderDevices\Metal1\Private">
-      <UniqueIdentifier>{74d12e67-fc01-4a43-9647-b9800e4f2c04}</UniqueIdentifier>
-    </Filter>
     <Filter Include="RenderDevices\Vulkan1\Public">
       <UniqueIdentifier>{6bcfb11e-4692-44c3-9d59-41a51c69d7e4}</UniqueIdentifier>
     </Filter>
     <Filter Include="RenderDevices\Vulkan1\Private">
       <UniqueIdentifier>{028fb127-c433-4f7b-8015-40cfcc96ce69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderDevices\Metal3">
+      <UniqueIdentifier>{5907a0f4-c402-4464-ac0f-62defef2f3fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderDevices\Metal3\Public">
+      <UniqueIdentifier>{c9f12245-ed8b-4a41-bec1-5c55c23ef84a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderDevices\Metal3\Private">
+      <UniqueIdentifier>{74d12e67-fc01-4a43-9647-b9800e4f2c04}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

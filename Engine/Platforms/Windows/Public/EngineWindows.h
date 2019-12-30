@@ -9,7 +9,7 @@
 
 #define USE_DX12 1
 #define USE_VULKAN 2
-#define WINDOWS_RENDER_DEVICE USE_VULKAN
+#define WINDOWS_RENDER_DEVICE USE_DX12
 
 class EngineWindows : public Engine, public Singleton<EngineWindows>
 {

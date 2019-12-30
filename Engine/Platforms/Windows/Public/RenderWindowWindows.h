@@ -1,7 +1,7 @@
 #pragma once
 #include"..\..\..\Frame\Public\RenderTarget.h"
 #if WINDOWS_RENDER_DEVICE == USE_VULKAN
-#include <GLFW/glfw3.h>
+#include <SDL.h>
 #endif
 
 class RenderWindowWindows : public IRenderTarget
@@ -15,14 +15,15 @@ public:
 	virtual int GetHeight() const override;
 
 	HWND GetRenderWindowHandle();
+	void Update();
 
 protected:
 	HWND  RenderWindowHandle;
 
 #if WINDOWS_RENDER_DEVICE == USE_VULKAN
-	GLFWwindow* mMainWindow;
+	//GLFWwindow* mMainWindow;
+	SDL_Window* mMainWindow;
 public:
-	void Update();
 #endif
 
 };
