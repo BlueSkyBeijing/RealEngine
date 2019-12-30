@@ -21,12 +21,6 @@ public:
 
 	virtual int Exit() override;
 
-	HINSTANCE GetInstanceHandle();
-	void SetInstanceHandle(HINSTANCE Instance);
-
-	LRESULT MessageProcess(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
 private:
-	HINSTANCE InstanceHandle;
 };
 

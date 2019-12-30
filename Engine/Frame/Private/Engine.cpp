@@ -2,11 +2,14 @@
 #include "..\Renderer\Public\Renderer.h"
 #include "..\Public\Globals.h"
 #include "..\..\Platforms\Windows\Public\RenderWindowWindows.h"
+#include <SDL.h>
 
 IDevice* Engine::Device = nullptr;
 
 int Engine::Init()
 {
+	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
+
 	return 0;
 }
 
@@ -15,6 +18,15 @@ int Engine::Tick()
 	if (mRenderer != nullptr)
 	{
 		mRenderer->Render();
+	}
+
+	SDL_Event evt;
+	if (SDL_PollEvent(&evt))
+	{
+		if (evt.type == SDL_QUIT)
+		{
+			GExit = true;
+		}
 	}
 
 	return 0;
@@ -36,6 +48,8 @@ int Engine::Exit()
 	{
 		delete Device;
 	}
+
+	SDL_Quit();
 
 	return 0;
 }
