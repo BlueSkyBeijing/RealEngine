@@ -35,6 +35,8 @@ public:
 	virtual int Init() override;
 	virtual int UnInit() override;
 
+	SDL_Window* GetWindow() const;
+
 protected:
 	SDL_Window* mWindow;
 };

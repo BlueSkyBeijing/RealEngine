@@ -12,7 +12,12 @@ public:
 
 	virtual int Tick() = 0;
 
+	virtual int Loop() = 0;
+
 	virtual int Exit() = 0;
+
+	virtual int Launch() = 0;
+
 };
 
 
@@ -24,7 +29,11 @@ public:
 
 	virtual int Tick() override;
 
+	virtual int Loop() override;
+
 	virtual int Exit() override;
+
+	virtual int Launch() override;
 
 	static IDevice* GetDevice();
 

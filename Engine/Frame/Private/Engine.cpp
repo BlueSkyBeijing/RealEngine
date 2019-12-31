@@ -32,6 +32,16 @@ int Engine::Tick()
 	return 0;
 }
 
+int Engine::Loop()
+{
+	while (!GExit)
+	{
+		Tick();
+	}
+
+	return 0;
+}
+
 int Engine::Exit()
 {
 	if (mRenderer != nullptr)
@@ -50,6 +60,17 @@ int Engine::Exit()
 	}
 
 	SDL_Quit();
+
+	return 0;
+}
+
+int Engine::Launch()
+{
+	Init();
+
+	Loop();
+
+	Exit();
 
 	return 0;
 }

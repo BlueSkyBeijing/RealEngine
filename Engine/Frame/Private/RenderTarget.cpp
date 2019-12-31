@@ -62,3 +62,8 @@ int RenderWindow::UnInit()
 
 	return 0;
 }
+
+SDL_Window* RenderWindow::GetWindow() const
+{
+	return mWindow;
+}

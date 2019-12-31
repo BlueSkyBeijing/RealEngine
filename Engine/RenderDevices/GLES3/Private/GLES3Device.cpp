@@ -20,6 +20,12 @@ int GLES3Device::Init()
 	return 0;
 }
 
+int GLES3Device::UnInit()
+{
+	return 0;
+
+}
+
 int GLES3Device::Draw()
 {
 

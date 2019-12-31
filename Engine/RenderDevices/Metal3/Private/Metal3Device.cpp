@@ -21,6 +21,11 @@ int Metal3Device::Init()
 	return 0;
 }
 
+int Metal3Device::UnInit()
+{
+	return 0;
+}
+
 int Metal3Device::Draw()
 {
 	return 0;

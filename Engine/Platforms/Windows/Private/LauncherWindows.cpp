@@ -8,14 +8,7 @@
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 	PSTR cmdLine, int showCmd)
 {
-	EngineWindows::GetInstance()->Init();
-
-	while (!GExit)
-	{
-		EngineWindows::GetInstance()->Tick();
-	}
-
-	EngineWindows::GetInstance()->Exit();
+	EngineWindows::GetInstance()->Launch();
 
 	return 0;
 }

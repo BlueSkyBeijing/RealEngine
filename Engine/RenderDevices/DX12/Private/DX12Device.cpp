@@ -386,6 +386,12 @@ int DX12Device::Init()
 	return 0;
 }
 
+int DX12Device::UnInit()
+{
+	return 0;
+
+}
+
 int DX12Device::Draw()
 {
 	mDX12CommandAllocator->Reset();

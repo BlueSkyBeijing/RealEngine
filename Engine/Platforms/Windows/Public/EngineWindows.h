@@ -4,12 +4,11 @@
 #include "..\..\..\Utility\Public\Singleton.h"
 #include "..\..\..\Frame\Public\RenderTarget.h"
 #include "..\..\..\Frame\Public\Engine.h"
+#include "..\..\..\Utility\Public\Prerequisites.h"
 
 #include <windows.h>
 
-#define USE_DX12 1
-#define USE_VULKAN 2
-#define WINDOWS_RENDER_DEVICE USE_DX12
+#define RENDER_DEVICE_USE RENDER_DEVICE_DX12
 
 class EngineWindows : public Engine, public Singleton<EngineWindows>
 {

@@ -15,6 +15,7 @@ public:
 	virtual ~Metal3Device();
 
 	virtual int Init() override;
+	virtual int UnInit() override;
 
 	virtual int Draw() override;
 
