@@ -103,6 +103,12 @@
     <ClCompile Include="Engine\RenderDevices\GLES3\Private\GLES3Utility.cpp">
       <Filter>RenderDevices\GLES3\Private</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Frame\Private\SceneObject.cpp">
+      <Filter>Frame\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Frame\Private\StaticMeshObject.cpp">
+      <Filter>Frame\Private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Frame\Public\Device.h">
@@ -215,6 +221,12 @@
     </ClInclude>
     <ClInclude Include="Engine\RenderDevices\Vulkan1\Public\Vulkan1Utility.h">
       <Filter>RenderDevices\Vulkan1\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Frame\Public\SceneObject.h">
+      <Filter>Frame\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Frame\Public\StaticMeshObject.h">
+      <Filter>Frame\Public</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
