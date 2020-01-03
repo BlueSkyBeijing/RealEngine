@@ -4,7 +4,7 @@
 #include "..\..\..\Platforms\Windows\Public\RenderWindowWindows.h"
 #include "..\..\..\Platforms\Windows\Public\WindowsUtility.h"
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 #if RENDER_DEVICE_USE == RENDER_DEVICE_GLES3
 #include <GLES3/gl3.h>
