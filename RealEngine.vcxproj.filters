@@ -109,6 +109,9 @@
     <ClCompile Include="Engine\Frame\Private\StaticMeshObject.cpp">
       <Filter>Frame\Private</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Frame\Renderer\Private\RayTracingRenderer.cpp">
+      <Filter>Frame\Renderer\Private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Frame\Public\Device.h">
@@ -228,6 +231,9 @@
     <ClInclude Include="Engine\Frame\Public\StaticMeshObject.h">
       <Filter>Frame\Public</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Frame\Renderer\Public\RayTracingRenderer.h">
+      <Filter>Frame\Renderer\Public</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Frame">
@@ -344,6 +350,9 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Engine\Shaders\ForwardShadingVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Engine\Shaders\LightingModel.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>
