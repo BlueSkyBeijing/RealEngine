@@ -21,7 +21,7 @@ int LightPrePassShadingRenderer::Render()
 	return 0;
 }
 
-bool LightPrePassShadingRenderer::RenderOpaquePass()
+bool LightPrePassShadingRenderer::RenderOpaque()
 {
 	return true;
 }

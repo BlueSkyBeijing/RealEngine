@@ -21,7 +21,7 @@ int TiledBasedDeferredShadingRenderer::Render()
 	return 0;
 }
 
-bool TiledBasedDeferredShadingRenderer::RenderOpaquePass()
+bool TiledBasedDeferredShadingRenderer::RenderOpaque()
 {
 	return true;
 }

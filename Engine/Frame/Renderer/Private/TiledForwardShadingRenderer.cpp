@@ -21,7 +21,7 @@ int TiledForwardShadingRenderer::Render()
 	return 0;
 }
 
-bool TiledForwardShadingRenderer::RenderOpaquePass()
+bool TiledForwardShadingRenderer::RenderOpaque()
 {
 	return true;
 }

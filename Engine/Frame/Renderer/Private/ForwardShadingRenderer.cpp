@@ -21,7 +21,7 @@ int ForwardShadingRenderer::Render()
 	return 0;
 }
 
-bool ForwardShadingRenderer::RenderOpaquePass()
+bool ForwardShadingRenderer::RenderOpaque()
 {
 	return true;
 }

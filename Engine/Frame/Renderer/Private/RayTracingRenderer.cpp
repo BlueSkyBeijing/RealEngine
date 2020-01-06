@@ -21,7 +21,7 @@ int RayTracingRenderer::Render()
 	return 0;
 }
 
-bool RayTracingRenderer::RenderOpaquePass()
+bool RayTracingRenderer::RenderOpaque()
 {
 	return true;
 }

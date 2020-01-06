@@ -10,7 +10,7 @@ public:
 
 	virtual int Render() override;
 
-	bool RenderOpaquePass();
+	bool RenderOpaque();
 
 	bool RenderTranslucency();
 };

@@ -21,7 +21,7 @@ int DeferredShadingRenderer::Render()
 	return 0;
 }
 
-bool DeferredShadingRenderer::RenderOpaquePass()
+bool DeferredShadingRenderer::RenderOpaque()
 {
 	return true;
 }
