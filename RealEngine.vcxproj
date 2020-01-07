@@ -56,6 +56,7 @@
     <ClCompile Include="Engine\RenderDevices\Metal3\Private\Metal3Utility.cpp" />
     <ClCompile Include="Engine\RenderDevices\Vulkan1\Private\Vulkan1Device.cpp" />
     <ClCompile Include="Engine\RenderDevices\Vulkan1\Private\Vulkan1Utility.cpp" />
+    <ClCompile Include="Engine\Utility\Private\MeshUtility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Frame\Public\Camera.h" />
@@ -96,6 +97,7 @@
     <ClInclude Include="Engine\RenderDevices\Vulkan1\Public\Vulkan1Device.h" />
     <ClInclude Include="Engine\RenderDevices\Vulkan1\Public\Vulkan1Utility.h" />
     <ClInclude Include="Engine\Utility\Public\Math.h" />
+    <ClInclude Include="Engine\Utility\Public\MeshUtility.h" />
     <ClInclude Include="Engine\Utility\Public\Prerequisites.h" />
     <ClInclude Include="Engine\Utility\Public\Singleton.h" />
   </ItemGroup>

@@ -112,6 +112,9 @@
     <ClCompile Include="Engine\Frame\Renderer\Private\RayTracingRenderer.cpp">
       <Filter>Frame\Renderer\Private</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Utility\Private\MeshUtility.cpp">
+      <Filter>Utility\Private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Frame\Public\Device.h">
@@ -233,6 +236,9 @@
     </ClInclude>
     <ClInclude Include="Engine\Frame\Renderer\Public\RayTracingRenderer.h">
       <Filter>Frame\Renderer\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Utility\Public\MeshUtility.h">
+      <Filter>Utility\Public</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
