@@ -10,6 +10,8 @@ int Engine::Init()
 {
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 
+	LoadScene("DefualtScene");
+
 	return 0;
 }
 
@@ -83,4 +85,9 @@ IDevice* Engine::GetDevice()
 IRenderTarget* Engine::GetRenderTarget()
 {
 	return mRenderTargetMain;
+}
+
+bool Engine::LoadScene(std::string FileName)
+{
+	return true;
 }

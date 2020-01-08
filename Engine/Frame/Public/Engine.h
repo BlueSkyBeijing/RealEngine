@@ -3,7 +3,9 @@
 #include "..\Public\Device.h"
 #include "..\..\Utility\Public\Singleton.h"
 #include "..\Public\RenderTarget.h"
+#include "..\Public\Scene.h"
 #include <windows.h>
+#include <string>
 
 class IEngine
 {
@@ -39,9 +41,12 @@ public:
 
 	IRenderTarget* GetRenderTarget();
 
+	bool LoadScene(std::string FileName);
+
 protected:
 	static IDevice* Device;
 	IRenderer* mRenderer;
 	IRenderTarget* mRenderTargetMain;
+	IScene* mCurrentScene;
 };
 
