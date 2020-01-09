@@ -2,5 +2,5 @@
 
 int Scene::Load()
 {
-
+	return 0;
 }

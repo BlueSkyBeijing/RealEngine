@@ -3,7 +3,7 @@
 #include "Vulkan1Utility.h"
 #include <vulkan/vulkan.h>
 
-class Vulkan1Device : public IDevice
+class Vulkan1Device : public Device
 {
 public:
 	Vulkan1Device();

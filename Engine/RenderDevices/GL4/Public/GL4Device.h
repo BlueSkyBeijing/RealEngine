@@ -10,7 +10,7 @@
 #include <fstream>
 #include <array>
 
-class GL4Device : public IDevice
+class GL4Device : public Device
 {
 public:
 	GL4Device();

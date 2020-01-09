@@ -8,7 +8,7 @@
 #include <fstream>
 #include <array>
 
-class Metal3Device : public IDevice
+class Metal3Device : public Device
 {
 public:
 	Metal3Device();

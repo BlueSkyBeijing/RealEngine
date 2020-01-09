@@ -18,7 +18,7 @@
 
 using namespace DirectX;
 
-class DX12Device : public IDevice
+class DX12Device : public Device
 {
 public:
 	DX12Device();

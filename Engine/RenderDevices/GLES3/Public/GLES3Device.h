@@ -9,7 +9,7 @@
 #include <array>
 
 
-class GLES3Device : public IDevice
+class GLES3Device : public Device
 {
 public:
 	GLES3Device();
