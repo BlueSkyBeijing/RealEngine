@@ -21,17 +21,17 @@ int DeferredShadingRenderer::Render()
 	return 0;
 }
 
-bool DeferredShadingRenderer::RenderOpaque()
+bool DeferredShadingRenderer::renderOpaque()
 {
 	return true;
 }
 
-bool DeferredShadingRenderer::RenderLights()
+bool DeferredShadingRenderer::renderLights()
 {
 	return true;
 }
 
-bool DeferredShadingRenderer::RenderTranslucency()
+bool DeferredShadingRenderer::renderTranslucency()
 {
 	return true;
 }

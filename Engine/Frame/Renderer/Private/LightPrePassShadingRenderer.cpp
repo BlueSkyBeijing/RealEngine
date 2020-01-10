@@ -21,17 +21,17 @@ int LightPrePassShadingRenderer::Render()
 	return 0;
 }
 
-bool LightPrePassShadingRenderer::RenderOpaque()
+bool LightPrePassShadingRenderer::renderOpaque()
 {
 	return true;
 }
 
-bool LightPrePassShadingRenderer::RenderLights()
+bool LightPrePassShadingRenderer::renderLights()
 {
 	return true;
 }
 
-bool LightPrePassShadingRenderer::RenderTranslucency()
+bool LightPrePassShadingRenderer::renderTranslucency()
 {
 	return true;
 }

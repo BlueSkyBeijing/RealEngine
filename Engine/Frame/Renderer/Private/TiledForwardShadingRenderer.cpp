@@ -21,12 +21,12 @@ int TiledForwardShadingRenderer::Render()
 	return 0;
 }
 
-bool TiledForwardShadingRenderer::RenderOpaque()
+bool TiledForwardShadingRenderer::renderOpaque()
 {
 	return true;
 }
 
-bool TiledForwardShadingRenderer::RenderTranslucency()
+bool TiledForwardShadingRenderer::renderTranslucency()
 {
 	return true;
 }

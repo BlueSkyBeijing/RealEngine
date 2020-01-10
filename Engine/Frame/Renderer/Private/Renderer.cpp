@@ -14,6 +14,8 @@ Renderer::~Renderer()
 
 int Renderer::Render()
 {
+	computeVisibility();
+
 	IDevice* Device = Engine::GetDevice();
 	if (Device != nullptr)
 	{
@@ -23,7 +25,7 @@ int Renderer::Render()
 	return 0;
 }
 
-void Renderer::ComputeVisibility()
+void Renderer::computeVisibility()
 {
 
 }

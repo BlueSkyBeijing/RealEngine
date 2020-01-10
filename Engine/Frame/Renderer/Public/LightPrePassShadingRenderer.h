@@ -10,9 +10,10 @@ public:
 
 	virtual int Render() override;
 
-	bool RenderOpaque();
+protected:
+	bool renderOpaque();
 
-	bool RenderLights();
+	bool renderLights();
 
-	bool RenderTranslucency();
+	bool renderTranslucency();
 };

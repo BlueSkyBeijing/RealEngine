@@ -21,17 +21,17 @@ int TiledBasedDeferredShadingRenderer::Render()
 	return 0;
 }
 
-bool TiledBasedDeferredShadingRenderer::RenderOpaque()
+bool TiledBasedDeferredShadingRenderer::renderOpaque()
 {
 	return true;
 }
 
-bool TiledBasedDeferredShadingRenderer::RenderLights()
+bool TiledBasedDeferredShadingRenderer::renderLights()
 {
 	return true;
 }
 
-bool TiledBasedDeferredShadingRenderer::RenderTranslucency()
+bool TiledBasedDeferredShadingRenderer::renderTranslucency()
 {
 	return true;
 }

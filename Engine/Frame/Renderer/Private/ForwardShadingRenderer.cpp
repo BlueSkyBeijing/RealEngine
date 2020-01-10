@@ -14,19 +14,29 @@ ForwardShadingRenderer::~ForwardShadingRenderer()
 
 int ForwardShadingRenderer::Render()
 {
-	IDevice* Device = Engine::GetDevice();
-	assert(Device != nullptr);
-	Device->Draw();
+	computeVisibility();
+
+	renderOpaque();
+
+	renderTranslucency();
 
 	return 0;
 }
 
-bool ForwardShadingRenderer::RenderOpaque()
+bool ForwardShadingRenderer::renderOpaque()
 {
+	IDevice* Device = Engine::GetDevice();
+	assert(Device != nullptr);
+	Device->Draw();
+
 	return true;
 }
 
-bool ForwardShadingRenderer::RenderTranslucency()
+bool ForwardShadingRenderer::renderTranslucency()
 {
+	IDevice* Device = Engine::GetDevice();
+	assert(Device != nullptr);
+	Device->Draw();
+
 	return true;
 }

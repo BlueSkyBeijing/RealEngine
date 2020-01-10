@@ -18,6 +18,26 @@ struct Vertex
 	XMFLOAT2 TexCoord;
 };
 
+struct ObjectConstants
+{
+	DirectX::XMFLOAT4X4 World;
+};
+
+struct PassConstants
+{
+	DirectX::XMFLOAT4X4 View;
+	DirectX::XMFLOAT4X4 Proj;
+	DirectX::XMFLOAT4X4 ViewProj;
+	DirectX::XMFLOAT3 EyePosW;
+};
+
+struct MaterialConstants
+{
+	DirectX::XMFLOAT4 DiffuseAlbedo;
+	DirectX::XMFLOAT3 FresnelR0;
+	float Roughness;
+};
+
 DX12Device::DX12Device()
 {
 

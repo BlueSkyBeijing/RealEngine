@@ -6,7 +6,7 @@ public:
 	virtual int Render() = 0;
 
 protected:
-	virtual void ComputeVisibility() = 0;
+	virtual void computeVisibility() = 0;
 };
 
 
@@ -19,6 +19,6 @@ public:
 	virtual int Render() override;
 
 protected:
-	virtual void ComputeVisibility() override;
+	virtual void computeVisibility() override;
 
 };

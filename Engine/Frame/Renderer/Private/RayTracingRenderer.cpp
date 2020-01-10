@@ -21,12 +21,12 @@ int RayTracingRenderer::Render()
 	return 0;
 }
 
-bool RayTracingRenderer::RenderOpaque()
+bool RayTracingRenderer::renderOpaque()
 {
 	return true;
 }
 
-bool RayTracingRenderer::RenderTranslucency()
+bool RayTracingRenderer::renderTranslucency()
 {
 	return true;
 }

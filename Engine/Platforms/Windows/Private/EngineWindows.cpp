@@ -1,5 +1,5 @@
 #include "..\Public\EngineWindows.h"
-#include "..\..\..\Frame\Renderer\Public\Renderer.h"
+#include "..\..\..\Frame\Renderer\Public\ForwardShadingRenderer.h"
 #include "..\..\..\Frame\Public\Globals.h"
 #include "..\Public\RenderWindowWindows.h"
 #include "..\..\..\RenderDevices\DX12\Public\DX12Device.h"
@@ -21,7 +21,7 @@ int EngineWindows::Init()
 #if RENDER_DEVICE_USE == RENDER_DEVICE_DX12
 	Device = new DX12Device();
 	Device->Init();
-	mRenderer = new Renderer();
+	mRenderer = new ForwardShadingRenderer();
 #elif RENDER_DEVICE_USE == RENDER_DEVICE_VULKAN1
 	Device = new Vulkan1Device();
 	Device->Init();
