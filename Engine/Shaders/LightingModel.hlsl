@@ -43,6 +43,13 @@ float3 BlinnPhong(float3 normal, float3 lightDir, float3 lightColor, float3 spec
 	return lightColor.rgb * NdotL) + (lightColor.rgb * specularColor.rgb * spec);
 }
 
+// BRDF
+// Empirical Models
+// Data-driven Models
+// Physical-based Models
+
+// Helmholtz Recoprpcity Rule
+
 // Physically based shading model
 // parameterized with the below options
 

@@ -25,6 +25,11 @@ int Renderer::Render()
 	return 0;
 }
 
+int Renderer::clear()
+{
+	return 0;
+}
+
 void Renderer::computeVisibility()
 {
 

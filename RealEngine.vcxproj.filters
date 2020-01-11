@@ -115,6 +115,9 @@
     <ClCompile Include="Engine\Utility\Private\MeshUtility.cpp">
       <Filter>Utility\Private</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Frame\Private\Vertex.cpp">
+      <Filter>Frame\Private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Frame\Public\Device.h">
@@ -239,6 +242,9 @@
     </ClInclude>
     <ClInclude Include="Engine\Utility\Public\MeshUtility.h">
       <Filter>Utility\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Frame\Public\Vertex.h">
+      <Filter>Frame\Public</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

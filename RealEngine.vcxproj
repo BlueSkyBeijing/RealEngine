@@ -34,6 +34,7 @@
     <ClCompile Include="Engine\Frame\Private\Shader.cpp" />
     <ClCompile Include="Engine\Frame\Private\StaticMeshObject.cpp" />
     <ClCompile Include="Engine\Frame\Private\Texture.cpp" />
+    <ClCompile Include="Engine\Frame\Private\Vertex.cpp" />
     <ClCompile Include="Engine\Frame\Renderer\Private\DeferredShadingRenderer.cpp" />
     <ClCompile Include="Engine\Frame\Renderer\Private\ForwardShadingRenderer.cpp" />
     <ClCompile Include="Engine\Frame\Renderer\Private\LightPrePassShadingRenderer.cpp" />
@@ -74,6 +75,7 @@
     <ClInclude Include="Engine\Frame\Public\Shader.h" />
     <ClInclude Include="Engine\Frame\Public\StaticMeshObject.h" />
     <ClInclude Include="Engine\Frame\Public\Texture.h" />
+    <ClInclude Include="Engine\Frame\Public\Vertex.h" />
     <ClInclude Include="Engine\Frame\Renderer\Public\DeferredShadingRenderer.h" />
     <ClInclude Include="Engine\Frame\Renderer\Public\ForwardShadingRenderer.h" />
     <ClInclude Include="Engine\Frame\Renderer\Public\LightPrePassShadingRenderer.h" />

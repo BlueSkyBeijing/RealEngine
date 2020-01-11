@@ -15,6 +15,8 @@ template<> EngineWindows* EngineWindows::Singleton<EngineWindows>::Instance = nu
 
 int EngineWindows::Init()
 {
+	__super::Init();
+
 	mRenderTargetMain = new RenderWindowWindows();
 	mRenderTargetMain->Init();
 
