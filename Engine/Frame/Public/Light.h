@@ -18,3 +18,20 @@ protected:
 	Eigen::Vector3f Position;
 	Eigen::Vector3f Direction;
 };
+
+class DirectonalLight : public Light
+{
+
+public:
+
+	virtual Eigen::Vector3f GetDirection() override;
+
+protected:
+
+	Eigen::Vector3f Direction;
+
+}
+
+class PointLight : public Light
+{
+}
