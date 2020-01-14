@@ -1,6 +1,7 @@
 #pragma once
 #include "..\Public\SceneObject.h"
 #include "..\Public\Camera.h"
+#include "..\Public\Light.h"
 
 class IScene
 {
@@ -17,4 +18,5 @@ public:
 
 protected:
 	ICamera* CurrentCamera;
+	DirectonalLight* MainDirectonalLight;
 };

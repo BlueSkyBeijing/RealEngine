@@ -2,8 +2,11 @@
 
 int Scene::Load()
 {
-	Camera* MainCamera = new Camera(Eigen::Vector3f(0.0f, 0.0f, 0.0f), Eigen::Vector3f(-1.0f, -1.0f, -1.0f), Eigen::Vector3f(0.0f, 0.0f, 1.0f));
-	CurrentCamera = MainCamera;
+	Camera* mainCamera = new Camera(Eigen::Vector3f(0.0f, 0.0f, 0.0f), Eigen::Vector3f(-1.0f, -1.0f, -1.0f), Eigen::Vector3f(0.0f, 0.0f, 1.0f));
+	CurrentCamera = mainCamera;
+	DirectonalLight* directonalLight = new DirectonalLight();
+	directonalLight->SetDirection(Eigen::Vector3f(-1.0f, -1.0f, -1.0f));
+	MainDirectonalLight = directonalLight;
 	return 0;
 }
 
