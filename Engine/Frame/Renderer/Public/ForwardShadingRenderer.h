@@ -11,6 +11,7 @@ public:
 	virtual int Render() override;
 
 protected:
+	bool renderShadowDepth();
 	bool renderOpaque();
 
 	bool renderTranslucency();

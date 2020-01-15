@@ -16,11 +16,22 @@ int ForwardShadingRenderer::Render()
 {
 	computeVisibility();
 
+	renderShadowDepth();
+
 	renderOpaque();
 
 	renderTranslucency();
 
 	return 0;
+}
+
+bool ForwardShadingRenderer::renderShadowDepth()
+{
+	IDevice* Device = Engine::GetDevice();
+	assert(Device != nullptr);
+	Device->Draw();
+
+	return true;
 }
 
 bool ForwardShadingRenderer::renderOpaque()

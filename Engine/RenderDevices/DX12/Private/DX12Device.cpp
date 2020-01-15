@@ -222,6 +222,8 @@ int DX12Device::Init()
 
 	mIndexCount = (UINT)indexes.size();
 
+	IScene* CurrentScene = EngineWindows::GetInstance()->GetCurrentScene();
+	
 	// Build view matrix.
 	XMVECTOR pos = XMVectorSet(5.0f, 5.0f, 5.0f, 1.0f);
 	XMVECTOR target = XMVectorZero();

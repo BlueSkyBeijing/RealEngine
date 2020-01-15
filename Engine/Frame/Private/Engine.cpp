@@ -87,6 +87,11 @@ IRenderTarget* Engine::GetRenderTarget()
 	return mRenderTargetMain;
 }
 
+IScene* Engine::GetCurrentScene()
+{
+	return mCurrentScene;
+}
+
 bool Engine::LoadScene(std::string FileName)
 {
 	return true;

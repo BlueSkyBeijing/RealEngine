@@ -39,6 +39,8 @@ public:
 
 	static IDevice* GetDevice();
 
+	IScene* GetCurrentScene();
+
 	IRenderTarget* GetRenderTarget();
 
 	bool LoadScene(std::string FileName);
