@@ -223,11 +223,14 @@ int DX12Device::Init()
 	mIndexCount = (UINT)indexes.size();
 
 	IScene* CurrentScene = EngineWindows::GetInstance()->GetCurrentScene();
-	
+	ICamera* CurrentCamera = CurrentScene->GetCurrentCamera();
+	Eigen::Vector3f CameraPos = CurrentCamera->GetPosition();
+	Eigen::Vector3f CameraUp = CurrentCamera->GetUp();
+	Eigen::Vector3f CameraDirection = CurrentCamera->GetDirection();
 	// Build view matrix.
-	XMVECTOR pos = XMVectorSet(5.0f, 5.0f, 5.0f, 1.0f);
+	XMVECTOR pos = XMVectorSet(CameraPos.x(), CameraPos.y(), CameraPos.z(), 1.0f);
 	XMVECTOR target = XMVectorZero();
-	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	XMVECTOR up = XMVectorSet(CameraUp.x(), CameraUp.y(), CameraUp.z(), 0.0f);
 
 	XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
 	XMStoreFloat4x4(&mViewMatrix, view);

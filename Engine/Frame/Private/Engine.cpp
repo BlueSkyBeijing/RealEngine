@@ -94,5 +94,7 @@ IScene* Engine::GetCurrentScene()
 
 bool Engine::LoadScene(std::string FileName)
 {
+	mCurrentScene = new Scene();
+	mCurrentScene->Load();
 	return true;
 }
