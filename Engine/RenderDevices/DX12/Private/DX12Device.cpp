@@ -417,6 +417,16 @@ int DX12Device::UnInit()
 
 }
 
+int DX12Device::Clear()
+{
+	// Clear color and depth stencil
+	float ClearColor[] = { 0.690196097f, 0.768627524f, 0.870588303f, 1.000000000f };
+	mDX12CommandList->ClearRenderTargetView(GetBackBufferView(), ClearColor, 0, nullptr);
+	mDX12CommandList->ClearDepthStencilView(GetDepthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
+
+	return 0;
+}
+
 int DX12Device::Draw()
 {
 	mDX12CommandAllocator->Reset();

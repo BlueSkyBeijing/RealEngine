@@ -14,3 +14,8 @@ int Device::Draw()
 {
 	return 0;
 }
+
+int Device::Clear()
+{
+	return 0;
+}
