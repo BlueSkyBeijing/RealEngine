@@ -27,6 +27,15 @@ int ForwardShadingRenderer::Render()
 
 bool ForwardShadingRenderer::renderShadowDepth()
 {
+	// Compute visual objects in shadow view
+
+	// Construct shadow view project matrix
+
+	// Set shadow depth render target
+
+	// Clear depth
+
+	// Render depth
 	IDevice* Device = Engine::GetDevice();
 	assert(Device != nullptr);
 	Device->Draw();

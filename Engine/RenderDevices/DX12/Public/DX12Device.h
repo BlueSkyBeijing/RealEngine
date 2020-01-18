@@ -26,7 +26,7 @@ public:
 
 	virtual int Init() override;
 	virtual int UnInit() override;
-
+	virtual int Clear() override;
 	virtual int Draw() override;
 
 protected:
