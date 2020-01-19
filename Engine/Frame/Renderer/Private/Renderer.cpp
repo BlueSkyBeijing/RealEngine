@@ -14,6 +14,8 @@ Renderer::~Renderer()
 
 int Renderer::Render()
 {
+	clear();
+
 	computeVisibility();
 
 	IDevice* Device = Engine::GetDevice();
