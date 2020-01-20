@@ -22,6 +22,11 @@ int ForwardShadingRenderer::Render()
 
 	renderTranslucency();
 
+// Postprocessing
+// Bloom
+// 
+
+
 	return 0;
 }
 
