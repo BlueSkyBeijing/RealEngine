@@ -2,20 +2,25 @@
 
 int Texture::Load()
 {
-  return 0;
+    return 0;
 }
 
-const int GetWidth()
+const int Texture::GetWidth() const
 {
-  return Width;
+    return mWidth;
 }
 
-const int GetHeight()
+const int Texture::GetHeight() const
 {
-  return Height;
+    return mHeight;
 }
 
-const int GetFormat()
+const PixelFormat Texture::GetPixelFormat() const
 {
-  return Format;
+    return mPixelFormat;
+}
+
+const TextureFileFormat Texture::GetTextureFileFormat() const
+{
+    return mTextureFileFormat;
 }
