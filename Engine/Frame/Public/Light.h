@@ -11,7 +11,7 @@ public:
 class Light : public ILight
 {
 public:
-	virtual Eigen::Vector3f GetColor() override;
+	virtual const Eigen::Vector3f& GetColor() const override;
 protected:
 	Eigen::Vector3f Color;
 };
@@ -19,7 +19,7 @@ protected:
 class DirectonalLight : public Light
 {
 public:
-	Eigen::Vector3f GetDirection();
+	const Eigen::Vector3f& GetDirection() const;
 	void SetDirection(Eigen::Vector3f newdirection);
 
 protected:
@@ -29,7 +29,7 @@ protected:
 class PointLight : public Light
 {
 public:
-	Eigen::Vector3f GetPosition();
+	const Eigen::Vector3f& GetPosition() const;
 
 protected:
 	Eigen::Vector3f Position;
@@ -38,8 +38,8 @@ protected:
 class SpotLight : public Light
 {
 public:
-	Eigen::Vector3f GetPosition();
-	Eigen::Vector3f GetDirection();
+	const Eigen::Vector3f& GetPosition() const;
+	const Eigen::Vector3f& GetDirection() const;
 
 protected:
 	Eigen::Vector3f Position;
