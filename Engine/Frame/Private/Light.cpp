@@ -1,11 +1,11 @@
 #include "..\Public\Light.h"
 
-Eigen::Vector3f Light::GetColor()
+const Eigen::Vector3f& Light::GetColor() const
 {
 	return Color;
 }
 
-Eigen::Vector3f DirectonalLight::GetDirection()
+const Eigen::Vector3f& DirectonalLight::GetDirection() const
 {
 	return Direction;
 }
@@ -15,17 +15,17 @@ void DirectonalLight::SetDirection(Eigen::Vector3f newdirection)
 	Direction = newdirection;
 }
 
-Eigen::Vector3f PointLight::GetPosition()
+const Eigen::Vector3f& PointLight::GetPosition() const
 {
 	return Position;
 }
 
-Eigen::Vector3f SpotLight::GetDirection()
+const Eigen::Vector3f& SpotLight::GetDirection() const
 {
 	return Direction;
 }
 
-Eigen::Vector3f SpotLight::GetPosition()
+const Eigen::Vector3f& SpotLight::GetPosition() const
 {
 	return Position;
 }
