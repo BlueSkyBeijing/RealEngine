@@ -48,6 +48,26 @@ float3 BlinnPhong(float3 normal, float3 lightDir, float3 lightColor, float3 spec
 // Data-driven Models
 // Physical-based Models
 
+// Diffuse BRDF
+// Lambert
+
+// Specular BRDF
+// Cook-Torrance BRDF
+
+// Specular distribution
+// Trowbridge-Reitz (GGX)
+
+// Geometric shadowing
+// Schlick
+
+// Fresnel
+// Schlick
+
+
+// Environment BRDF
+
+
+
 // Helmholtz Recoprpcity Rule
 
 // Physically based shading model
