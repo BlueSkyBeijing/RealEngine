@@ -30,7 +30,6 @@ public:
 	virtual int Draw() override;
 	virtual int SetTarget() override;
 	virtual int SetPipelineState() override;
-	virtual int Draw() override; 
 	virtual int Present() override;
 
 protected:
