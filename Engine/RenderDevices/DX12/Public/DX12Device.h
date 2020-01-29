@@ -28,6 +28,10 @@ public:
 	virtual int UnInit() override;
 	virtual int Clear() override;
 	virtual int Draw() override;
+	virtual int SetTarget() override;
+	virtual int SetPipelineState() override;
+	virtual int Draw() override; 
+	virtual int Present() override;
 
 protected:
 	void CreateDevice();
