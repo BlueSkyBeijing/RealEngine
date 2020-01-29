@@ -482,6 +482,24 @@ int DX12Device::Draw()
 	return 0;
 }
 
+void DX12Device::SetTarget()
+{
+	return 0;
+}
+
+void DX12Device::SetPipelineState()
+{
+	return 0;
+}
+
+void DX12Device::Present()
+{
+	// Present
+	THROW_IF_FAILED(mDXGISwapChain->Present(0, 0));
+
+	return 0;
+}
+
 void DX12Device::CreateDevice()
 {
 	// Create DXGI factory
