@@ -215,3 +215,47 @@ float3 F_Schlick(float3 SpecularColor, float VoH)
 	return saturate(50.0 * SpecularColor.g) * Fc + (1 - Fc) * SpecularColor;
 
 }
+
+//---------------
+// EnvBRDF
+//---------------
+
+Texture2D		PreIntegratedGF;
+SamplerState	PreIntegratedGFSampler;
+
+half3 EnvBRDF( half3 SpecularColor, half Roughness, half NoV )
+{
+	// Importance sampled preintegrated G * F
+	float2 AB = Texture2DSampleLevel( PreIntegratedGF, PreIntegratedGFSampler, float2( NoV, Roughness ), 0 ).rg;
+
+	// Anything less than 2% is physically impossible and is instead considered to be shadowing 
+	float3 GF = SpecularColor * AB.x + saturate( 50.0 * SpecularColor.g ) * AB.y;
+	return GF;
+}
+
+half3 EnvBRDFApprox( half3 SpecularColor, half Roughness, half NoV )
+{
+	// [ Lazarov 2013, "Getting More Physical in Call of Duty: Black Ops II" ]
+	// Adaptation to fit our G term.
+	const half4 c0 = { -1, -0.0275, -0.572, 0.022 };
+	const half4 c1 = { 1, 0.0425, 1.04, -0.04 };
+	half4 r = Roughness * c0 + c1;
+	half a004 = min( r.x * r.x, exp2( -9.28 * NoV ) ) * r.x + r.y;
+	half2 AB = half2( -1.04, 1.04 ) * a004 + r.zw;
+
+	// Anything less than 2% is physically impossible and is instead considered to be shadowing
+	// Note: this is needed for the 'specular' show flag to work, since it uses a SpecularColor of 0
+	AB.y *= saturate( 50.0 * SpecularColor.g );
+
+	return SpecularColor * AB.x + AB.y;
+}
+
+half EnvBRDFApproxNonmetal( half Roughness, half NoV )
+{
+	// Same as EnvBRDFApprox( 0.04, Roughness, NoV )
+	const half2 c0 = { -1, -0.0275 };
+	const half2 c1 = { 1, 0.0425 };
+	half2 r = Roughness * c0 + c1;
+	return min( r.x * r.x, exp2( -9.28 * NoV ) ) * r.x + r.y;
+}
+
