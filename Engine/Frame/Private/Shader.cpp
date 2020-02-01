@@ -5,7 +5,7 @@ int Shader::Load()
 	return 0;
 }
 
-int Shader::Compile()
+int Shader::Combline()
 {
 	return 0;
 }
@@ -15,7 +15,7 @@ const std::string& Shader::GetName() const
 	return Name;
 }
 
-const Shader GetType() const
+const ShaderType Shader::GetType() const
 {
 	return Type;
 }

@@ -19,7 +19,7 @@ public:
 class Vertex : public IVertex
 {
 public:
-	Vertex(Eigen::Vector3f inPos)
+	Vertex(Eigen::Vector3f inPos);
 protected:
 	Eigen::Vector3f Pos;
 	VertexLayout Layout;

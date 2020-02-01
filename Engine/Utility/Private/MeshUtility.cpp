@@ -6,7 +6,7 @@ bool MeshUtility::CreateCube(ManualMesh& outMesh, float SideSize)
 	std::vector<Vertex> VertexData;
 	std::vector <VertexIndex> IndexData;
 
-	outMesh.FillData();
+	outMesh.FillData(VertexData, IndexData);
 
 	return true;
 }

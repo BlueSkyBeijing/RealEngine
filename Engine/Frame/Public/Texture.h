@@ -3,12 +3,12 @@
 enum PixelFormat
 {
 	R8G8B8,
-}
+};
 
 enum TextureFileFormat
 {
 	TGA,
-}
+};
 
 class ITexture
 {
@@ -30,7 +30,7 @@ public:
 	virtual const TextureFileFormat GetTextureFileFormat() const = 0;
 protected:
 	int mWidth;
-	int mHight;
+	int mHeight;
 	PixelFormat mPixelFormat;
 	TextureFileFormat mTextureFileFormat;
 };

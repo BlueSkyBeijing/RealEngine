@@ -482,17 +482,17 @@ int DX12Device::Draw()
 	return 0;
 }
 
-void DX12Device::SetTarget()
+int DX12Device::SetTarget()
 {
 	return 0;
 }
 
-void DX12Device::SetPipelineState()
+int DX12Device::SetPipelineState()
 {
 	return 0;
 }
 
-void DX12Device::Present()
+int DX12Device::Present()
 {
 	// Present
 	THROW_IF_FAILED(mDXGISwapChain->Present(0, 0));

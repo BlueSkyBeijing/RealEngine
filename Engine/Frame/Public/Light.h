@@ -5,7 +5,7 @@
 class ILight
 {
 public:
-	virtual Eigen::Vector3f GetColor() = 0;
+	virtual const Eigen::Vector3f& GetColor() const = 0;
 };
 
 class Light : public ILight
