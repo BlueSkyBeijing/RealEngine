@@ -11,7 +11,6 @@
 #include <DirectXColors.h>
 
 #include <assert.h>
-#include <atlstr.h >
 #include <comdef.h>
 #include <fstream>
 #include <array>
