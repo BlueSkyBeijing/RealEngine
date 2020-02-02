@@ -1,5 +1,21 @@
 #pragma once
 
+class ISamplerState
+{
+};
+
+class IRasterizerState
+{
+};
+
+class IDepthStencilState
+{
+};
+
+class IBlendState
+{
+};
+
 class IDevice
 {
 public:
