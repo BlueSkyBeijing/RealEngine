@@ -2,6 +2,17 @@
 #include "..\..\Public\Engine.h"
 #include <assert.h>
 
+
+int RenderCommandList::Flush()
+{
+	return 0;
+}
+
+int RenderCommandList::reset()
+{
+	return 0;
+}
+
 Renderer::Renderer()
 {
 

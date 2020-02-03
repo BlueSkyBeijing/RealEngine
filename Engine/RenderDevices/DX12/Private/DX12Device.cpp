@@ -38,6 +38,16 @@ struct MaterialConstants
 	float Roughness;
 };
 
+int DX12RenderCommandList::Flush()
+{
+	return 0;
+}
+
+int DX12RenderCommandList::reset()
+{
+	return 0;
+}
+
 DX12Device::DX12Device()
 {
 

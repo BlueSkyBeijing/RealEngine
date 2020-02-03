@@ -1,5 +1,7 @@
 #pragma once
 #include "..\..\..\Frame\Public\Device.h"
+#include "..\..\..\Frame\Renderer\Public\Renderer.h"
+
 #include "d3dx12.h"
 #include "DX12Utility.h"
 
@@ -16,6 +18,15 @@
 #include <array>
 
 using namespace DirectX;
+
+class DX12RenderCommandList : public RenderCommandList
+{
+public:
+	virtual int Flush() override;
+
+protected:
+	virtual int reset() override;
+};
 
 class DX12Device : public Device
 {

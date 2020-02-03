@@ -1,5 +1,23 @@
 #pragma once
 
+class IRenderCommandList
+{
+public:
+	virtual int Flush() = 0;
+
+protected:
+	virtual int reset() = 0;
+};
+
+class RenderCommandList : public IRenderCommandList
+{
+public:
+	virtual int Flush() override;
+
+protected:
+	virtual int reset() override;
+};
+
 class IRenderer
 {
 public:
