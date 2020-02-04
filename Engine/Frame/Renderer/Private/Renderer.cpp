@@ -33,6 +33,7 @@ int Renderer::Render()
 	if (Device != nullptr)
 	{
 		Device->Draw();
+		Device->Present();
 	}
 
 	return 0;

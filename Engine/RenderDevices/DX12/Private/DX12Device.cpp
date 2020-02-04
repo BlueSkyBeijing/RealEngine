@@ -482,13 +482,6 @@ int DX12Device::Draw()
 	ID3D12CommandList* CommandLists[] = { mDX12CommandList.Get() };
 	mDX12CommandQueue->ExecuteCommandLists(1, CommandLists);
 
-	// Present
-	THROW_IF_FAILED(mDXGISwapChain->Present(0, 0));
-
-	mChainBufferndex = (mChainBufferndex + 1) % mSwapChainBufferCount;
-
-	FlushCommandQueue();
-
 	return 0;
 }
 
@@ -506,6 +499,10 @@ int DX12Device::Present()
 {
 	// Present
 	THROW_IF_FAILED(mDXGISwapChain->Present(0, 0));
+
+	mChainBufferndex = (mChainBufferndex + 1) % mSwapChainBufferCount;
+
+	FlushCommandQueue();
 
 	return 0;
 }

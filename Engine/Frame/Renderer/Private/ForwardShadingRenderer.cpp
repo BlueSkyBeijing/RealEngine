@@ -44,6 +44,7 @@ bool ForwardShadingRenderer::renderShadowDepth()
 	IDevice* Device = Engine::GetDevice();
 	assert(Device != nullptr);
 	Device->Draw();
+	Device->Present();
 
 	return true;
 }
@@ -53,6 +54,7 @@ bool ForwardShadingRenderer::renderOpaque()
 	IDevice* Device = Engine::GetDevice();
 	assert(Device != nullptr);
 	Device->Draw();
+	Device->Present();
 
 	return true;
 }
@@ -62,6 +64,7 @@ bool ForwardShadingRenderer::renderTranslucency()
 	IDevice* Device = Engine::GetDevice();
 	assert(Device != nullptr);
 	Device->Draw();
+	Device->Present();
 
 	return true;
 }
