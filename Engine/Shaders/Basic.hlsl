@@ -1,4 +1,26 @@
 
+cbuffer cbObject : register(b0)
+{
+    float4x4 gWorld;
+};
+
+cbuffer cbPass : register(b1)
+{
+    float4x4 gView;
+    float4x4 gProj;
+    float4x4 gViewProj;
+    float3 gEyePosW;
+};
+
+cbuffer cbMaterial : register(b2)
+{
+    float4 gBaseColor;
+    float4 gEmissiveColor;
+    float gSpecular;
+    float gMetallic;
+    float gRoughness;
+};
+
 cbuffer CBObject : register(b0)
 {
     float4x4 WorldViewProj;

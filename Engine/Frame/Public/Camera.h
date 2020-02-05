@@ -12,17 +12,14 @@ public:
 	virtual Eigen::Vector3f GetUp() = 0;
 };
 
-class Camera : public ICamera, ISceneObject
+class Camera : public ICamera
 {
 public:
 	Camera(Eigen::Vector3f position, Eigen::Vector3f direction, Eigen::Vector3f up);
 
-	virtual Eigen::Vector3f GetPosition();
-	virtual Eigen::Vector3f GetDirection();
-	virtual Eigen::Vector3f GetUp();
-
-	virtual int Load();
-	virtual Eigen::Vector3f GetRotation();
+	virtual Eigen::Vector3f GetPosition() override;
+	virtual Eigen::Vector3f GetDirection() override;
+	virtual Eigen::Vector3f GetUp() override;
 
 protected:
 	Eigen::Vector3f Position;

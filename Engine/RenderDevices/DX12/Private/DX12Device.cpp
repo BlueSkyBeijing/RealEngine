@@ -33,8 +33,10 @@ struct PassConstants
 
 struct MaterialConstants
 {
-	DirectX::XMFLOAT4 DiffuseAlbedo;
-	DirectX::XMFLOAT3 FresnelR0;
+	DirectX::XMFLOAT4 BaseColor;
+	DirectX::XMFLOAT4 EmissiveColor;
+	float Specular;
+	float Metallic;
 	float Roughness;
 };
 

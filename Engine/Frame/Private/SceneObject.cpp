@@ -14,3 +14,8 @@ Eigen::Vector3f SceneObject::GetRotation()
 {
 	return Rotation;
 }
+
+void SceneObject::createConstants()
+{
+
+}

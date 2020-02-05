@@ -29,10 +29,15 @@ int Renderer::Render()
 
 	computeVisibility();
 
+	createPassConstants();
+
 	IDevice* Device = Engine::GetDevice();
 	if (Device != nullptr)
-	{
+	{	
+		//per scene object draw
 		Device->Draw();
+
+		//final present
 		Device->Present();
 	}
 
@@ -47,4 +52,12 @@ int Renderer::clear()
 void Renderer::computeVisibility()
 {
 
+}
+
+void Renderer::createPassConstants()
+{
+	IDevice* Device = Engine::GetDevice();
+	if (Device != nullptr)
+	{
+	}
 }

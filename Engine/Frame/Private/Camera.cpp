@@ -22,13 +22,3 @@ Eigen::Vector3f Camera::GetUp()
 {
 	return Up;
 }
-
-int Camera::Load()
-{
-	return 0;
-}
-
-Eigen::Vector3f Camera::GetRotation()
-{
-	return Direction;
-}
