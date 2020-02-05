@@ -259,3 +259,29 @@ half EnvBRDFApproxNonmetal( half Roughness, half NoV )
 	return min( r.x * r.x, exp2( -9.28 * NoV ) ) * r.x + r.y;
 }
 
+struct BxDFContext
+{
+    float NoV;
+    float NoL;
+    float VoL;
+    float NoH;
+    float VoH;
+};
+
+float Pow4(float x)
+{
+    float xx = x * x;
+    return xx * xx;
+}
+
+float3 SpecularGGX(float Roughness, float3 SpecularColor, BxDFContext Context, float NoL)
+{
+    float a2 = Pow4(Roughness);
+	
+	// Generalized microfacet specular
+    float D = D_GGX(a2, Context.NoH);
+    float Vis = Vis_SmithJointApprox(a2, Context.NoV, NoL);
+    float3 F = F_Schlick(SpecularColor, Context.VoH);
+
+    return (D * Vis) * F;
+}
