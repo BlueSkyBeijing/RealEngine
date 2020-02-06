@@ -367,5 +367,8 @@
     <FxCompile Include="Engine\Shaders\LightingModel.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Engine\Shaders\ShadingCommon.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

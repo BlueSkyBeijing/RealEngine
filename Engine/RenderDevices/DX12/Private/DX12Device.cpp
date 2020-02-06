@@ -158,10 +158,11 @@ int DX12Device::Init()
 	mDX12Device->CreateShaderResourceView(mTestTexture.Get(), &srvDesc, hDescriptor);
 
 	UINT compileFlags = 0;
-	std::wstring ShaderFileName(L"Engine\\Shaders\\Basic.hlsl");
+	std::wstring ShaderFileNameVS(L"Engine\\Shaders\\ForwardShadingVS.hlsl");
+	std::wstring ShaderFileNamePS(L"Engine\\Shaders\\ForwardShadingPS.hlsl");
 
-	THROW_IF_FAILED(D3DCompileFromFile(ShaderFileName.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "VSMain", "vs_5_0", compileFlags, 0, &mVertexShader, nullptr));
-	THROW_IF_FAILED(D3DCompileFromFile(ShaderFileName.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "PSMain", "ps_5_0", compileFlags, 0, &mPixelShader, nullptr));
+	THROW_IF_FAILED(D3DCompileFromFile(ShaderFileNameVS.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "VSMain", "vs_5_0", compileFlags, 0, &mVertexShader, nullptr));
+	THROW_IF_FAILED(D3DCompileFromFile(ShaderFileNamePS.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "PSMain", "ps_5_0", compileFlags, 0, &mPixelShader, nullptr));
 
 	// Input Layout
 	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
