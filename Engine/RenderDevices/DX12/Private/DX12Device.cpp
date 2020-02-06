@@ -14,8 +14,19 @@
 struct Vertex
 {
 	XMFLOAT3 Pos;
-	XMFLOAT4 Color;
+	XMFLOAT3 Normal;
 	XMFLOAT2 TexCoord;
+
+	Vertex() {}
+
+	Vertex(
+		float px, float py, float pz,
+		float nx, float ny, float nz,
+		float u, float v) :
+		Pos(px, py, pz),
+		Normal(nx, ny, nz),
+		TexCoord(u, v) {}
+
 };
 
 int DX12RenderCommandList::Flush()
@@ -167,51 +178,84 @@ int DX12Device::Init()
 	// Input Layout
 	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 } };
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 } };
 
 	UINT NumElements = sizeof(inputLayout) / sizeof(inputLayout[0]);
 
-	std::array<Vertex, 8> vertexes =
-	{
-		Vertex({ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(Colors::White), XMFLOAT2(0.0f, 1.0f) }),
-		Vertex({ XMFLOAT3(-1.0f, +1.0f, -1.0f), XMFLOAT4(Colors::Black), XMFLOAT2(0.0f, 0.0f) }),
-		Vertex({ XMFLOAT3(+1.0f, +1.0f, -1.0f), XMFLOAT4(Colors::Red), XMFLOAT2(1.0f, 0.0f) }),
-		Vertex({ XMFLOAT3(+1.0f, -1.0f, -1.0f), XMFLOAT4(Colors::Green), XMFLOAT2(1.0f, 1.0f) }),
-		Vertex({ XMFLOAT3(-1.0f, -1.0f, +1.0f), XMFLOAT4(Colors::Blue), XMFLOAT2(0.0f, 1.0f) }),
-		Vertex({ XMFLOAT3(-1.0f, +1.0f, +1.0f), XMFLOAT4(Colors::Yellow), XMFLOAT2(0.0f, 0.0f) }),
-		Vertex({ XMFLOAT3(+1.0f, +1.0f, +1.0f), XMFLOAT4(Colors::Cyan), XMFLOAT2(1.0f, 0.0f) }),
-		Vertex({ XMFLOAT3(+1.0f, -1.0f, +1.0f), XMFLOAT4(Colors::Magenta), XMFLOAT2(1.0f, 1.0f) })
-	};
+	Vertex v[24];
 
-	std::array<std::uint16_t, 36> indexes =
-	{
-		// front face
-		0, 1, 2,
-		0, 2, 3,
+	float w2 = 1.0f;
+	float h2 = 1.0f;
+	float d2 = 1.0f;
 
-		// back face
-		4, 6, 5,
-		4, 7, 6,
+	// Fill in the front face vertex data.
+	v[0] = Vertex(-w2, -h2, -d2, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
+	v[1] = Vertex(-w2, +h2, -d2, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f);
+	v[2] = Vertex(+w2, +h2, -d2, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
+	v[3] = Vertex(+w2, -h2, -d2, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f);
 
-		// left face
-		4, 5, 1,
-		4, 1, 0,
+	// Fill in the back face vertex data.
+	v[4] = Vertex(-w2, -h2, +d2, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
+	v[5] = Vertex(+w2, -h2, +d2, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f);
+	v[6] = Vertex(+w2, +h2, +d2, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
+	v[7] = Vertex(-w2, +h2, +d2, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f);
 
-		// right face
-		3, 2, 6,
-		3, 6, 7,
+	// Fill in the top face vertex data.
+	v[8] = Vertex(-w2, +h2, -d2, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f);
+	v[9] = Vertex(-w2, +h2, +d2, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f);
+	v[10] = Vertex(+w2, +h2, +d2, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f);
+	v[11] = Vertex(+w2, +h2, -d2, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f);
 
-		// top face
-		1, 5, 6,
-		1, 6, 2,
+	// Fill in the bottom face vertex data.
+	v[12] = Vertex(-w2, -h2, -d2, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f);
+	v[13] = Vertex(+w2, -h2, -d2, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f);
+	v[14] = Vertex(+w2, -h2, +d2, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f);
+	v[15] = Vertex(-w2, -h2, +d2, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f);
 
-		// bottom face
-		4, 0, 3,
-		4, 3, 7
-	};
+	// Fill in the left face vertex data.
+	v[16] = Vertex(-w2, -h2, +d2, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+	v[17] = Vertex(-w2, +h2, +d2, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+	v[18] = Vertex(-w2, +h2, -d2, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+	v[19] = Vertex(-w2, -h2, -d2, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
 
-	mIndexCount = (UINT)indexes.size();
+	// Fill in the right face vertex data.
+	v[20] = Vertex(+w2, -h2, -d2, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+	v[21] = Vertex(+w2, +h2, -d2, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+	v[22] = Vertex(+w2, +h2, +d2, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+	v[23] = Vertex(+w2, -h2, +d2, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
+
+	//
+	// Create the indices.
+	//
+
+	std::uint16_t i[36];
+
+	// Fill in the front face index data
+	i[0] = 0; i[1] = 1; i[2] = 2;
+	i[3] = 0; i[4] = 2; i[5] = 3;
+
+	// Fill in the back face index data
+	i[6] = 4; i[7] = 5; i[8] = 6;
+	i[9] = 4; i[10] = 6; i[11] = 7;
+
+	// Fill in the top face index data
+	i[12] = 8; i[13] = 9; i[14] = 10;
+	i[15] = 8; i[16] = 10; i[17] = 11;
+
+	// Fill in the bottom face index data
+	i[18] = 12; i[19] = 13; i[20] = 14;
+	i[21] = 12; i[22] = 14; i[23] = 15;
+
+	// Fill in the left face index data
+	i[24] = 16; i[25] = 17; i[26] = 18;
+	i[27] = 16; i[28] = 18; i[29] = 19;
+
+	// Fill in the right face index data
+	i[30] = 20; i[31] = 21; i[32] = 22;
+	i[33] = 20; i[34] = 22; i[35] = 23;
+
+	mIndexCount = 36;
 
 	IScene* CurrentScene = EngineWindows::GetInstance()->GetCurrentScene();
 	ICamera* CurrentCamera = CurrentScene->GetCurrentCamera();
@@ -256,7 +300,7 @@ int DX12Device::Init()
 	THROW_IF_FAILED(mDX12Device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), 
 		D3D12_HEAP_FLAG_NONE, 
-		&CD3DX12_RESOURCE_DESC::Buffer(sizeof(vertexes)),
+		&CD3DX12_RESOURCE_DESC::Buffer(24 * sizeof(Vertex)),
 		D3D12_RESOURCE_STATE_GENERIC_READ, 
 		nullptr, 
 		IID_PPV_ARGS(&mVertexBuffer)));
@@ -265,7 +309,7 @@ int DX12Device::Init()
 	THROW_IF_FAILED(mDX12Device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer(sizeof(indexes)),
+		&CD3DX12_RESOURCE_DESC::Buffer(36 * sizeof(std::uint16_t)),
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(&mIndexBuffer)));
@@ -297,18 +341,18 @@ int DX12Device::Init()
 		nullptr,
 		IID_PPV_ARGS(&mPassConstantBuffer)));
 
-	const UINT vbByteSize = (UINT)vertexes.size() * sizeof(Vertex);
-	const UINT ibByteSize = (UINT)indexes.size() * sizeof(std::uint16_t);
+	const UINT vbByteSize = 24 * sizeof(Vertex);
+	const UINT ibByteSize = 36 * sizeof(std::uint16_t);
 
 	// Copy data
 	UINT8* vertexBufferData;
 	mVertexBuffer->Map(0, nullptr, reinterpret_cast<void**>(&vertexBufferData));
-	memcpy(vertexBufferData, vertexes.data(), vbByteSize);
+	memcpy(vertexBufferData, v, vbByteSize);
 	mVertexBuffer->Unmap(0, nullptr);
 
 	UINT8* indexBufferData;
 	mIndexBuffer->Map(0, nullptr, reinterpret_cast<void**>(&indexBufferData));
-	memcpy(indexBufferData, indexes.data(), ibByteSize);
+	memcpy(indexBufferData, i, ibByteSize);
 	mIndexBuffer->Unmap(0, nullptr);
 
 	UINT8* objectConstantBufferData;
