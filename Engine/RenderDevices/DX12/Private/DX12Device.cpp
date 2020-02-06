@@ -242,6 +242,12 @@ int DX12Device::Init()
 	XMStoreFloat4x4(&mPassConstants.View, XMMatrixTranspose(view));
 	XMStoreFloat4x4(&mPassConstants.ViewProj, XMMatrixTranspose(view * proj));
 
+	mMaterialConstants.Metallic = 0.2f;
+	mMaterialConstants.Roughness = 0.5f;
+	mMaterialConstants.Specular = 0.2f;
+	mMaterialConstants.EmissiveColor = XMFLOAT4(Colors::Black);
+
+
 	// Create vertex buffer
 	THROW_IF_FAILED(mDX12Device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), 

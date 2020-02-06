@@ -29,7 +29,7 @@ float3 Phong(float3 normal, float3 lightDir, float3 lightColor, float3 specularC
 	 
     float3 lightReflectDirection = reflect(-lightDir, normal);
     float RdotV = max(0, dot(lightReflectDirection, viewDir));
-    float spec = pow(RdotV, specPower / 4) * specularColor;
+    float3 spec = pow(RdotV, specPower / 4) * specularColor;
     return lightColor.rgb * NdotL + lightColor.rgb * specularColor.rgb * spec;
 }
 
@@ -41,7 +41,7 @@ float3 BlinnPhong(float3 normal, float3 lightDir, float3 lightColor, float3 spec
 	 
     float3 floatVector = normalize(lightDir + viewDir);
     float NdotH = max(0, dot(normal, floatVector));
-    float spec = pow(NdotH, specPower) * specularColor;
+    float3 spec = pow(NdotH, specPower) * specularColor;
 	 
     return lightColor.rgb * NdotL + lightColor.rgb * specularColor.rgb * spec;
 }
