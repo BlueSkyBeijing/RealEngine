@@ -39,6 +39,8 @@ struct PassConstants
 	DirectX::XMFLOAT4X4 Proj;
 	DirectX::XMFLOAT4X4 ViewProj;
 	DirectX::XMFLOAT3 EyePosW;
+	DirectX::XMFLOAT3 DirectionalLightDir;
+	DirectX::XMFLOAT4 DirectionalLightColor;
 };
 
 

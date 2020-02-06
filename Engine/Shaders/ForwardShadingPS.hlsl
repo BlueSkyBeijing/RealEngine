@@ -36,11 +36,11 @@ float4 PSMain(VertexOut PIn) : SV_Target
     float3 DiffuseColor = BaseColor - BaseColor * Metallic; // 1 mad
     float3 SpecularColor = (DielectricSpecular - DielectricSpecular * Metallic) + BaseColor * Metallic; // 2 mad
 
-    float3 worldNormal = float3(0.0f, 1.0f, 0.0f);
-    float3 directionalLightDirection = float3(-1.0f, -1.0f, -1.0f);
+    float3 worldNormal = float3(0.0f, 0.0f, 1.0f);
+    float3 directionalLightDirection = gDirectionalLightDir;
     float3 reflectionVector = float3(0.0f, 1.0f, 0.0f);
-    float3 cameraVector = float3(-1.0f, 0.0f, 0.0f);
-    float3 DirectionalLightColor = float3(1.0f, 1.0f, 1.0f);
+    float3 cameraVector = gEyePosW;
+    float3 DirectionalLightColor = gDirectionalLightColor.rgb;
  
     float NoV = max(0, dot(worldNormal, cameraVector));
     float NoL = max(0, dot(worldNormal, directionalLightDirection));

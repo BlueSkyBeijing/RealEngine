@@ -242,6 +242,9 @@ int DX12Device::Init()
 
 	XMStoreFloat4x4(&mPassConstants.View, XMMatrixTranspose(view));
 	XMStoreFloat4x4(&mPassConstants.ViewProj, XMMatrixTranspose(view * proj));
+	mPassConstants.EyePosW = DirectX::XMFLOAT3(CameraPos.x(), CameraPos.y(), CameraPos.z());
+	mPassConstants.DirectionalLightDir = DirectX::XMFLOAT3(CameraDirection.x(), CameraDirection.y(), CameraDirection.z());
+	mPassConstants.DirectionalLightColor = XMFLOAT4(Colors::White);
 
 	mMaterialConstants.Metallic = 0.2f;
 	mMaterialConstants.Roughness = 0.5f;

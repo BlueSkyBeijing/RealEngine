@@ -340,9 +340,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Engine\Shaders\Basic.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="Engine\Shaders\Common.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
