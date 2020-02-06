@@ -18,28 +18,6 @@ struct Vertex
 	XMFLOAT2 TexCoord;
 };
 
-struct ObjectConstants
-{
-	DirectX::XMFLOAT4X4 World;
-};
-
-struct PassConstants
-{
-	DirectX::XMFLOAT4X4 View;
-	DirectX::XMFLOAT4X4 Proj;
-	DirectX::XMFLOAT4X4 ViewProj;
-	DirectX::XMFLOAT3 EyePosW;
-};
-
-struct MaterialConstants
-{
-	DirectX::XMFLOAT4 BaseColor;
-	DirectX::XMFLOAT4 EmissiveColor;
-	float Specular;
-	float Metallic;
-	float Roughness;
-};
-
 int DX12RenderCommandList::Flush()
 {
 	return 0;
@@ -258,10 +236,11 @@ int DX12Device::Init()
 		0.0f, 0.0f, 0.0f, 1.0f);
 	XMMATRIX world = XMLoadFloat4x4(&mWorldMatrix);
 	XMMATRIX proj = XMLoadFloat4x4(&mProjMatrix);
-	XMMATRIX worldViewProj = world * view * proj;
 
-	XMFLOAT4X4 worldViewProjMatrix;
-	XMStoreFloat4x4(&worldViewProjMatrix, XMMatrixTranspose(worldViewProj));
+	XMStoreFloat4x4(&mObjectConstants.World, XMMatrixTranspose(world));
+
+	XMStoreFloat4x4(&mPassConstants.View, XMMatrixTranspose(view));
+	XMStoreFloat4x4(&mPassConstants.ViewProj, XMMatrixTranspose(view * proj));
 
 	// Create vertex buffer
 	THROW_IF_FAILED(mDX12Device->CreateCommittedResource(
@@ -281,14 +260,32 @@ int DX12Device::Init()
 		nullptr,
 		IID_PPV_ARGS(&mIndexBuffer)));
 
-	// Create constant buffer
+	// Create object constant buffer
 	THROW_IF_FAILED(mDX12Device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 		D3D12_HEAP_FLAG_NONE,
 		&CD3DX12_RESOURCE_DESC::Buffer(CalcConstantBufferByteSize(sizeof(XMMATRIX))),
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&mConstantBuffer)));
+		IID_PPV_ARGS(&mObjectConstantBuffer)));
+
+	// Create material constant buffer
+	THROW_IF_FAILED(mDX12Device->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+		D3D12_HEAP_FLAG_NONE,
+		&CD3DX12_RESOURCE_DESC::Buffer(CalcConstantBufferByteSize(sizeof(XMMATRIX))),
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&mMaterialConstantBuffer)));
+
+	// Create pass constant buffer
+	THROW_IF_FAILED(mDX12Device->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+		D3D12_HEAP_FLAG_NONE,
+		&CD3DX12_RESOURCE_DESC::Buffer(CalcConstantBufferByteSize(sizeof(XMMATRIX))),
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&mPassConstantBuffer)));
 
 	const UINT vbByteSize = (UINT)vertexes.size() * sizeof(Vertex);
 	const UINT ibByteSize = (UINT)indexes.size() * sizeof(std::uint16_t);
@@ -304,10 +301,20 @@ int DX12Device::Init()
 	memcpy(indexBufferData, indexes.data(), ibByteSize);
 	mIndexBuffer->Unmap(0, nullptr);
 
-	UINT8* constantBufferData;
-	mConstantBuffer->Map(0, nullptr, reinterpret_cast<void**>(&constantBufferData));
-	memcpy(constantBufferData, &worldViewProjMatrix, sizeof(worldViewProjMatrix));
-	mConstantBuffer->Unmap(0, nullptr);
+	UINT8* objectConstantBufferData;
+	mObjectConstantBuffer->Map(0, nullptr, reinterpret_cast<void**>(&objectConstantBufferData));
+	memcpy(objectConstantBufferData, &mObjectConstants, sizeof(mObjectConstants));
+	mObjectConstantBuffer->Unmap(0, nullptr);
+
+	UINT8* materialConstantBufferData;
+	mMaterialConstantBuffer->Map(0, nullptr, reinterpret_cast<void**>(&materialConstantBufferData));
+	memcpy(materialConstantBufferData, &mMaterialConstants, sizeof(mMaterialConstants));
+	mMaterialConstantBuffer->Unmap(0, nullptr);
+
+	UINT8* passConstantBufferData;
+	mPassConstantBuffer->Map(0, nullptr, reinterpret_cast<void**>(&passConstantBufferData));
+	memcpy(passConstantBufferData, &mPassConstants, sizeof(mPassConstants));
+	mPassConstantBuffer->Unmap(0, nullptr);
 
 	// Vertex buffer view
 	mVertexBufferView.BufferLocation = mVertexBuffer->GetGPUVirtualAddress();
@@ -318,31 +325,73 @@ int DX12Device::Init()
 	mIndexBufferView.Format = DXGI_FORMAT_R16_UINT;
 	mIndexBufferView.SizeInBytes = ibByteSize;;
 
-	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;
-	cbvHeapDesc.NumDescriptors = 1;
-	cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-	cbvHeapDesc.NodeMask = 0;
-	THROW_IF_FAILED(mDX12Device->CreateDescriptorHeap(&cbvHeapDesc,
-		IID_PPV_ARGS(&mConstantBufferHeap)));
+	//D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;
+	//cbvHeapDesc.NumDescriptors = 1;
+	//cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	//cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	//cbvHeapDesc.NodeMask = 0;
+	//THROW_IF_FAILED(mDX12Device->CreateDescriptorHeap(&cbvHeapDesc,
+	//	IID_PPV_ARGS(&mConstantBufferHeap)));
 
-	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
-	cbvDesc.BufferLocation = mConstantBuffer->GetGPUVirtualAddress();
-	cbvDesc.SizeInBytes = CalcConstantBufferByteSize(sizeof(XMMATRIX));
+	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDescObject;
+	cbvHeapDescObject.NumDescriptors = 1;
+	cbvHeapDescObject.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	cbvHeapDescObject.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	cbvHeapDescObject.NodeMask = 0;
+	THROW_IF_FAILED(mDX12Device->CreateDescriptorHeap(&cbvHeapDescObject,
+		IID_PPV_ARGS(&mObjectConstantBufferHeap)));
+
+	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDescMaterial;
+	cbvHeapDescMaterial.NumDescriptors = 1;
+	cbvHeapDescMaterial.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	cbvHeapDescMaterial.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	cbvHeapDescMaterial.NodeMask = 0;
+	THROW_IF_FAILED(mDX12Device->CreateDescriptorHeap(&cbvHeapDescMaterial,
+		IID_PPV_ARGS(&mMaterialConstantBufferHeap)));
+
+	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDescPass;
+	cbvHeapDescPass.NumDescriptors = 1;
+	cbvHeapDescPass.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	cbvHeapDescPass.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	cbvHeapDescPass.NodeMask = 0;
+	THROW_IF_FAILED(mDX12Device->CreateDescriptorHeap(&cbvHeapDescPass,
+		IID_PPV_ARGS(&mPassConstantBufferHeap)));
+
+	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDescObject;
+	cbvDescObject.BufferLocation = mObjectConstantBuffer->GetGPUVirtualAddress();
+	cbvDescObject.SizeInBytes = CalcConstantBufferByteSize(sizeof(ObjectConstants));
 
 	mDX12Device->CreateConstantBufferView(
-		&cbvDesc,
-		mConstantBufferHeap->GetCPUDescriptorHandleForHeapStart());
+		&cbvDescObject,
+		mObjectConstantBufferHeap->GetCPUDescriptorHandleForHeapStart());
+
+	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDescMaterial;
+	cbvDescMaterial.BufferLocation = mMaterialConstantBuffer->GetGPUVirtualAddress();
+	cbvDescMaterial.SizeInBytes = CalcConstantBufferByteSize(sizeof(MaterialConstants));
+
+	mDX12Device->CreateConstantBufferView(
+		&cbvDescMaterial,
+		mMaterialConstantBufferHeap->GetCPUDescriptorHandleForHeapStart());
+
+	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDescPass;
+	cbvDescPass.BufferLocation = mPassConstantBuffer->GetGPUVirtualAddress();
+	cbvDescPass.SizeInBytes = CalcConstantBufferByteSize(sizeof(PassConstants));
+
+	mDX12Device->CreateConstantBufferView(
+		&cbvDescPass,
+		mPassConstantBufferHeap->GetCPUDescriptorHandleForHeapStart());
 
 	// Create root signature
 	CD3DX12_DESCRIPTOR_RANGE texTable;
 	texTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
 
 	// Root parameter can be a table, root descriptor or root constants.
-	CD3DX12_ROOT_PARAMETER slotRootParameter[2];
+	CD3DX12_ROOT_PARAMETER slotRootParameter[4];
 
 	slotRootParameter[0].InitAsDescriptorTable(1, &texTable, D3D12_SHADER_VISIBILITY_PIXEL);
 	slotRootParameter[1].InitAsConstantBufferView(0);
+	slotRootParameter[2].InitAsConstantBufferView(1);
+	slotRootParameter[3].InitAsConstantBufferView(2);
 
 	const CD3DX12_STATIC_SAMPLER_DESC pointWrap(
 		0, // shaderRegister
@@ -351,7 +400,7 @@ int DX12Device::Init()
 		D3D12_TEXTURE_ADDRESS_MODE_WRAP,  // addressV
 		D3D12_TEXTURE_ADDRESS_MODE_WRAP); // addressW
 
-	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc(2, slotRootParameter, 1, &pointWrap,
+	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc(4, slotRootParameter, 1, &pointWrap,
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
 	Microsoft::WRL::ComPtr <ID3DBlob> signature;
@@ -471,7 +520,9 @@ int DX12Device::Draw()
 	ID3D12DescriptorHeap* descriptorHeaps[] = { mSRVDescriptorHeap.Get() };
 	mDX12CommandList->SetDescriptorHeaps(1, descriptorHeaps);
 	mDX12CommandList->SetGraphicsRootDescriptorTable(0, mSRVDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
-	mDX12CommandList->SetGraphicsRootConstantBufferView(1, mConstantBuffer->GetGPUVirtualAddress());
+	mDX12CommandList->SetGraphicsRootConstantBufferView(1, mObjectConstantBuffer->GetGPUVirtualAddress());
+	mDX12CommandList->SetGraphicsRootConstantBufferView(2, mMaterialConstantBuffer->GetGPUVirtualAddress());
+	mDX12CommandList->SetGraphicsRootConstantBufferView(3, mPassConstantBuffer->GetGPUVirtualAddress());
 
 	// Draw
 	mDX12CommandList->DrawIndexedInstanced(mIndexCount, 1, 0, 0, 0);

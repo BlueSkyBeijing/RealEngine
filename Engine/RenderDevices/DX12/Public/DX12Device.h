@@ -19,6 +19,29 @@
 
 using namespace DirectX;
 
+struct ObjectConstants
+{
+	DirectX::XMFLOAT4X4 World;
+};
+
+struct MaterialConstants
+{
+	DirectX::XMFLOAT4 BaseColor;
+	DirectX::XMFLOAT4 EmissiveColor;
+	float Specular;
+	float Metallic;
+	float Roughness;
+};
+
+struct PassConstants
+{
+	DirectX::XMFLOAT4X4 View;
+	DirectX::XMFLOAT4X4 Proj;
+	DirectX::XMFLOAT4X4 ViewProj;
+	DirectX::XMFLOAT3 EyePosW;
+};
+
+
 class DX12RenderCommandList : public RenderCommandList
 {
 public:
@@ -68,7 +91,9 @@ private:
 	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> mDX12DescriptorHeapRenderTarget;
 	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> mDX12DescriptorHeapDepthStencil;
 	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> mSRVDescriptorHeap;
-	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> mConstantBufferHeap;
+	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> mObjectConstantBufferHeap;
+	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> mMaterialConstantBufferHeap;
+	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> mPassConstantBufferHeap;
 	Microsoft::WRL::ComPtr <ID3D12Resource> mRenderTargets[2];
 	Microsoft::WRL::ComPtr <ID3D12Resource> mDepthStencilBuffer;
 	Microsoft::WRL::ComPtr <ID3D12Resource> mTestTexture;
@@ -77,7 +102,9 @@ private:
 	Microsoft::WRL::ComPtr <ID3DBlob> mPixelShader;
 	Microsoft::WRL::ComPtr <ID3D12Resource> mVertexBuffer;
 	Microsoft::WRL::ComPtr <ID3D12Resource> mIndexBuffer;
-	Microsoft::WRL::ComPtr <ID3D12Resource> mConstantBuffer;
+	Microsoft::WRL::ComPtr <ID3D12Resource> mObjectConstantBuffer;
+	Microsoft::WRL::ComPtr <ID3D12Resource> mMaterialConstantBuffer;
+	Microsoft::WRL::ComPtr <ID3D12Resource> mPassConstantBuffer;
 
 	HANDLE mEventHandle;
 	UINT64 mFenceValue;
@@ -96,4 +123,7 @@ private:
 	UINT mIndexCount;
 	DXGI_FORMAT mBackBufferFormat;
 	DXGI_FORMAT mDepthStencilFormat;
+	ObjectConstants mObjectConstants;
+	MaterialConstants mMaterialConstants;
+	PassConstants mPassConstants;
 };

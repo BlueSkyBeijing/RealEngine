@@ -4,15 +4,7 @@ cbuffer cbObject : register(b0)
     float4x4 gWorld;
 };
 
-cbuffer cbPass : register(b1)
-{
-    float4x4 gView;
-    float4x4 gProj;
-    float4x4 gViewProj;
-    float3 gEyePosW;
-};
-
-cbuffer cbMaterial : register(b2)
+cbuffer cbMaterial : register(b1)
 {
     float4 gBaseColor;
     float4 gEmissiveColor;
@@ -21,9 +13,12 @@ cbuffer cbMaterial : register(b2)
     float gRoughness;
 };
 
-cbuffer CBObject : register(b0)
+cbuffer cbPass : register(b2)
 {
-    float4x4 WorldViewProj;
+    float4x4 gView;
+    float4x4 gProj;
+    float4x4 gViewProj;
+    float3 gEyePosW;
 };
 
 struct VertexIn
@@ -47,6 +42,7 @@ VertexOut VSMain(VertexIn VIn)
 {
     VertexOut VOut;
 	
+    float4x4 WorldViewProj = mul(gWorld, gViewProj);
     VOut.Pos = mul(float4(VIn.Pos, 1.0f), WorldViewProj);
 	
     VOut.Color = VIn.Color;
