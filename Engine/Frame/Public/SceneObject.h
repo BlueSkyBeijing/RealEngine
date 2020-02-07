@@ -1,6 +1,19 @@
 #pragma once
 #include <Eigen/Dense>
 
+class IRenderable
+{
+public:
+	virtual void createConstants() = 0;
+};
+
+class Renderable : public IRenderable
+{
+public:
+	virtual void createConstants() override;
+};
+
+
 class ISceneObject
 {
 public:
