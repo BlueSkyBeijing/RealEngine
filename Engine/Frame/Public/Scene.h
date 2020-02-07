@@ -8,6 +8,7 @@ class IScene
 public:
 	virtual int Load() = 0;
 	virtual ICamera* GetCurrentCamera() = 0;
+	virtual DirectonalLight* GetMainDirectonalLight() = 0;
 };
 
 class Scene : public IScene
@@ -15,8 +16,9 @@ class Scene : public IScene
 public:
 	virtual int Load() override;
 	virtual ICamera* GetCurrentCamera() override;
+	virtual DirectonalLight* GetMainDirectonalLight() override;
 
 protected:
-	ICamera* CurrentCamera;
-	DirectonalLight* MainDirectonalLight;
+	ICamera* mCurrentCamera;
+	DirectonalLight* mMainDirectonalLight;
 };

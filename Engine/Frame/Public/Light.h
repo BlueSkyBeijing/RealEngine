@@ -6,12 +6,14 @@ class ILight
 {
 public:
 	virtual const Eigen::Vector3f& GetColor() const = 0;
+	virtual void SetColor(Eigen::Vector3f newcolor) = 0;
 };
 
 class Light : public ILight
 {
 public:
 	virtual const Eigen::Vector3f& GetColor() const override;
+	virtual void SetColor(Eigen::Vector3f newcolor) override;
 protected:
 	Eigen::Vector3f Color;
 };

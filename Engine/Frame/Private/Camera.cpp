@@ -5,7 +5,8 @@ Camera::Camera(Eigen::Vector3f position, Eigen::Vector3f direction, Eigen::Vecto
 	Direction(direction),
 	Up(up)
 {
-
+	Direction.normalize();
+	Up.normalize();
 }
 
 Eigen::Vector3f Camera::GetPosition()

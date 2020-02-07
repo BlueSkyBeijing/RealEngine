@@ -39,7 +39,7 @@ float4 PSMain(VertexOut PIn) : SV_Target
     float3 worldNormal = PIn.Normal;
     float3 directionalLightDirection = gDirectionalLightDir;
     float3 reflectionVector = float3(0.0f, 1.0f, 0.0f);
-    float3 cameraVector = gEyePosW;
+    float3 cameraVector = gCameraDir;
     float3 DirectionalLightColor = gDirectionalLightColor.rgb;
  
     float NoV = max(0, dot(worldNormal, cameraVector));

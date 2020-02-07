@@ -209,9 +209,13 @@ int DX12Device::Init()
 
 	IScene* CurrentScene = EngineWindows::GetInstance()->GetCurrentScene();
 	ICamera* CurrentCamera = CurrentScene->GetCurrentCamera();
+	DirectonalLight* MainDirectonalLight = CurrentScene->GetMainDirectonalLight();
 	Eigen::Vector3f CameraPos = CurrentCamera->GetPosition();
 	Eigen::Vector3f CameraUp = CurrentCamera->GetUp();
 	Eigen::Vector3f CameraDirection = CurrentCamera->GetDirection();
+	Eigen::Vector3f DirectonalLightDirection = MainDirectonalLight->GetDirection();
+	Eigen::Vector3f DirectonalLightColor = MainDirectonalLight->GetColor();
+
 	// Build view matrix.
 	XMVECTOR pos = XMVectorSet(CameraPos.x(), CameraPos.y(), CameraPos.z(), 1.0f);
 	XMVECTOR target = XMVectorZero();
@@ -236,9 +240,10 @@ int DX12Device::Init()
 
 	XMStoreFloat4x4(&mPassConstants.View, XMMatrixTranspose(view));
 	XMStoreFloat4x4(&mPassConstants.ViewProj, XMMatrixTranspose(view * proj));
-	mPassConstants.EyePosW = DirectX::XMFLOAT3(CameraPos.x(), CameraPos.y(), CameraPos.z());
-	mPassConstants.DirectionalLightDir = DirectX::XMFLOAT3(CameraDirection.x(), CameraDirection.y(), CameraDirection.z());
-	mPassConstants.DirectionalLightColor = XMFLOAT4(Colors::White);
+	mPassConstants.CameraPos = DirectX::XMFLOAT3(CameraPos.x(), CameraPos.y(), CameraPos.z());
+	mPassConstants.CameraDir = DirectX::XMFLOAT3(CameraDirection.x(), CameraDirection.y(), CameraDirection.z());
+	mPassConstants.DirectionalLightDir = DirectX::XMFLOAT3(DirectonalLightDirection.x(), DirectonalLightDirection.y(), DirectonalLightDirection.z());
+	mPassConstants.DirectionalLightColor = XMFLOAT4(DirectonalLightColor.x(), DirectonalLightColor.y(), DirectonalLightColor.z(), 1.0f);
 
 	mMaterialConstants.Metallic = 0.2f;
 	mMaterialConstants.Roughness = 0.5f;
@@ -328,14 +333,6 @@ int DX12Device::Init()
 	mIndexBufferView.BufferLocation = mIndexBuffer->GetGPUVirtualAddress();
 	mIndexBufferView.Format = DXGI_FORMAT_R16_UINT;
 	mIndexBufferView.SizeInBytes = ibByteSize;;
-
-	//D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;
-	//cbvHeapDesc.NumDescriptors = 1;
-	//cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	//cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-	//cbvHeapDesc.NodeMask = 0;
-	//THROW_IF_FAILED(mDX12Device->CreateDescriptorHeap(&cbvHeapDesc,
-	//	IID_PPV_ARGS(&mConstantBufferHeap)));
 
 	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDescObject;
 	cbvHeapDescObject.NumDescriptors = 1;
