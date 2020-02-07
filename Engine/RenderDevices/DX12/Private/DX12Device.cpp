@@ -186,9 +186,9 @@ int DX12Device::Init()
 	UINT NumElements = sizeof(inputLayout) / sizeof(inputLayout[0]);
 
 	ManualMesh Mesh;
-	MeshUtility::CreateCube(Mesh, 1.0f);
-	const int vertexCount = 24;
-	const int indexCount = 36;
+	MeshUtility::CreateSphere(Mesh, 1.0f);
+	const int vertexCount = 2017;
+	const int indexCount = 11904;
 	VertexDataInfo vertexData[vertexCount];
 
 	for (size_t i = 0; i < vertexCount; i++)
@@ -250,7 +250,7 @@ int DX12Device::Init()
 	THROW_IF_FAILED(mDX12Device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), 
 		D3D12_HEAP_FLAG_NONE, 
-		&CD3DX12_RESOURCE_DESC::Buffer(24 * sizeof(VertexDataInfo)),
+		&CD3DX12_RESOURCE_DESC::Buffer(vertexCount * sizeof(VertexDataInfo)),
 		D3D12_RESOURCE_STATE_GENERIC_READ, 
 		nullptr, 
 		IID_PPV_ARGS(&mVertexBuffer)));
@@ -259,7 +259,7 @@ int DX12Device::Init()
 	THROW_IF_FAILED(mDX12Device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer(36 * sizeof(std::uint16_t)),
+		&CD3DX12_RESOURCE_DESC::Buffer(indexCount * sizeof(std::uint16_t)),
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(&mIndexBuffer)));
@@ -291,8 +291,8 @@ int DX12Device::Init()
 		nullptr,
 		IID_PPV_ARGS(&mPassConstantBuffer)));
 
-	const UINT vbByteSize = 24 * sizeof(VertexDataInfo);
-	const UINT ibByteSize = 36 * sizeof(std::uint16_t);
+	const UINT vbByteSize = vertexCount * sizeof(VertexDataInfo);
+	const UINT ibByteSize = indexCount * sizeof(std::uint16_t);
 
 	// Copy data
 	UINT8* vertexBufferData;

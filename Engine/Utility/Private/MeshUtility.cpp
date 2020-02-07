@@ -88,6 +88,111 @@ bool MeshUtility::CreateCube(ManualMesh& outMesh, float SideSize)
 
 bool MeshUtility::CreateSphere(ManualMesh& outMesh, float radius)
 {
+	std::vector<Vertex> VertexData;
+	std::vector<VertexIndex> IndexData;
+
+	const int stackCount = 32;
+	const int sliceCount = 64;
+	const float XM_PI = 3.141592654f;
+	const float XM_2PI = 6.283185307f;
+
+	// Compute the vertices stating at the top pole and moving down the stacks.
+	//
+
+	// Poles: note that there will be texture coordinate distortion as there is
+	// not a unique point on the texture map to assign to the pole when mapping
+	// a rectangular texture onto a sphere.
+	Vertex topVertex(0.0f, +radius, 0.0f, 0.0f, +1.0f, 0.0f,  0.0f, 0.0f);
+	Vertex bottomVertex(0.0f, -radius, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f);
+
+	VertexData.push_back(topVertex);
+
+	float phiStep = XM_PI / stackCount;
+	float thetaStep = 2.0f*XM_PI / sliceCount;
+
+	// Compute vertices for each stack ring (do not count the poles as rings).
+	for (int i = 1; i <= stackCount - 1; ++i)
+	{
+		float phi = i * phiStep;
+
+		// Vertices of ring.
+		for (int j = 0; j <= sliceCount; ++j)
+		{
+			float theta = j * thetaStep;
+
+			Vertex v;
+
+			// spherical to cartesian
+			v.Pos[0] = radius * sinf(phi)*cosf(theta);
+			v.Pos[1] = radius * cosf(phi);
+			v.Pos[2] = radius * sinf(phi)*sinf(theta);
+
+			v.Normal = v.Pos;
+			v.Normal.normalize();
+
+			v.TexCoord[0] = theta / XM_2PI;
+			v.TexCoord[1] = phi / XM_PI;
+
+			VertexData.push_back(v);
+		}
+	}
+
+	VertexData.push_back(bottomVertex);
+
+	//
+	// Compute indices for top stack.  The top stack was written first to the vertex buffer
+	// and connects the top pole to the first ring.
+	//
+
+	for (int i = 1; i <= sliceCount; ++i)
+	{
+		IndexData.push_back(0);
+		IndexData.push_back(i + 1);
+		IndexData.push_back(i);
+	}
+
+	//
+	// Compute indices for inner stacks (not connected to poles).
+	//
+
+	// Offset the indices to the index of the first vertex in the first ring.
+	// This is just skipping the top pole vertex.
+	int baseIndex = 1;
+	int ringVertexCount = sliceCount + 1;
+	for (int i = 0; i < stackCount - 2; ++i)
+	{
+		for (int j = 0; j < sliceCount; ++j)
+		{
+			IndexData.push_back(baseIndex + i * ringVertexCount + j);
+			IndexData.push_back(baseIndex + i * ringVertexCount + j + 1);
+			IndexData.push_back(baseIndex + (i + 1)*ringVertexCount + j);
+
+			IndexData.push_back(baseIndex + (i + 1)*ringVertexCount + j);
+			IndexData.push_back(baseIndex + i * ringVertexCount + j + 1);
+			IndexData.push_back(baseIndex + (i + 1)*ringVertexCount + j + 1);
+		}
+	}
+
+	//
+	// Compute indices for bottom stack.  The bottom stack was written last to the vertex buffer
+	// and connects the bottom pole to the bottom ring.
+	//
+
+	// South pole vertex was added last.
+	int southPoleIndex = (int)VertexData.size() - 1;
+
+	// Offset the indices to the index of the first vertex in the last ring.
+	baseIndex = southPoleIndex - ringVertexCount;
+
+	for (int i = 0; i < sliceCount; ++i)
+	{
+		IndexData.push_back(southPoleIndex);
+		IndexData.push_back(baseIndex + i);
+		IndexData.push_back(baseIndex + i + 1);
+	}
+
+	outMesh.FillData(VertexData, IndexData);
+
 	return true;
 }
 
