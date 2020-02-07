@@ -60,9 +60,19 @@ public:
 class Vertex : public IVertex
 {
 public:
-	Vertex(Eigen::Vector3f inPos);
-protected:
+	Vertex();
+	Vertex(Eigen::Vector3f inPos, Eigen::Vector3f inNormal, Eigen::Vector2f inTexCoord);
+	Vertex(
+		float px, float py, float pz,
+		float nx, float ny, float nz,
+		float u, float v);
+
 	Eigen::Vector3f Pos;
+	Eigen::Vector3f Normal;
+	Eigen::Vector2f TexCoord;
+
+protected:
+
 	VertexLayout Layout;
 };
 
@@ -71,8 +81,5 @@ class IVertexIndex
 {
 };
 
-class VertexIndex : public IVertexLayout
-{
-public:
-	int Index;
-};
+typedef std::uint16_t VertexIndex;
+

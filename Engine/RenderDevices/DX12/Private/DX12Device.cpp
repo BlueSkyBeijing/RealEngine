@@ -4,6 +4,8 @@
 #include "..\..\..\Platforms\Windows\Public\RenderWindowWindows.h"
 #include "..\..\..\Platforms\Windows\Public\WindowsUtility.h"
 #include "..\Public\DDSTextureLoader12.h"
+#include "..\..\..\Utility\Public\MeshUtility.h"
+#include "..\..\..\Frame\Public\Mesh.h"
 
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -11,15 +13,15 @@
 #pragma comment(lib, "d3dcompiler.lib")
 
 
-struct Vertex
+struct VertexDataInfo
 {
 	XMFLOAT3 Pos;
 	XMFLOAT3 Normal;
 	XMFLOAT2 TexCoord;
 
-	Vertex() {}
+	VertexDataInfo() {}
 
-	Vertex(
+	VertexDataInfo(
 		float px, float py, float pz,
 		float nx, float ny, float nz,
 		float u, float v) :
@@ -183,79 +185,27 @@ int DX12Device::Init()
 
 	UINT NumElements = sizeof(inputLayout) / sizeof(inputLayout[0]);
 
-	Vertex v[24];
+	ManualMesh Mesh;
+	MeshUtility::CreateCube(Mesh, 1.0f);
+	const int vertexCount = 24;
+	const int indexCount = 36;
+	VertexDataInfo vertexData[vertexCount];
 
-	float w2 = 1.0f;
-	float h2 = 1.0f;
-	float d2 = 1.0f;
+	for (size_t i = 0; i < vertexCount; i++)
+	{
+		vertexData[i] = VertexDataInfo(Mesh.GetVertexData()[i].Pos.x(), Mesh.GetVertexData()[i].Pos.y(), Mesh.GetVertexData()[i].Pos.z(),
+			Mesh.GetVertexData()[i].Normal.x(), Mesh.GetVertexData()[i].Normal.y(), Mesh.GetVertexData()[i].Normal.z(),
+			Mesh.GetVertexData()[i].TexCoord.x(), Mesh.GetVertexData()[i].TexCoord.y());
+	}
 
-	// Fill in the front face vertex data.
-	v[0] = Vertex(-w2, -h2, -d2, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
-	v[1] = Vertex(-w2, +h2, -d2, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f);
-	v[2] = Vertex(+w2, +h2, -d2, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
-	v[3] = Vertex(+w2, -h2, -d2, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f);
+	std::uint16_t indexData[indexCount];
 
-	// Fill in the back face vertex data.
-	v[4] = Vertex(-w2, -h2, +d2, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
-	v[5] = Vertex(+w2, -h2, +d2, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f);
-	v[6] = Vertex(+w2, +h2, +d2, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
-	v[7] = Vertex(-w2, +h2, +d2, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f);
+	for (size_t i = 0; i < indexCount; i++)
+	{
+		indexData[i] = Mesh.GetIndexData()[i];
+	}
 
-	// Fill in the top face vertex data.
-	v[8] = Vertex(-w2, +h2, -d2, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f);
-	v[9] = Vertex(-w2, +h2, +d2, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f);
-	v[10] = Vertex(+w2, +h2, +d2, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f);
-	v[11] = Vertex(+w2, +h2, -d2, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f);
-
-	// Fill in the bottom face vertex data.
-	v[12] = Vertex(-w2, -h2, -d2, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f);
-	v[13] = Vertex(+w2, -h2, -d2, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f);
-	v[14] = Vertex(+w2, -h2, +d2, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f);
-	v[15] = Vertex(-w2, -h2, +d2, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f);
-
-	// Fill in the left face vertex data.
-	v[16] = Vertex(-w2, -h2, +d2, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-	v[17] = Vertex(-w2, +h2, +d2, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-	v[18] = Vertex(-w2, +h2, -d2, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-	v[19] = Vertex(-w2, -h2, -d2, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
-
-	// Fill in the right face vertex data.
-	v[20] = Vertex(+w2, -h2, -d2, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-	v[21] = Vertex(+w2, +h2, -d2, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-	v[22] = Vertex(+w2, +h2, +d2, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-	v[23] = Vertex(+w2, -h2, +d2, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
-
-	//
-	// Create the indices.
-	//
-
-	std::uint16_t i[36];
-
-	// Fill in the front face index data
-	i[0] = 0; i[1] = 1; i[2] = 2;
-	i[3] = 0; i[4] = 2; i[5] = 3;
-
-	// Fill in the back face index data
-	i[6] = 4; i[7] = 5; i[8] = 6;
-	i[9] = 4; i[10] = 6; i[11] = 7;
-
-	// Fill in the top face index data
-	i[12] = 8; i[13] = 9; i[14] = 10;
-	i[15] = 8; i[16] = 10; i[17] = 11;
-
-	// Fill in the bottom face index data
-	i[18] = 12; i[19] = 13; i[20] = 14;
-	i[21] = 12; i[22] = 14; i[23] = 15;
-
-	// Fill in the left face index data
-	i[24] = 16; i[25] = 17; i[26] = 18;
-	i[27] = 16; i[28] = 18; i[29] = 19;
-
-	// Fill in the right face index data
-	i[30] = 20; i[31] = 21; i[32] = 22;
-	i[33] = 20; i[34] = 22; i[35] = 23;
-
-	mIndexCount = 36;
+	mIndexCount = indexCount;
 
 	IScene* CurrentScene = EngineWindows::GetInstance()->GetCurrentScene();
 	ICamera* CurrentCamera = CurrentScene->GetCurrentCamera();
@@ -300,7 +250,7 @@ int DX12Device::Init()
 	THROW_IF_FAILED(mDX12Device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), 
 		D3D12_HEAP_FLAG_NONE, 
-		&CD3DX12_RESOURCE_DESC::Buffer(24 * sizeof(Vertex)),
+		&CD3DX12_RESOURCE_DESC::Buffer(24 * sizeof(VertexDataInfo)),
 		D3D12_RESOURCE_STATE_GENERIC_READ, 
 		nullptr, 
 		IID_PPV_ARGS(&mVertexBuffer)));
@@ -341,18 +291,18 @@ int DX12Device::Init()
 		nullptr,
 		IID_PPV_ARGS(&mPassConstantBuffer)));
 
-	const UINT vbByteSize = 24 * sizeof(Vertex);
+	const UINT vbByteSize = 24 * sizeof(VertexDataInfo);
 	const UINT ibByteSize = 36 * sizeof(std::uint16_t);
 
 	// Copy data
 	UINT8* vertexBufferData;
 	mVertexBuffer->Map(0, nullptr, reinterpret_cast<void**>(&vertexBufferData));
-	memcpy(vertexBufferData, v, vbByteSize);
+	memcpy(vertexBufferData, vertexData, vbByteSize);
 	mVertexBuffer->Unmap(0, nullptr);
 
 	UINT8* indexBufferData;
 	mIndexBuffer->Map(0, nullptr, reinterpret_cast<void**>(&indexBufferData));
-	memcpy(indexBufferData, i, ibByteSize);
+	memcpy(indexBufferData, indexData, ibByteSize);
 	mIndexBuffer->Unmap(0, nullptr);
 
 	UINT8* objectConstantBufferData;
@@ -372,7 +322,7 @@ int DX12Device::Init()
 
 	// Vertex buffer view
 	mVertexBufferView.BufferLocation = mVertexBuffer->GetGPUVirtualAddress();
-	mVertexBufferView.StrideInBytes = sizeof(Vertex);
+	mVertexBufferView.StrideInBytes = sizeof(VertexDataInfo);
 	mVertexBufferView.SizeInBytes = vbByteSize;
 
 	mIndexBufferView.BufferLocation = mIndexBuffer->GetGPUVirtualAddress();
