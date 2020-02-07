@@ -34,13 +34,26 @@ int Renderer::Render()
 	IDevice* Device = Engine::GetDevice();
 	if (Device != nullptr)
 	{	
-		//per scene object draw
-		Device->Draw();
+		for (int i = 0; i < mStaticRenderObjects.size(); i++)
+		{
+			mStaticRenderObjects[i]->createConstants();
+			//per scene object draw
+			Device->Draw();
+		}
 
 		//final present
 		Device->Present();
 	}
 
+	return 0;
+}
+
+int Renderer::UpdateRenderList(IScene* scene)
+{
+	for (size_t i = 0; i < scene->GetSceneObjects().size(); i++)
+	{
+		mStaticRenderObjects.push_back((IRenderable*)scene->GetSceneObjects()[i]);
+	}
 	return 0;
 }
 

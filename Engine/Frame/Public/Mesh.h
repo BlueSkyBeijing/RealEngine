@@ -23,7 +23,7 @@ public:
 
 protected:
 	std::vector<Vertex> VertexData;
-	std::vector <VertexIndex> IndexData;
+	std::vector<VertexIndex> IndexData;
 };
 
 

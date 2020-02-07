@@ -1,5 +1,9 @@
 #include "..\Public\SceneObject.h"
 
+void Renderable::createConstants()
+{
+}
+
 int SceneObject::Load()
 {
 	return 0;

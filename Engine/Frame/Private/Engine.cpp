@@ -12,6 +12,8 @@ int Engine::Init()
 
 	LoadScene("DefualtScene");
 
+	mSceneManager = new SceneManager(mCurrentScene);
+
 	return 0;
 }
 

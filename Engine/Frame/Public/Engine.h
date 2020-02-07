@@ -4,6 +4,7 @@
 #include "..\..\Utility\Public\Singleton.h"
 #include "..\Public\RenderTarget.h"
 #include "..\Public\Scene.h"
+#include "..\Public\SceneManager.h"
 #include <windows.h>
 #include <string>
 
@@ -50,5 +51,6 @@ protected:
 	IRenderer* mRenderer;
 	IRenderTarget* mRenderTargetMain;
 	IScene* mCurrentScene;
+	ISceneManager* mSceneManager;
 };
 
