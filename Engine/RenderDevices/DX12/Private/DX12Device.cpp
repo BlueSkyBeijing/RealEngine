@@ -247,7 +247,7 @@ int DX12Device::Init()
 
 	mMaterialConstants.Metallic = 0.2f;
 	mMaterialConstants.Roughness = 0.5f;
-	mMaterialConstants.Specular = 0.2f;
+	mMaterialConstants.Specular = 0.1f;
 	mMaterialConstants.EmissiveColor = XMFLOAT4(Colors::Black);
 
 

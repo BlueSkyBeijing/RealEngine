@@ -38,7 +38,7 @@ float4 PSMain(VertexOut PIn) : SV_Target
 
     float3 worldNormal = PIn.Normal;
     float3 directionalLightDirection = gDirectionalLightDir;
-    float3 reflectionVector = float3(0.0f, 1.0f, 0.0f);
+    float3 reflectionVector = worldNormal;
     float3 cameraVector = gCameraDir;
     float3 DirectionalLightColor = gDirectionalLightColor.rgb;
  
@@ -47,10 +47,19 @@ float4 PSMain(VertexOut PIn) : SV_Target
     float RoL = max(0, dot(reflectionVector, directionalLightDirection));
     float3 H = normalize(cameraVector + directionalLightDirection);
     float NoH = max(0, dot(worldNormal, H));
-    
+    float VoH = max(0, dot(cameraVector, H));
+    float VoL = max(0, dot(cameraVector, directionalLightDirection));
+
+    BxDFContext context;
+    context.NoV = NoV;
+    context.NoL = NoL;
+    context.VoL = VoL;
+    context.NoH = NoH;
+    context.VoH = VoH;
+    //SpecularColor = NoL * SpecularGGX(Roughness, SpecularColor, context, NoL);
     SpecularColor = EnvBRDFApprox(SpecularColor, Roughness, NoV);
     Color += NoL * DirectionalLightColor.rgb * (DiffuseColor + SpecularColor * CalcSpecular(Roughness, RoL, NoH, H, worldNormal));
-    Color += SpecularColor;
+    Color += SpecularColor * 0.5f;
     Color += Emissive;
 
     return float4(Color, 1.0f);
