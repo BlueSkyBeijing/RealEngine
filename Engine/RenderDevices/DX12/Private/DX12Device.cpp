@@ -561,6 +561,24 @@ int DX12Device::Present()
 	return 0;
 }
 
+int DX12Device::CreateObjectConstants()
+{
+	return 0;
+
+}
+
+int DX12Device::CreateMaterialConstants()
+{
+	return 0;
+
+}
+
+int DX12Device::CreatePassConstants()
+{
+	return 0;
+
+}
+
 void DX12Device::CreateDevice()
 {
 	// Create DXGI factory

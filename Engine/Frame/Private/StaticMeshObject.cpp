@@ -4,3 +4,4 @@ int StaticMeshObject::Load()
 {
 	return 0;
 }
+

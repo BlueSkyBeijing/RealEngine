@@ -35,4 +35,19 @@ int Device::Present()
 	return 0;
 }
 
+int Device::CreateObjectConstants()
+{
+	return 0;
+}
+
+int Device::CreateMaterialConstants()
+{
+	return 0;
+}
+
+int Device::CreatePassConstants()
+{
+	return 0;
+}
+
 

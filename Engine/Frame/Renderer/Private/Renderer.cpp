@@ -36,7 +36,7 @@ int Renderer::Render()
 	{	
 		for (int i = 0; i < mStaticRenderObjects.size(); i++)
 		{
-			mStaticRenderObjects[i]->createConstants();
+			mStaticRenderObjects[i]->createConstants(Device);
 			//per scene object draw
 			Device->Draw();
 		}
@@ -50,6 +50,7 @@ int Renderer::Render()
 
 int Renderer::UpdateRenderList(IScene* scene)
 {
+	mStaticRenderObjects.clear();
 	for (size_t i = 0; i < scene->GetSceneObjects().size(); i++)
 	{
 		mStaticRenderObjects.push_back((IRenderable*)scene->GetSceneObjects()[i]);

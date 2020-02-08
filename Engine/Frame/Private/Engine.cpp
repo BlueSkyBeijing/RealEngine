@@ -19,8 +19,10 @@ int Engine::Init()
 
 int Engine::Tick()
 {
+
 	if (mRenderer != nullptr)
 	{
+		mSceneManager->UpdateRenderList(mRenderer);
 		mRenderer->Render();
 	}
 

@@ -1,7 +1,11 @@
 #include "..\Public\SceneObject.h"
 
-void Renderable::createConstants()
+void Renderable::createConstants(IDevice* device)
 {
+	if (device != nullptr)
+	{
+		device->CreateObjectConstants();
+	}
 }
 
 int SceneObject::Load()
@@ -17,9 +21,4 @@ Eigen::Vector3f SceneObject::GetPosition()
 Eigen::Vector3f SceneObject::GetRotation()
 {
 	return Rotation;
-}
-
-void SceneObject::createConstants()
-{
-
 }

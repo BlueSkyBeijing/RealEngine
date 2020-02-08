@@ -67,6 +67,9 @@ public:
 	virtual int SetTarget() override;
 	virtual int SetPipelineState() override;
 	virtual int Present() override;
+	virtual int CreateObjectConstants() override;
+	virtual int CreateMaterialConstants() override;
+	virtual int CreatePassConstants() override;
 
 protected:
 	void CreateDevice();

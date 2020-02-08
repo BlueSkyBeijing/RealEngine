@@ -41,30 +41,46 @@ bool ForwardShadingRenderer::renderShadowDepth()
 	// Clear depth
 
 	// Render depth
-	IDevice* Device = Engine::GetDevice();
-	assert(Device != nullptr);
-	Device->Draw();
-	Device->Present();
+	//IDevice* Device = Engine::GetDevice();
+	//assert(Device != nullptr);
+	//Device->Draw();
+	//Device->Present();
 
 	return true;
 }
 
 bool ForwardShadingRenderer::renderOpaque()
 {
+	//IDevice* Device = Engine::GetDevice();
+	//assert(Device != nullptr);
+	//Device->Draw();
+	//Device->Present();
+
+	createPassConstants();
+
 	IDevice* Device = Engine::GetDevice();
-	assert(Device != nullptr);
-	Device->Draw();
-	Device->Present();
+	if (Device != nullptr)
+	{
+		for (int i = 0; i < mStaticRenderObjects.size(); i++)
+		{
+			mStaticRenderObjects[i]->createConstants(Device);
+			//per scene object draw
+			Device->Draw();
+			//final present
+			Device->Present();
+		}
+
+	}
 
 	return true;
 }
 
 bool ForwardShadingRenderer::renderTranslucency()
 {
-	IDevice* Device = Engine::GetDevice();
-	assert(Device != nullptr);
-	Device->Draw();
-	Device->Present();
+	//IDevice* Device = Engine::GetDevice();
+	//assert(Device != nullptr);
+	//Device->Draw();
+	//Device->Present();
 
 	return true;
 }
