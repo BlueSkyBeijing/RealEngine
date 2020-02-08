@@ -246,7 +246,7 @@ int DX12Device::Init()
 	mPassConstants.DirectionalLightColor = XMFLOAT4(DirectonalLightColor.x(), DirectonalLightColor.y(), DirectonalLightColor.z(), 1.0f);
 
 	mMaterialConstants.Metallic = 0.2f;
-	mMaterialConstants.Roughness = 0.5f;
+	mMaterialConstants.Roughness = 0.2f;
 	mMaterialConstants.Specular = 0.1f;
 	mMaterialConstants.EmissiveColor = XMFLOAT4(Colors::Black);
 

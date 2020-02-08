@@ -54,10 +54,13 @@ float4 PSMain(VertexOut PIn) : SV_Target
     context.NoV = NoV;
     context.NoL = NoL;
     context.VoL = VoL;
-    context.NoH = NoH;
-    context.VoH = VoH;
-    //SpecularColor = NoL * SpecularGGX(Roughness, SpecularColor, context, NoL);
-    SpecularColor = EnvBRDFApprox(SpecularColor, Roughness, NoV);
+
+	float InvLenH = rsqrt(2 + 2 * context.VoL);
+	context.NoH = saturate((context.NoL + context.NoV) * InvLenH);
+	context.VoH = saturate(InvLenH + InvLenH * context.VoL);
+
+    SpecularColor = NoL * SpecularGGX(Roughness, SpecularColor, context, NoL);
+    //SpecularColor = EnvBRDFApprox(SpecularColor, Roughness, NoV);
     Color += NoL * DirectionalLightColor.rgb * (DiffuseColor + SpecularColor * CalcSpecular(Roughness, RoL, NoH, H, worldNormal));
     Color += SpecularColor * 0.5f;
     Color += Emissive;
