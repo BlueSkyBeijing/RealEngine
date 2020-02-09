@@ -1,10 +1,11 @@
 #include "..\Public\SceneObject.h"
 
-void Renderable::createConstants(IDevice* device)
+void Renderable::CreateConstants(IDevice* device)
 {
 	if (device != nullptr)
 	{
 		device->CreateObjectConstants();
+		device->CreateMaterialConstants();
 	}
 }
 

@@ -5,13 +5,13 @@
 class IRenderable
 {
 public:
-	virtual void createConstants(IDevice* device) = 0;
+	virtual void CreateConstants(IDevice* device) = 0;
 };
 
 class Renderable : public IRenderable
 {
 public:
-	virtual void createConstants(IDevice* device) override;
+	virtual void CreateConstants(IDevice* device) override;
 };
 
 
@@ -26,7 +26,7 @@ public:
 class SceneObject : public ISceneObject
 {
 public:
-	virtual int Load();
+	virtual int Load() override;
 	virtual Eigen::Vector3f GetPosition() override;
 	virtual Eigen::Vector3f GetRotation() override;
 protected:

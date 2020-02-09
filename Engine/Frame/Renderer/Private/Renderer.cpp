@@ -36,7 +36,7 @@ int Renderer::Render()
 	{	
 		for (int i = 0; i < mStaticRenderObjects.size(); i++)
 		{
-			mStaticRenderObjects[i]->createConstants(Device);
+			mStaticRenderObjects[i]->CreateConstants(Device);
 			//per scene object draw
 			Device->Draw();
 		}
@@ -73,5 +73,6 @@ void Renderer::createPassConstants()
 	IDevice* Device = Engine::GetDevice();
 	if (Device != nullptr)
 	{
+		Device->CreatePassConstants();
 	}
 }

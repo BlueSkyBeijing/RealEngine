@@ -207,43 +207,14 @@ int DX12Device::Init()
 
 	mIndexCount = indexCount;
 
-	IScene* CurrentScene = EngineWindows::GetInstance()->GetCurrentScene();
-	ICamera* CurrentCamera = CurrentScene->GetCurrentCamera();
-	DirectonalLight* MainDirectonalLight = CurrentScene->GetMainDirectonalLight();
-	Eigen::Vector3f CameraPos = CurrentCamera->GetPosition();
-	Eigen::Vector3f CameraUp = CurrentCamera->GetUp();
-	Eigen::Vector3f CameraDirection = CurrentCamera->GetDirection();
-	Eigen::Vector3f DirectonalLightDirection = MainDirectonalLight->GetDirection();
-	Eigen::Vector3f DirectonalLightColor = MainDirectonalLight->GetColor();
-
-	// Build view matrix.
-	XMVECTOR pos = XMVectorSet(CameraPos.x(), CameraPos.y(), CameraPos.z(), 1.0f);
-	XMVECTOR target = XMVectorZero();
-	XMVECTOR up = XMVectorSet(CameraUp.x(), CameraUp.y(), CameraUp.z(), 0.0f);
-
-	XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
-	XMStoreFloat4x4(&mViewMatrix, view);
-
-	float AspectRatio = (float) renderTarget->GetWidth() / (float) renderTarget->GetHeight();
-	XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f * XM_PI, AspectRatio, 1.0f, 1000.0f);
-	XMStoreFloat4x4(&mProjMatrix, P);
-
 	mWorldMatrix = DirectX::XMFLOAT4X4(
 		1.0f, 0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f, 0.0f,
 		0.0f, 0.0f, 0.0f, 1.0f);
 	XMMATRIX world = XMLoadFloat4x4(&mWorldMatrix);
-	XMMATRIX proj = XMLoadFloat4x4(&mProjMatrix);
 
 	XMStoreFloat4x4(&mObjectConstants.World, XMMatrixTranspose(world));
-
-	XMStoreFloat4x4(&mPassConstants.View, XMMatrixTranspose(view));
-	XMStoreFloat4x4(&mPassConstants.ViewProj, XMMatrixTranspose(view * proj));
-	mPassConstants.CameraPos = DirectX::XMFLOAT3(CameraPos.x(), CameraPos.y(), CameraPos.z());
-	mPassConstants.CameraDir = DirectX::XMFLOAT3(CameraDirection.x(), CameraDirection.y(), CameraDirection.z());
-	mPassConstants.DirectionalLightDir = DirectX::XMFLOAT3(DirectonalLightDirection.x(), DirectonalLightDirection.y(), DirectonalLightDirection.z());
-	mPassConstants.DirectionalLightColor = XMFLOAT4(DirectonalLightColor.x(), DirectonalLightColor.y(), DirectonalLightColor.z(), 1.0f);
 
 	mMaterialConstants.Metallic = 0.2f;
 	mMaterialConstants.Roughness = 0.2f;
@@ -287,14 +258,6 @@ int DX12Device::Init()
 		nullptr,
 		IID_PPV_ARGS(&mMaterialConstantBuffer)));
 
-	// Create pass constant buffer
-	THROW_IF_FAILED(mDX12Device->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer(CalcConstantBufferByteSize(sizeof(XMMATRIX))),
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&mPassConstantBuffer)));
 
 	const UINT vbByteSize = vertexCount * sizeof(VertexDataInfo);
 	const UINT ibByteSize = indexCount * sizeof(std::uint16_t);
@@ -320,10 +283,6 @@ int DX12Device::Init()
 	memcpy(materialConstantBufferData, &mMaterialConstants, sizeof(mMaterialConstants));
 	mMaterialConstantBuffer->Unmap(0, nullptr);
 
-	UINT8* passConstantBufferData;
-	mPassConstantBuffer->Map(0, nullptr, reinterpret_cast<void**>(&passConstantBufferData));
-	memcpy(passConstantBufferData, &mPassConstants, sizeof(mPassConstants));
-	mPassConstantBuffer->Unmap(0, nullptr);
 
 	// Vertex buffer view
 	mVertexBufferView.BufferLocation = mVertexBuffer->GetGPUVirtualAddress();
@@ -350,13 +309,6 @@ int DX12Device::Init()
 	THROW_IF_FAILED(mDX12Device->CreateDescriptorHeap(&cbvHeapDescMaterial,
 		IID_PPV_ARGS(&mMaterialConstantBufferHeap)));
 
-	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDescPass;
-	cbvHeapDescPass.NumDescriptors = 1;
-	cbvHeapDescPass.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	cbvHeapDescPass.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-	cbvHeapDescPass.NodeMask = 0;
-	THROW_IF_FAILED(mDX12Device->CreateDescriptorHeap(&cbvHeapDescPass,
-		IID_PPV_ARGS(&mPassConstantBufferHeap)));
 
 	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDescObject;
 	cbvDescObject.BufferLocation = mObjectConstantBuffer->GetGPUVirtualAddress();
@@ -374,13 +326,6 @@ int DX12Device::Init()
 		&cbvDescMaterial,
 		mMaterialConstantBufferHeap->GetCPUDescriptorHandleForHeapStart());
 
-	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDescPass;
-	cbvDescPass.BufferLocation = mPassConstantBuffer->GetGPUVirtualAddress();
-	cbvDescPass.SizeInBytes = CalcConstantBufferByteSize(sizeof(PassConstants));
-
-	mDX12Device->CreateConstantBufferView(
-		&cbvDescPass,
-		mPassConstantBufferHeap->GetCPUDescriptorHandleForHeapStart());
 
 	// Create root signature
 	CD3DX12_DESCRIPTOR_RANGE texTable;
@@ -563,18 +508,165 @@ int DX12Device::Present()
 
 int DX12Device::CreateObjectConstants()
 {
+	mWorldMatrix = DirectX::XMFLOAT4X4(
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f);
+	XMMATRIX world = XMLoadFloat4x4(&mWorldMatrix);
+
+	XMStoreFloat4x4(&mObjectConstants.World, XMMatrixTranspose(world));
+
+	// Create object constant buffer
+	THROW_IF_FAILED(mDX12Device->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+		D3D12_HEAP_FLAG_NONE,
+		&CD3DX12_RESOURCE_DESC::Buffer(CalcConstantBufferByteSize(sizeof(XMMATRIX))),
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&mObjectConstantBuffer)));
+
+	UINT8* objectConstantBufferData;
+	mObjectConstantBuffer->Map(0, nullptr, reinterpret_cast<void**>(&objectConstantBufferData));
+	memcpy(objectConstantBufferData, &mObjectConstants, sizeof(mObjectConstants));
+	mObjectConstantBuffer->Unmap(0, nullptr);
+
+	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDescObject;
+	cbvHeapDescObject.NumDescriptors = 1;
+	cbvHeapDescObject.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	cbvHeapDescObject.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	cbvHeapDescObject.NodeMask = 0;
+	THROW_IF_FAILED(mDX12Device->CreateDescriptorHeap(&cbvHeapDescObject,
+		IID_PPV_ARGS(&mObjectConstantBufferHeap)));
+
+	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDescObject;
+	cbvDescObject.BufferLocation = mObjectConstantBuffer->GetGPUVirtualAddress();
+	cbvDescObject.SizeInBytes = CalcConstantBufferByteSize(sizeof(ObjectConstants));
+
+	mDX12Device->CreateConstantBufferView(
+		&cbvDescObject,
+		mObjectConstantBufferHeap->GetCPUDescriptorHandleForHeapStart());
+
 	return 0;
 
 }
 
 int DX12Device::CreateMaterialConstants()
 {
+	mMaterialConstants.Metallic = 0.2f;
+	mMaterialConstants.Roughness = 0.2f;
+	mMaterialConstants.Specular = 0.1f;
+	mMaterialConstants.EmissiveColor = XMFLOAT4(Colors::Black);
+
+
+	// Create material constant buffer
+	THROW_IF_FAILED(mDX12Device->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+		D3D12_HEAP_FLAG_NONE,
+		&CD3DX12_RESOURCE_DESC::Buffer(CalcConstantBufferByteSize(sizeof(XMMATRIX))),
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&mMaterialConstantBuffer)));
+
+
+	UINT8* materialConstantBufferData;
+	mMaterialConstantBuffer->Map(0, nullptr, reinterpret_cast<void**>(&materialConstantBufferData));
+	memcpy(materialConstantBufferData, &mMaterialConstants, sizeof(mMaterialConstants));
+	mMaterialConstantBuffer->Unmap(0, nullptr);
+
+	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDescMaterial;
+	cbvHeapDescMaterial.NumDescriptors = 1;
+	cbvHeapDescMaterial.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	cbvHeapDescMaterial.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	cbvHeapDescMaterial.NodeMask = 0;
+	THROW_IF_FAILED(mDX12Device->CreateDescriptorHeap(&cbvHeapDescMaterial,
+		IID_PPV_ARGS(&mMaterialConstantBufferHeap)));
+
+	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDescMaterial;
+	cbvDescMaterial.BufferLocation = mMaterialConstantBuffer->GetGPUVirtualAddress();
+	cbvDescMaterial.SizeInBytes = CalcConstantBufferByteSize(sizeof(MaterialConstants));
+
+	mDX12Device->CreateConstantBufferView(
+		&cbvDescMaterial,
+		mMaterialConstantBufferHeap->GetCPUDescriptorHandleForHeapStart());
+
 	return 0;
 
 }
 
 int DX12Device::CreatePassConstants()
 {
+	IRenderTarget* renderTarget = EngineWindows::GetInstance()->GetRenderTarget();
+	assert(renderTarget != nullptr);
+
+	IScene* CurrentScene = EngineWindows::GetInstance()->GetCurrentScene();
+	ICamera* CurrentCamera = CurrentScene->GetCurrentCamera();
+	DirectonalLight* MainDirectonalLight = CurrentScene->GetMainDirectonalLight();
+	Eigen::Vector3f CameraPos = CurrentCamera->GetPosition();
+	Eigen::Vector3f CameraUp = CurrentCamera->GetUp();
+	Eigen::Vector3f CameraDirection = CurrentCamera->GetDirection();
+	Eigen::Vector3f DirectonalLightDirection = MainDirectonalLight->GetDirection();
+	Eigen::Vector3f DirectonalLightColor = MainDirectonalLight->GetColor();
+
+	// Build view matrix.
+	XMVECTOR pos = XMVectorSet(CameraPos.x(), CameraPos.y(), CameraPos.z(), 1.0f);
+	XMVECTOR target = XMVectorZero();
+	XMVECTOR up = XMVectorSet(CameraUp.x(), CameraUp.y(), CameraUp.z(), 0.0f);
+
+	XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
+	XMStoreFloat4x4(&mViewMatrix, view);
+
+	float AspectRatio = (float)renderTarget->GetWidth() / (float)renderTarget->GetHeight();
+	XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f * XM_PI, AspectRatio, 1.0f, 1000.0f);
+	XMStoreFloat4x4(&mProjMatrix, P);
+
+	mWorldMatrix = DirectX::XMFLOAT4X4(
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f);
+	XMMATRIX world = XMLoadFloat4x4(&mWorldMatrix);
+	XMMATRIX proj = XMLoadFloat4x4(&mProjMatrix);
+
+	XMStoreFloat4x4(&mPassConstants.View, XMMatrixTranspose(view));
+	XMStoreFloat4x4(&mPassConstants.ViewProj, XMMatrixTranspose(view * proj));
+	mPassConstants.CameraPos = DirectX::XMFLOAT3(CameraPos.x(), CameraPos.y(), CameraPos.z());
+	mPassConstants.CameraDir = DirectX::XMFLOAT3(CameraDirection.x(), CameraDirection.y(), CameraDirection.z());
+	mPassConstants.DirectionalLightDir = DirectX::XMFLOAT3(DirectonalLightDirection.x(), DirectonalLightDirection.y(), DirectonalLightDirection.z());
+	mPassConstants.DirectionalLightColor = XMFLOAT4(DirectonalLightColor.x(), DirectonalLightColor.y(), DirectonalLightColor.z(), 1.0f);
+
+
+	// Create pass constant buffer
+	THROW_IF_FAILED(mDX12Device->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+		D3D12_HEAP_FLAG_NONE,
+		&CD3DX12_RESOURCE_DESC::Buffer(CalcConstantBufferByteSize(sizeof(XMMATRIX))),
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&mPassConstantBuffer)));
+
+
+	UINT8* passConstantBufferData;
+	mPassConstantBuffer->Map(0, nullptr, reinterpret_cast<void**>(&passConstantBufferData));
+	memcpy(passConstantBufferData, &mPassConstants, sizeof(mPassConstants));
+	mPassConstantBuffer->Unmap(0, nullptr);
+
+	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDescPass;
+	cbvHeapDescPass.NumDescriptors = 1;
+	cbvHeapDescPass.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	cbvHeapDescPass.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	cbvHeapDescPass.NodeMask = 0;
+	THROW_IF_FAILED(mDX12Device->CreateDescriptorHeap(&cbvHeapDescPass,
+		IID_PPV_ARGS(&mPassConstantBufferHeap)));
+
+	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDescPass;
+	cbvDescPass.BufferLocation = mPassConstantBuffer->GetGPUVirtualAddress();
+	cbvDescPass.SizeInBytes = CalcConstantBufferByteSize(sizeof(PassConstants));
+
+	mDX12Device->CreateConstantBufferView(
+		&cbvDescPass,
+		mPassConstantBufferHeap->GetCPUDescriptorHandleForHeapStart());
+
 	return 0;
 
 }
