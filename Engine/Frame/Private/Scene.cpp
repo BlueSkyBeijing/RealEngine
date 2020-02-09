@@ -10,8 +10,8 @@ int Scene::Load()
 	directonalLight->SetColor(Eigen::Vector3f(1.0f, 1.0f, 1.0f));
 	mMainDirectonalLight = directonalLight;
 
-	ISceneObject* testObj = new StaticMeshObject;
-	mSceneObjects.push_back(testObj);
+	IRenderable* testObj = new StaticMeshObject;
+	mSceneObjects.push_back((ISceneObject*)testObj);
 	return 0;
 }
 

@@ -207,21 +207,6 @@ int DX12Device::Init()
 
 	mIndexCount = indexCount;
 
-	mWorldMatrix = DirectX::XMFLOAT4X4(
-		1.0f, 0.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f, 0.0f,
-		0.0f, 0.0f, 1.0f, 0.0f,
-		0.0f, 0.0f, 0.0f, 1.0f);
-	XMMATRIX world = XMLoadFloat4x4(&mWorldMatrix);
-
-	XMStoreFloat4x4(&mObjectConstants.World, XMMatrixTranspose(world));
-
-	mMaterialConstants.Metallic = 0.2f;
-	mMaterialConstants.Roughness = 0.2f;
-	mMaterialConstants.Specular = 0.1f;
-	mMaterialConstants.EmissiveColor = XMFLOAT4(Colors::Black);
-
-
 	// Create vertex buffer
 	THROW_IF_FAILED(mDX12Device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), 
@@ -240,24 +225,6 @@ int DX12Device::Init()
 		nullptr,
 		IID_PPV_ARGS(&mIndexBuffer)));
 
-	// Create object constant buffer
-	THROW_IF_FAILED(mDX12Device->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer(CalcConstantBufferByteSize(sizeof(XMMATRIX))),
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&mObjectConstantBuffer)));
-
-	// Create material constant buffer
-	THROW_IF_FAILED(mDX12Device->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer(CalcConstantBufferByteSize(sizeof(XMMATRIX))),
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&mMaterialConstantBuffer)));
-
 
 	const UINT vbByteSize = vertexCount * sizeof(VertexDataInfo);
 	const UINT ibByteSize = indexCount * sizeof(std::uint16_t);
@@ -272,17 +239,6 @@ int DX12Device::Init()
 	mIndexBuffer->Map(0, nullptr, reinterpret_cast<void**>(&indexBufferData));
 	memcpy(indexBufferData, indexData, ibByteSize);
 	mIndexBuffer->Unmap(0, nullptr);
-
-	UINT8* objectConstantBufferData;
-	mObjectConstantBuffer->Map(0, nullptr, reinterpret_cast<void**>(&objectConstantBufferData));
-	memcpy(objectConstantBufferData, &mObjectConstants, sizeof(mObjectConstants));
-	mObjectConstantBuffer->Unmap(0, nullptr);
-
-	UINT8* materialConstantBufferData;
-	mMaterialConstantBuffer->Map(0, nullptr, reinterpret_cast<void**>(&materialConstantBufferData));
-	memcpy(materialConstantBufferData, &mMaterialConstants, sizeof(mMaterialConstants));
-	mMaterialConstantBuffer->Unmap(0, nullptr);
-
 
 	// Vertex buffer view
 	mVertexBufferView.BufferLocation = mVertexBuffer->GetGPUVirtualAddress();
@@ -308,23 +264,6 @@ int DX12Device::Init()
 	cbvHeapDescMaterial.NodeMask = 0;
 	THROW_IF_FAILED(mDX12Device->CreateDescriptorHeap(&cbvHeapDescMaterial,
 		IID_PPV_ARGS(&mMaterialConstantBufferHeap)));
-
-
-	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDescObject;
-	cbvDescObject.BufferLocation = mObjectConstantBuffer->GetGPUVirtualAddress();
-	cbvDescObject.SizeInBytes = CalcConstantBufferByteSize(sizeof(ObjectConstants));
-
-	mDX12Device->CreateConstantBufferView(
-		&cbvDescObject,
-		mObjectConstantBufferHeap->GetCPUDescriptorHandleForHeapStart());
-
-	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDescMaterial;
-	cbvDescMaterial.BufferLocation = mMaterialConstantBuffer->GetGPUVirtualAddress();
-	cbvDescMaterial.SizeInBytes = CalcConstantBufferByteSize(sizeof(MaterialConstants));
-
-	mDX12Device->CreateConstantBufferView(
-		&cbvDescMaterial,
-		mMaterialConstantBufferHeap->GetCPUDescriptorHandleForHeapStart());
 
 
 	// Create root signature

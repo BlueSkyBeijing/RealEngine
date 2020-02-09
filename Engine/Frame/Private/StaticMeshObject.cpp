@@ -1,9 +1,9 @@
 #include "..\Public\StaticMeshObject.h"
 
-int StaticMeshObject::Load()
-{
-	return 0;
-}
+//int StaticMeshObject::Load()
+//{
+//	return 0;
+//}
 
 void StaticMeshObject::CreateConstants(IDevice* device)
 {

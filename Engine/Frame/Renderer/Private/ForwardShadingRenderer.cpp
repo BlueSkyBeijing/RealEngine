@@ -63,7 +63,9 @@ bool ForwardShadingRenderer::renderOpaque()
 	{
 		for (int i = 0; i < mStaticRenderObjects.size(); i++)
 		{
-			mStaticRenderObjects[i]->CreateConstants(Device);
+			IRenderable* renderable = mStaticRenderObjects[i];
+			assert(renderable != nullptr);
+			renderable->CreateConstants(Device);
 			//per scene object draw
 			Device->Draw();
 			//final present
