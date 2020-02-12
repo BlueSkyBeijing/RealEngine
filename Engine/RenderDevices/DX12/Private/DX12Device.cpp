@@ -177,14 +177,6 @@ int DX12Device::Init()
 	THROW_IF_FAILED(D3DCompileFromFile(ShaderFileNameVS.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "VSMain", "vs_5_0", compileFlags, 0, &mVertexShader, nullptr));
 	THROW_IF_FAILED(D3DCompileFromFile(ShaderFileNamePS.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "PSMain", "ps_5_0", compileFlags, 0, &mPixelShader, nullptr));
 
-	// Input Layout
-	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 } };
-
-	UINT NumElements = sizeof(inputLayout) / sizeof(inputLayout[0]);
-
 	ManualMesh Mesh;
 	MeshUtility::CreateSphere(Mesh, 1.0f);
 	const int vertexCount = 2017;
@@ -294,33 +286,7 @@ int DX12Device::Init()
 	THROW_IF_FAILED(mDX12Device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(&mDX12RootSignature)));
 
 	// Create graphic pipeline state 
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
-	ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
-	psoDesc.InputLayout = { inputLayout, NumElements };
-	psoDesc.pRootSignature = mDX12RootSignature.Get();
-	psoDesc.DepthStencilState.DepthEnable = TRUE;
-	psoDesc.DepthStencilState.StencilEnable = TRUE;
-	psoDesc.VS =
-	{
-		reinterpret_cast<BYTE*>(mVertexShader->GetBufferPointer()),
-		mVertexShader->GetBufferSize()
-	};
-	psoDesc.PS =
-	{
-		reinterpret_cast<BYTE*>(mPixelShader->GetBufferPointer()),
-		mPixelShader->GetBufferSize()
-	};
-	psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
-	psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
-	psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
-	psoDesc.SampleMask = UINT_MAX;
-	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-	psoDesc.NumRenderTargets = 1;
-	psoDesc.RTVFormats[0] = mBackBufferFormat;
-	psoDesc.SampleDesc.Count = 1;
-	psoDesc.SampleDesc.Quality = 0;
-	psoDesc.DSVFormat = mDepthStencilFormat;
-	THROW_IF_FAILED(mDX12Device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&mIDX12PipleLineState)));
+	CreatePipelineState();
 
 	THROW_IF_FAILED(mDX12CommandList->Close());
 
@@ -688,6 +654,46 @@ void DX12Device::CreateSwapChain()
 
 void DX12Device::CreateGeometry()
 {
+
+}
+
+void DX12Device::CreatePipelineState()
+{
+	// Input Layout
+	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 } };
+
+	UINT NumElements = sizeof(inputLayout) / sizeof(inputLayout[0]);
+
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
+	ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
+	psoDesc.InputLayout = { inputLayout, NumElements };
+	psoDesc.pRootSignature = mDX12RootSignature.Get();
+	psoDesc.DepthStencilState.DepthEnable = TRUE;
+	psoDesc.DepthStencilState.StencilEnable = TRUE;
+	psoDesc.VS =
+	{
+		reinterpret_cast<BYTE*>(mVertexShader->GetBufferPointer()),
+		mVertexShader->GetBufferSize()
+	};
+	psoDesc.PS =
+	{
+		reinterpret_cast<BYTE*>(mPixelShader->GetBufferPointer()),
+		mPixelShader->GetBufferSize()
+	};
+	psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+	psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
+	psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
+	psoDesc.SampleMask = UINT_MAX;
+	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+	psoDesc.NumRenderTargets = 1;
+	psoDesc.RTVFormats[0] = mBackBufferFormat;
+	psoDesc.SampleDesc.Count = 1;
+	psoDesc.SampleDesc.Quality = 0;
+	psoDesc.DSVFormat = mDepthStencilFormat;
+	THROW_IF_FAILED(mDX12Device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&mIDX12PipleLineState)));
 
 }
 

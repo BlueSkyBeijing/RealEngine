@@ -76,6 +76,7 @@ protected:
 	void CreateCommandObjects();
 	void CreateSwapChain();
 	void CreateGeometry();
+	void CreatePipelineState();
 	void LoadTexture();
 
 	ID3D12Resource* GetBackBuffer() const;
