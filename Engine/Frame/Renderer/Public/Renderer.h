@@ -2,6 +2,7 @@
 #include "..\..\Public\SceneObject.h"
 #include "..\..\Public\Scene.h"
 #include <vector>
+#include <map>
 
 class IRenderCommandList
 {
@@ -50,4 +51,5 @@ protected:
 	virtual void createPassConstants() override;
 protected:
 	std::vector<IRenderable*> mStaticRenderObjects;
+	std::map<IRenderable*, bool> mVisibilityMap;
 };

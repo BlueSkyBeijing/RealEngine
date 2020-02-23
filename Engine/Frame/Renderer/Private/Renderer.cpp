@@ -65,6 +65,11 @@ int Renderer::clear()
 
 void Renderer::computeVisibility()
 {
+	//check if in the view frustum
+	for (size_t i = 0; i < mStaticRenderObjects.size(); i++)
+	{
+		mVisibilityMap.insert(std::make_pair(mStaticRenderObjects[i], true));
+	}
 
 }
 
