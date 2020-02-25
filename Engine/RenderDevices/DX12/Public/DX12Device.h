@@ -105,6 +105,8 @@ private:
 	Microsoft::WRL::ComPtr <ID3D12Resource> mDepthStencilBuffer;
 	Microsoft::WRL::ComPtr <ID3D12Resource> mTestTexture;
 	Microsoft::WRL::ComPtr <ID3D12Resource> mTestTextureUploadHeap;
+	Microsoft::WRL::ComPtr <ID3D12Resource> mEnvironmentTexture;
+	Microsoft::WRL::ComPtr <ID3D12Resource> mEnvironmentTextureUploadHeap;
 	Microsoft::WRL::ComPtr <ID3DBlob> mVertexShader;
 	Microsoft::WRL::ComPtr <ID3DBlob> mPixelShader;
 	Microsoft::WRL::ComPtr <ID3D12Resource> mVertexBuffer;

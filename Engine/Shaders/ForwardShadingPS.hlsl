@@ -3,6 +3,8 @@
 Texture2D DiffuseMap : register(t0);
 SamplerState DiffuseSamplerState : register(s0);
 
+TextureCube EnvironmentMap : register(t1);
+
 float4 PSMain(VertexOut PIn) : SV_Target
 {
     //Base color
@@ -62,7 +64,9 @@ float4 PSMain(VertexOut PIn) : SV_Target
     SpecularColor = NoL * SpecularGGX(Roughness, SpecularColor, context, NoL);
     //SpecularColor = EnvBRDFApprox(SpecularColor, Roughness, NoV);
     Color += NoL * DirectionalLightColor.rgb * (DiffuseColor + SpecularColor * CalcSpecular(Roughness, RoL, NoH, H, worldNormal));
-    Color += SpecularColor * 0.5f;
+    float3 r = reflect(-gCameraPos, reflectionVector);
+    float4 reflectionColor = EnvironmentMap.Sample(DiffuseSamplerState, r);
+    Color += SpecularColor * reflectionColor.rgb;
     Color += Emissive;
 
     return float4(Color, 1.0f);

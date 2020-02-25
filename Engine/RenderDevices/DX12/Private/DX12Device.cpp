@@ -153,7 +153,7 @@ int DX12Device::Init()
 	LoadTexture();
 
 	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
-	srvHeapDesc.NumDescriptors = 1;
+	srvHeapDesc.NumDescriptors = 2;
 	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	THROW_IF_FAILED(mDX12Device->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&mSRVDescriptorHeap)));
@@ -169,6 +169,15 @@ int DX12Device::Init()
 	srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
 
 	mDX12Device->CreateShaderResourceView(mTestTexture.Get(), &srvDesc, hDescriptor);
+
+	hDescriptor.Offset(1, mCBVSRVDescriptorSize);
+
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
+	srvDesc.TextureCube.MostDetailedMip = 0;
+	srvDesc.TextureCube.MipLevels = mEnvironmentTexture->GetDesc().MipLevels;
+	srvDesc.TextureCube.ResourceMinLODClamp = 0.0f;
+	srvDesc.Format = mEnvironmentTexture->GetDesc().Format;
+	mDX12Device->CreateShaderResourceView(mEnvironmentTexture.Get(), &srvDesc, hDescriptor);
 
 	UINT compileFlags = 0;
 	std::wstring ShaderFileNameVS(L"Engine\\Shaders\\ForwardShadingVS.hlsl");
@@ -262,13 +271,17 @@ int DX12Device::Init()
 	CD3DX12_DESCRIPTOR_RANGE texTable;
 	texTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
 
+	CD3DX12_DESCRIPTOR_RANGE texTableEnv;
+	texTableEnv.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1);
+
 	// Root parameter can be a table, root descriptor or root constants.
-	CD3DX12_ROOT_PARAMETER slotRootParameter[4];
+	CD3DX12_ROOT_PARAMETER slotRootParameter[5];
 
 	slotRootParameter[0].InitAsDescriptorTable(1, &texTable, D3D12_SHADER_VISIBILITY_PIXEL);
-	slotRootParameter[1].InitAsConstantBufferView(0);
-	slotRootParameter[2].InitAsConstantBufferView(1);
-	slotRootParameter[3].InitAsConstantBufferView(2);
+	slotRootParameter[1].InitAsDescriptorTable(1, &texTableEnv, D3D12_SHADER_VISIBILITY_PIXEL);
+	slotRootParameter[2].InitAsConstantBufferView(0);
+	slotRootParameter[3].InitAsConstantBufferView(1);
+	slotRootParameter[4].InitAsConstantBufferView(2);
 
 	const CD3DX12_STATIC_SAMPLER_DESC pointWrap(
 		0, // shaderRegister
@@ -277,7 +290,7 @@ int DX12Device::Init()
 		D3D12_TEXTURE_ADDRESS_MODE_WRAP,  // addressV
 		D3D12_TEXTURE_ADDRESS_MODE_WRAP); // addressW
 
-	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc(4, slotRootParameter, 1, &pointWrap,
+	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc(5, slotRootParameter, 1, &pointWrap,
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
 	Microsoft::WRL::ComPtr <ID3DBlob> signature;
@@ -371,9 +384,12 @@ int DX12Device::Draw()
 	ID3D12DescriptorHeap* descriptorHeaps[] = { mSRVDescriptorHeap.Get() };
 	mDX12CommandList->SetDescriptorHeaps(1, descriptorHeaps);
 	mDX12CommandList->SetGraphicsRootDescriptorTable(0, mSRVDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
-	mDX12CommandList->SetGraphicsRootConstantBufferView(1, mObjectConstantBuffer->GetGPUVirtualAddress());
-	mDX12CommandList->SetGraphicsRootConstantBufferView(2, mMaterialConstantBuffer->GetGPUVirtualAddress());
-	mDX12CommandList->SetGraphicsRootConstantBufferView(3, mPassConstantBuffer->GetGPUVirtualAddress());
+	CD3DX12_GPU_DESCRIPTOR_HANDLE EnvTexDescriptor(mSRVDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+	EnvTexDescriptor.Offset(1, mCBVSRVDescriptorSize);
+	mDX12CommandList->SetGraphicsRootDescriptorTable(1, EnvTexDescriptor);
+	mDX12CommandList->SetGraphicsRootConstantBufferView(2, mObjectConstantBuffer->GetGPUVirtualAddress());
+	mDX12CommandList->SetGraphicsRootConstantBufferView(3, mMaterialConstantBuffer->GetGPUVirtualAddress());
+	mDX12CommandList->SetGraphicsRootConstantBufferView(4, mPassConstantBuffer->GetGPUVirtualAddress());
 
 	// Draw
 	mDX12CommandList->DrawIndexedInstanced(mIndexCount, 1, 0, 0, 0);
@@ -701,9 +717,16 @@ void DX12Device::LoadTexture()
 {
 	std::wstring szFileName(L"Content\\Textures\\oldwood.dds");
 
-	CreateDDSTextureFromFile12(mDX12Device.Get(),
+	THROW_IF_FAILED(CreateDDSTextureFromFile12(mDX12Device.Get(),
 		mDX12CommandList.Get(), szFileName.c_str(),
-		mTestTexture, mTestTextureUploadHeap);
+		mTestTexture, mTestTextureUploadHeap));
+
+	std::wstring szFileNameEnvironment(L"Content\\Textures\\envcube.dds");
+
+	THROW_IF_FAILED(CreateDDSTextureFromFile12(mDX12Device.Get(),
+		mDX12CommandList.Get(), szFileNameEnvironment.c_str(),
+		mEnvironmentTexture, mEnvironmentTextureUploadHeap));
+
 }
 
 ID3D12Resource* DX12Device::GetBackBuffer() const
