@@ -292,3 +292,18 @@ float CalcSpecular(float Roughness, float RoL, float NoH, float3 H, float3 N)
 {
     return PhongApprox(Roughness, RoL);
 }
+
+#define REFLECTION_CAPTURE_ROUGHEST_MIP 1
+#define REFLECTION_CAPTURE_ROUGHNESS_MIP_SCALE 1.2
+
+/** 
+ * Compute absolute mip for a reflection capture cubemap given a roughness.
+ */
+float ComputeReflectionCaptureMipFromRoughness(float Roughness, float CubemapMaxMip)
+{
+	// Heuristic that maps roughness to mip level
+	// This is done in a way such that a certain mip level will always have the same roughness, regardless of how many mips are in the texture
+	// Using more mips in the cubemap just allows sharper reflections to be supported
+    float LevelFrom1x1 = REFLECTION_CAPTURE_ROUGHEST_MIP - REFLECTION_CAPTURE_ROUGHNESS_MIP_SCALE * log2(Roughness);
+    return CubemapMaxMip - 1 - LevelFrom1x1;
+}
