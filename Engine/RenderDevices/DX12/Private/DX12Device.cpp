@@ -48,7 +48,7 @@ DX12Device::DX12Device()
 
 DX12Device::~DX12Device()
 {
-
+	UnInit();
 }
 
 int DX12Device::Init()
@@ -338,8 +338,12 @@ int DX12Device::Init()
 
 int DX12Device::UnInit()
 {
-	return 0;
+	if (mDX12Device != nullptr)
+	{
+		FlushCommandQueue();
+	}
 
+	return 0;
 }
 
 int DX12Device::Clear()
