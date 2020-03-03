@@ -179,124 +179,12 @@ int DX12Device::Init()
 	srvDesc.Format = mEnvironmentTexture->GetDesc().Format;
 	mDX12Device->CreateShaderResourceView(mEnvironmentTexture.Get(), &srvDesc, hDescriptor);
 
-	UINT compileFlags = 0;
-	std::wstring ShaderFileNameVS(L"Engine\\Shaders\\ForwardShadingVS.hlsl");
-	std::wstring ShaderFileNamePS(L"Engine\\Shaders\\ForwardShadingPS.hlsl");
+	CreateShader();
 
-	THROW_IF_FAILED(D3DCompileFromFile(ShaderFileNameVS.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "VSMain", "vs_5_0", compileFlags, 0, &mVertexShader, nullptr));
-	THROW_IF_FAILED(D3DCompileFromFile(ShaderFileNamePS.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "PSMain", "ps_5_0", compileFlags, 0, &mPixelShader, nullptr));
-
-	ManualMesh Mesh;
-	MeshUtility::CreateSphere(Mesh, 1.0f);
-	const int vertexCount = 2017;
-	const int indexCount = 11904;
-	VertexDataInfo vertexData[vertexCount];
-
-	for (size_t i = 0; i < vertexCount; i++)
-	{
-		vertexData[i] = VertexDataInfo(Mesh.GetVertexData()[i].Pos.x(), Mesh.GetVertexData()[i].Pos.y(), Mesh.GetVertexData()[i].Pos.z(),
-			Mesh.GetVertexData()[i].Normal.x(), Mesh.GetVertexData()[i].Normal.y(), Mesh.GetVertexData()[i].Normal.z(),
-			Mesh.GetVertexData()[i].TexCoord.x(), Mesh.GetVertexData()[i].TexCoord.y());
-	}
-
-	std::uint16_t indexData[indexCount];
-
-	for (size_t i = 0; i < indexCount; i++)
-	{
-		indexData[i] = Mesh.GetIndexData()[i];
-	}
-
-	mIndexCount = indexCount;
-
-	// Create vertex buffer
-	THROW_IF_FAILED(mDX12Device->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), 
-		D3D12_HEAP_FLAG_NONE, 
-		&CD3DX12_RESOURCE_DESC::Buffer(vertexCount * sizeof(VertexDataInfo)),
-		D3D12_RESOURCE_STATE_GENERIC_READ, 
-		nullptr, 
-		IID_PPV_ARGS(&mVertexBuffer)));
-
-	// Create index buffer
-	THROW_IF_FAILED(mDX12Device->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer(indexCount * sizeof(std::uint16_t)),
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&mIndexBuffer)));
-
-
-	const UINT vbByteSize = vertexCount * sizeof(VertexDataInfo);
-	const UINT ibByteSize = indexCount * sizeof(std::uint16_t);
-
-	// Copy data
-	UINT8* vertexBufferData;
-	mVertexBuffer->Map(0, nullptr, reinterpret_cast<void**>(&vertexBufferData));
-	memcpy(vertexBufferData, vertexData, vbByteSize);
-	mVertexBuffer->Unmap(0, nullptr);
-
-	UINT8* indexBufferData;
-	mIndexBuffer->Map(0, nullptr, reinterpret_cast<void**>(&indexBufferData));
-	memcpy(indexBufferData, indexData, ibByteSize);
-	mIndexBuffer->Unmap(0, nullptr);
-
-	// Vertex buffer view
-	mVertexBufferView.BufferLocation = mVertexBuffer->GetGPUVirtualAddress();
-	mVertexBufferView.StrideInBytes = sizeof(VertexDataInfo);
-	mVertexBufferView.SizeInBytes = vbByteSize;
-
-	mIndexBufferView.BufferLocation = mIndexBuffer->GetGPUVirtualAddress();
-	mIndexBufferView.Format = DXGI_FORMAT_R16_UINT;
-	mIndexBufferView.SizeInBytes = ibByteSize;;
-
-	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDescObject;
-	cbvHeapDescObject.NumDescriptors = 1;
-	cbvHeapDescObject.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	cbvHeapDescObject.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-	cbvHeapDescObject.NodeMask = 0;
-	THROW_IF_FAILED(mDX12Device->CreateDescriptorHeap(&cbvHeapDescObject,
-		IID_PPV_ARGS(&mObjectConstantBufferHeap)));
-
-	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDescMaterial;
-	cbvHeapDescMaterial.NumDescriptors = 1;
-	cbvHeapDescMaterial.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	cbvHeapDescMaterial.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-	cbvHeapDescMaterial.NodeMask = 0;
-	THROW_IF_FAILED(mDX12Device->CreateDescriptorHeap(&cbvHeapDescMaterial,
-		IID_PPV_ARGS(&mMaterialConstantBufferHeap)));
-
+	CreateGeometry();
 
 	// Create root signature
-	CD3DX12_DESCRIPTOR_RANGE texTable;
-	texTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
-
-	CD3DX12_DESCRIPTOR_RANGE texTableEnv;
-	texTableEnv.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1);
-
-	// Root parameter can be a table, root descriptor or root constants.
-	CD3DX12_ROOT_PARAMETER slotRootParameter[5];
-
-	slotRootParameter[0].InitAsDescriptorTable(1, &texTable, D3D12_SHADER_VISIBILITY_PIXEL);
-	slotRootParameter[1].InitAsDescriptorTable(1, &texTableEnv, D3D12_SHADER_VISIBILITY_PIXEL);
-	slotRootParameter[2].InitAsConstantBufferView(0);
-	slotRootParameter[3].InitAsConstantBufferView(1);
-	slotRootParameter[4].InitAsConstantBufferView(2);
-
-	const CD3DX12_STATIC_SAMPLER_DESC pointWrap(
-		0, // shaderRegister
-		D3D12_FILTER_MIN_MAG_MIP_POINT, // filter
-		D3D12_TEXTURE_ADDRESS_MODE_WRAP,  // addressU
-		D3D12_TEXTURE_ADDRESS_MODE_WRAP,  // addressV
-		D3D12_TEXTURE_ADDRESS_MODE_WRAP); // addressW
-
-	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc(5, slotRootParameter, 1, &pointWrap,
-		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
-
-	Microsoft::WRL::ComPtr <ID3DBlob> signature;
-	Microsoft::WRL::ComPtr <ID3DBlob> error;
-	D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &error);
-	THROW_IF_FAILED(mDX12Device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(&mDX12RootSignature)));
+	CreateRootSignature();
 
 	// Create graphic pipeline state 
 	CreatePipelineState();
@@ -672,8 +560,97 @@ void DX12Device::CreateSwapChain()
 
 }
 
+void DX12Device::CreateShader()
+{
+	UINT compileFlags = 0;
+	std::wstring ShaderFileNameVS(L"Engine\\Shaders\\ForwardShadingVS.hlsl");
+	std::wstring ShaderFileNamePS(L"Engine\\Shaders\\ForwardShadingPS.hlsl");
+
+	THROW_IF_FAILED(D3DCompileFromFile(ShaderFileNameVS.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "VSMain", "vs_5_0", compileFlags, 0, &mVertexShader, nullptr));
+	THROW_IF_FAILED(D3DCompileFromFile(ShaderFileNamePS.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "PSMain", "ps_5_0", compileFlags, 0, &mPixelShader, nullptr));
+}
+
 void DX12Device::CreateGeometry()
 {
+	ManualMesh Mesh;
+	MeshUtility::CreateSphere(Mesh, 1.0f);
+	const int vertexCount = 2017;
+	const int indexCount = 11904;
+	VertexDataInfo vertexData[vertexCount];
+
+	for (size_t i = 0; i < vertexCount; i++)
+	{
+		vertexData[i] = VertexDataInfo(Mesh.GetVertexData()[i].Pos.x(), Mesh.GetVertexData()[i].Pos.y(), Mesh.GetVertexData()[i].Pos.z(),
+			Mesh.GetVertexData()[i].Normal.x(), Mesh.GetVertexData()[i].Normal.y(), Mesh.GetVertexData()[i].Normal.z(),
+			Mesh.GetVertexData()[i].TexCoord.x(), Mesh.GetVertexData()[i].TexCoord.y());
+	}
+
+	std::uint16_t indexData[indexCount];
+
+	for (size_t i = 0; i < indexCount; i++)
+	{
+		indexData[i] = Mesh.GetIndexData()[i];
+	}
+
+	mIndexCount = indexCount;
+
+	// Create vertex buffer
+	THROW_IF_FAILED(mDX12Device->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+		D3D12_HEAP_FLAG_NONE,
+		&CD3DX12_RESOURCE_DESC::Buffer(vertexCount * sizeof(VertexDataInfo)),
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&mVertexBuffer)));
+
+	// Create index buffer
+	THROW_IF_FAILED(mDX12Device->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+		D3D12_HEAP_FLAG_NONE,
+		&CD3DX12_RESOURCE_DESC::Buffer(indexCount * sizeof(std::uint16_t)),
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&mIndexBuffer)));
+
+
+	const UINT vbByteSize = vertexCount * sizeof(VertexDataInfo);
+	const UINT ibByteSize = indexCount * sizeof(std::uint16_t);
+
+	// Copy data
+	UINT8* vertexBufferData;
+	mVertexBuffer->Map(0, nullptr, reinterpret_cast<void**>(&vertexBufferData));
+	memcpy(vertexBufferData, vertexData, vbByteSize);
+	mVertexBuffer->Unmap(0, nullptr);
+
+	UINT8* indexBufferData;
+	mIndexBuffer->Map(0, nullptr, reinterpret_cast<void**>(&indexBufferData));
+	memcpy(indexBufferData, indexData, ibByteSize);
+	mIndexBuffer->Unmap(0, nullptr);
+
+	// Vertex buffer view
+	mVertexBufferView.BufferLocation = mVertexBuffer->GetGPUVirtualAddress();
+	mVertexBufferView.StrideInBytes = sizeof(VertexDataInfo);
+	mVertexBufferView.SizeInBytes = vbByteSize;
+
+	mIndexBufferView.BufferLocation = mIndexBuffer->GetGPUVirtualAddress();
+	mIndexBufferView.Format = DXGI_FORMAT_R16_UINT;
+	mIndexBufferView.SizeInBytes = ibByteSize;;
+
+	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDescObject;
+	cbvHeapDescObject.NumDescriptors = 1;
+	cbvHeapDescObject.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	cbvHeapDescObject.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	cbvHeapDescObject.NodeMask = 0;
+	THROW_IF_FAILED(mDX12Device->CreateDescriptorHeap(&cbvHeapDescObject,
+		IID_PPV_ARGS(&mObjectConstantBufferHeap)));
+
+	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDescMaterial;
+	cbvHeapDescMaterial.NumDescriptors = 1;
+	cbvHeapDescMaterial.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	cbvHeapDescMaterial.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	cbvHeapDescMaterial.NodeMask = 0;
+	THROW_IF_FAILED(mDX12Device->CreateDescriptorHeap(&cbvHeapDescMaterial,
+		IID_PPV_ARGS(&mMaterialConstantBufferHeap)));
 
 }
 
@@ -714,6 +691,40 @@ void DX12Device::CreatePipelineState()
 	psoDesc.SampleDesc.Quality = 0;
 	psoDesc.DSVFormat = mDepthStencilFormat;
 	THROW_IF_FAILED(mDX12Device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&mIDX12PipleLineState)));
+
+}
+
+void DX12Device::CreateRootSignature()
+{
+	CD3DX12_DESCRIPTOR_RANGE texTable;
+	texTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+
+	CD3DX12_DESCRIPTOR_RANGE texTableEnv;
+	texTableEnv.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1);
+
+	// Root parameter can be a table, root descriptor or root constants.
+	CD3DX12_ROOT_PARAMETER slotRootParameter[5];
+
+	slotRootParameter[0].InitAsDescriptorTable(1, &texTable, D3D12_SHADER_VISIBILITY_PIXEL);
+	slotRootParameter[1].InitAsDescriptorTable(1, &texTableEnv, D3D12_SHADER_VISIBILITY_PIXEL);
+	slotRootParameter[2].InitAsConstantBufferView(0);
+	slotRootParameter[3].InitAsConstantBufferView(1);
+	slotRootParameter[4].InitAsConstantBufferView(2);
+
+	const CD3DX12_STATIC_SAMPLER_DESC pointWrap(
+		0, // shaderRegister
+		D3D12_FILTER_MIN_MAG_MIP_POINT, // filter
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP,  // addressU
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP,  // addressV
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP); // addressW
+
+	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc(5, slotRootParameter, 1, &pointWrap,
+		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+
+	Microsoft::WRL::ComPtr <ID3DBlob> signature;
+	Microsoft::WRL::ComPtr <ID3DBlob> error;
+	D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &error);
+	THROW_IF_FAILED(mDX12Device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(&mDX12RootSignature)));
 
 }
 

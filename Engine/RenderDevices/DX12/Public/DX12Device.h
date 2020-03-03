@@ -75,8 +75,10 @@ protected:
 	void CreateDevice();
 	void CreateCommandObjects();
 	void CreateSwapChain();
+	void CreateShader();
 	void CreateGeometry();
 	void CreatePipelineState();
+	void CreateRootSignature();
 	void LoadTexture();
 
 	ID3D12Resource* GetBackBuffer() const;
