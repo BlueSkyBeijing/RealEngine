@@ -150,34 +150,7 @@ int DX12Device::Init()
 		&clearValue,
 		IID_PPV_ARGS(&mDepthStencilBuffer)));
 
-	LoadTexture();
-
-	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
-	srvHeapDesc.NumDescriptors = 2;
-	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-	THROW_IF_FAILED(mDX12Device->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&mSRVDescriptorHeap)));
-
-	CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(mSRVDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
-
-	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.Format = mTestTexture->GetDesc().Format;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MostDetailedMip = 0;
-	srvDesc.Texture2D.MipLevels = mTestTexture->GetDesc().MipLevels;
-	srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
-
-	mDX12Device->CreateShaderResourceView(mTestTexture.Get(), &srvDesc, hDescriptor);
-
-	hDescriptor.Offset(1, mCBVSRVDescriptorSize);
-
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
-	srvDesc.TextureCube.MostDetailedMip = 0;
-	srvDesc.TextureCube.MipLevels = mEnvironmentTexture->GetDesc().MipLevels;
-	srvDesc.TextureCube.ResourceMinLODClamp = 0.0f;
-	srvDesc.Format = mEnvironmentTexture->GetDesc().Format;
-	mDX12Device->CreateShaderResourceView(mEnvironmentTexture.Get(), &srvDesc, hDescriptor);
+	CreateTexture();
 
 	CreateShader();
 
@@ -728,7 +701,7 @@ void DX12Device::CreateRootSignature()
 
 }
 
-void DX12Device::LoadTexture()
+void DX12Device::CreateTexture()
 {
 	std::wstring szFileName(L"Content\\Textures\\oldwood.dds");
 
@@ -741,6 +714,33 @@ void DX12Device::LoadTexture()
 	THROW_IF_FAILED(CreateDDSTextureFromFile12(mDX12Device.Get(),
 		mDX12CommandList.Get(), szFileNameEnvironment.c_str(),
 		mEnvironmentTexture, mEnvironmentTextureUploadHeap));
+
+	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
+	srvHeapDesc.NumDescriptors = 2;
+	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	THROW_IF_FAILED(mDX12Device->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&mSRVDescriptorHeap)));
+
+	CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(mSRVDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.Format = mTestTexture->GetDesc().Format;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MostDetailedMip = 0;
+	srvDesc.Texture2D.MipLevels = mTestTexture->GetDesc().MipLevels;
+	srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
+
+	mDX12Device->CreateShaderResourceView(mTestTexture.Get(), &srvDesc, hDescriptor);
+
+	hDescriptor.Offset(1, mCBVSRVDescriptorSize);
+
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
+	srvDesc.TextureCube.MostDetailedMip = 0;
+	srvDesc.TextureCube.MipLevels = mEnvironmentTexture->GetDesc().MipLevels;
+	srvDesc.TextureCube.ResourceMinLODClamp = 0.0f;
+	srvDesc.Format = mEnvironmentTexture->GetDesc().Format;
+	mDX12Device->CreateShaderResourceView(mEnvironmentTexture.Get(), &srvDesc, hDescriptor);
 
 }
 

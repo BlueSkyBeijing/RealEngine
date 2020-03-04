@@ -79,7 +79,7 @@ protected:
 	void CreateGeometry();
 	void CreatePipelineState();
 	void CreateRootSignature();
-	void LoadTexture();
+	void CreateTexture();
 
 	ID3D12Resource* GetBackBuffer() const;
 	D3D12_CPU_DESCRIPTOR_HANDLE GetBackBufferView() const;
