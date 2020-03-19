@@ -65,6 +65,7 @@ public:
 	virtual int Clear() override;
 	virtual int Draw() override;
 	virtual int SetTarget() override;
+	virtual int SetViewPort() override;
 	virtual int SetPipelineState() override;
 	virtual int Present() override;
 	virtual int CreateObjectConstants() override;

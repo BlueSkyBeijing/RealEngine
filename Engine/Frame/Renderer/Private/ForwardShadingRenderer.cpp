@@ -14,6 +14,10 @@ ForwardShadingRenderer::~ForwardShadingRenderer()
 
 int ForwardShadingRenderer::Render()
 {
+	clear();
+
+	setViewPort();
+
 	computeVisibility();
 
 	renderShadowDepth();

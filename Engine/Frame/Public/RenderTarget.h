@@ -35,6 +35,8 @@ public:
 	virtual int Init() override;
 	virtual int UnInit() override;
 
+	virtual int OnResize();
+
 	SDL_Window* GetWindow() const;
 
 protected:

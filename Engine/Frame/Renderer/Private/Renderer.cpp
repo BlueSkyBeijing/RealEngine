@@ -60,6 +60,13 @@ int Renderer::UpdateRenderList(IScene* scene)
 
 int Renderer::clear()
 {
+	IDevice* Device = Engine::GetDevice();
+	if (Device != nullptr)
+	{
+		//final present
+		Device->Clear();
+	}
+
 	return 0;
 }
 
@@ -79,5 +86,14 @@ void Renderer::createPassConstants()
 	if (Device != nullptr)
 	{
 		Device->CreatePassConstants();
+	}
+}
+
+void Renderer::setViewPort()
+{
+	IDevice* Device = Engine::GetDevice();
+	if (Device != nullptr)
+	{
+		Device->SetViewPort();
 	}
 }

@@ -209,6 +209,13 @@ int DX12Device::UnInit()
 
 int DX12Device::Clear()
 {
+	mDX12CommandAllocator->Reset();
+
+	// Reset command list
+	THROW_IF_FAILED(mDX12CommandList->Reset(mDX12CommandAllocator.Get(), mIDX12PipleLineState.Get()));
+
+	mDX12CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(GetBackBuffer(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
+
 	// Clear color and depth stencil
 	float ClearColor[] = { 0.690196097f, 0.768627524f, 0.870588303f, 1.000000000f };
 	mDX12CommandList->ClearRenderTargetView(GetBackBufferView(), ClearColor, 0, nullptr);
@@ -217,25 +224,17 @@ int DX12Device::Clear()
 	return 0;
 }
 
-int DX12Device::Draw()
+int DX12Device::SetViewPort()
 {
-	mDX12CommandAllocator->Reset();
-
-	// Reset command list
-	THROW_IF_FAILED(mDX12CommandList->Reset(mDX12CommandAllocator.Get(), mIDX12PipleLineState.Get()));
-
 	// Set view port
 	mDX12CommandList->RSSetViewports(1, &mViewPort);
+	return 0;
+}
 
+int DX12Device::Draw()
+{
 	// Set scissor
 	mDX12CommandList->RSSetScissorRects(1, &mScissorRect);
-
-	mDX12CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(GetBackBuffer(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
-
-	// Clear color and depth stencil
-	float ClearColor[] = { 0.690196097f, 0.768627524f, 0.870588303f, 1.000000000f };
-	mDX12CommandList->ClearRenderTargetView(GetBackBufferView(), ClearColor, 0, nullptr);
-	mDX12CommandList->ClearDepthStencilView(GetDepthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 
 	// Set render target
 	mDX12CommandList->OMSetRenderTargets(1, &GetBackBufferView(), true, &GetDepthStencilView());

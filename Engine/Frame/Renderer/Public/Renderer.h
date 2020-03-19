@@ -32,6 +32,7 @@ protected:
 	virtual int clear() = 0;
 	virtual void computeVisibility() = 0;
 	virtual void createPassConstants() = 0;
+	virtual void setViewPort() = 0;
 
 };
 
@@ -49,6 +50,7 @@ protected:
 	virtual int clear() override;
 	virtual void computeVisibility() override;
 	virtual void createPassConstants() override;
+	virtual void setViewPort() override;
 protected:
 	std::vector<IRenderable*> mStaticRenderObjects;
 	std::map<IRenderable*, bool> mVisibilityMap;

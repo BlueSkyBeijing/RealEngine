@@ -25,6 +25,11 @@ int Device::SetTarget()
 	return 0;
 }
 
+int Device::SetViewPort()
+{
+	return 0;
+}
+
 int Device:: SetPipelineState()
 {
 	return 0;
