@@ -1,4 +1,5 @@
 #include "ForwardShadingCommon.hlsl"
+#include "Tonemap.hlsl"
 
 Texture2D DiffuseMap : register(t0);
 SamplerState DiffuseSamplerState : register(s0);
@@ -70,7 +71,7 @@ float4 PSMain(VertexOut PIn) : SV_Target
     float4 reflectionColor = EnvironmentMap.SampleLevel(DiffuseSamplerState, r, AbsoluteSpecularMip);
     Color += SpecularColor * reflectionColor.rgb;
     Color += Emissive;
-
-    return float4(Color, 1.0f);
+    
+    return float4(ACESToneMapping(Color.rgb, 1.0f), 1.0f);
 }
 
