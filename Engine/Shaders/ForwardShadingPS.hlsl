@@ -24,6 +24,7 @@ float4 PSMain(VertexOut PIn) : SV_Target
 
     float3 Color = 0;
 
+    // BaseColor Specular Emissive is sRGB converted to linear by D3DSAMP_SRGBTEXTURE of dx an GL_TEXTURE_SRGB_DECODE_EXT of gl automatically 
     float Opacity = 1.0f;
     float3 BaseColor = gBaseColor.rgb;
     float Metallic = gMetallic;
