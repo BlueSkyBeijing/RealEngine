@@ -367,6 +367,11 @@
     <FxCompile Include="Engine\Shaders\ShadingCommon.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Engine\Shaders\Tonemap.hlsl" />
+    <FxCompile Include="Engine\Shaders\Tonemap.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Engine\Shaders\GammaCorrection.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
