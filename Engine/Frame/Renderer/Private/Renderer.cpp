@@ -45,6 +45,14 @@ int Renderer::Render()
 		Device->Present();
 	}
 
+
+
+	if (Device != nullptr)
+	{
+		//final present
+		Device->Present();
+	}
+
 	return 0;
 }
 

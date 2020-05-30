@@ -373,5 +373,8 @@
     <FxCompile Include="Engine\Shaders\GammaCorrection.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Engine\Shaders\Postprocess.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
