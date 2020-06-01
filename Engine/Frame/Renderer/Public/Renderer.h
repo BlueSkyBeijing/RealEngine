@@ -33,6 +33,9 @@ protected:
 	virtual void computeVisibility() = 0;
 	virtual void createPassConstants() = 0;
 	virtual void setViewPort() = 0;
+	virtual void drawRenderables() = 0;
+	virtual void postProcess() = 0;
+	virtual void present() = 0;
 
 };
 
@@ -51,6 +54,10 @@ protected:
 	virtual void computeVisibility() override;
 	virtual void createPassConstants() override;
 	virtual void setViewPort() override;
+	virtual void drawRenderables() override;
+	virtual void postProcess() override;
+	virtual void present() override;
+
 protected:
 	std::vector<IRenderable*> mStaticRenderObjects;
 	std::map<IRenderable*, bool> mVisibilityMap;

@@ -31,27 +31,11 @@ int Renderer::Render()
 
 	createPassConstants();
 
-	IDevice* Device = Engine::GetDevice();
-	if (Device != nullptr)
-	{	
-		for (int i = 0; i < mStaticRenderObjects.size(); i++)
-		{
-			mStaticRenderObjects[i]->CreateConstants(Device);
-			//per scene object draw
-			Device->Draw();
-		}
+	drawRenderables();
 
-		//final present
-		Device->Present();
-	}
+	postProcess();
 
-
-
-	if (Device != nullptr)
-	{
-		//final present
-		Device->Present();
-	}
+	present();
 
 	return 0;
 }
@@ -68,12 +52,8 @@ int Renderer::UpdateRenderList(IScene* scene)
 
 int Renderer::clear()
 {
-	IDevice* Device = Engine::GetDevice();
-	if (Device != nullptr)
-	{
-		//final present
-		Device->Clear();
-	}
+	assert(Engine::GetDevice() != nullptr);
+	Engine::GetDevice()->Clear();
 
 	return 0;
 }
@@ -90,18 +70,34 @@ void Renderer::computeVisibility()
 
 void Renderer::createPassConstants()
 {
-	IDevice* Device = Engine::GetDevice();
-	if (Device != nullptr)
-	{
-		Device->CreatePassConstants();
-	}
+	assert(Engine::GetDevice() != nullptr);
+	Engine::GetDevice()->CreatePassConstants();
 }
 
 void Renderer::setViewPort()
 {
-	IDevice* Device = Engine::GetDevice();
-	if (Device != nullptr)
+	assert(Engine::GetDevice() != nullptr);
+	Engine::GetDevice()->SetViewPort();
+}
+
+void Renderer::drawRenderables()
+{
+	assert(Engine::GetDevice() != nullptr);
+	for (int i = 0; i < mStaticRenderObjects.size(); i++)
 	{
-		Device->SetViewPort();
+		mStaticRenderObjects[i]->CreateConstants(Engine::GetDevice());
+		//per scene object draw
+		Engine::GetDevice()->Draw();
 	}
+}
+
+void Renderer::postProcess()
+{
+	assert(Engine::GetDevice() != nullptr);
+}
+
+void Renderer::present()
+{
+	assert(Engine::GetDevice() != nullptr);
+	Engine::GetDevice()->Present();
 }
