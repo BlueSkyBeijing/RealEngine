@@ -224,6 +224,32 @@ int DX12Device::Clear()
 	return 0;
 }
 
+int DX12Device::CreateRenderTarget()
+{
+	// Create render view description
+	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> descriptorHeapRenderTarget;
+	D3D12_DESCRIPTOR_HEAP_DESC rtDescriptorHeapDesc;
+	rtDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+	rtDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+	rtDescriptorHeapDesc.NumDescriptors = 1;
+	rtDescriptorHeapDesc.NodeMask = 0;
+	THROW_IF_FAILED(mDX12Device->CreateDescriptorHeap(&rtDescriptorHeapDesc, IID_PPV_ARGS(&descriptorHeapRenderTarget)));
+
+	Microsoft::WRL::ComPtr <ID3D12Resource> renderTarget;
+	CD3DX12_CPU_DESCRIPTOR_HANDLE descriptorHandle(descriptorHeapRenderTarget->GetCPUDescriptorHandleForHeapStart());
+	mDXGISwapChain->GetBuffer(i, IID_PPV_ARGS(&renderTarget));
+	mDX12Device->CreateRenderTargetView(renderTarget.Get(), nullptr, descriptorHandle);
+
+	return 0;
+}
+
+int DX12Device::SetRenderTarget()
+{
+	mDX12CommandList->OMSetRenderTargets(1, &GetBackBufferView(), true, &GetDepthStencilView());
+
+	return 0;
+}
+
 int DX12Device::SetViewPort()
 {
 	// Set view port

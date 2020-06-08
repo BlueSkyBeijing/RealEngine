@@ -74,6 +74,18 @@ void Renderer::createPassConstants()
 	Engine::GetDevice()->CreatePassConstants();
 }
 
+void Renderer::createRenderTarget()
+{
+	assert(Engine::GetDevice() != nullptr);
+	Engine::GetDevice()->CreateRenderTarget();
+}
+
+void Renderer::setRenderTarget()
+{
+	assert(Engine::GetDevice() != nullptr);
+	Engine::GetDevice()->SetRenderTarget();
+}
+
 void Renderer::setViewPort()
 {
 	assert(Engine::GetDevice() != nullptr);

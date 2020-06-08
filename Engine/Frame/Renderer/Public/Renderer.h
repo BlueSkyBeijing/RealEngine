@@ -32,6 +32,8 @@ protected:
 	virtual int clear() = 0;
 	virtual void computeVisibility() = 0;
 	virtual void createPassConstants() = 0;
+	virtual void createRenderTarget() = 0;
+	virtual void setRenderTarget() = 0;
 	virtual void setViewPort() = 0;
 	virtual void drawRenderables() = 0;
 	virtual void postProcess() = 0;
@@ -53,6 +55,8 @@ protected:
 	virtual int clear() override;
 	virtual void computeVisibility() override;
 	virtual void createPassConstants() override;
+	virtual void createRenderTarget() override;
+	virtual void setRenderTarget() override;
 	virtual void setViewPort() override;
 	virtual void drawRenderables() override;
 	virtual void postProcess() override;
