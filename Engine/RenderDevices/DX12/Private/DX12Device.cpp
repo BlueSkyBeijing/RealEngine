@@ -224,7 +224,7 @@ int DX12Device::Clear()
 	return 0;
 }
 
-int DX12Device::CreateRenderTarget()
+IRenderTarget*  DX12Device::CreateRenderTarget()
 {
 	// Create render view description
 	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> descriptorHeapRenderTarget;
@@ -243,7 +243,7 @@ int DX12Device::CreateRenderTarget()
 	return 0;
 }
 
-int DX12Device::SetRenderTarget()
+int DX12Device::SetRenderTarget(IRenderTarget* rt)
 {
 	mDX12CommandList->OMSetRenderTargets(1, &GetBackBufferView(), true, &GetDepthStencilView());
 

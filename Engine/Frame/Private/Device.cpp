@@ -20,7 +20,12 @@ int Device::Clear()
 	return 0;
 }
 
-int Device::SetTarget()
+IRenderTarget*  Device::CreateRenderTarget()
+{
+	return 0;
+}
+
+int Device::SetRenderTarget(IRenderTarget* rt)
 {
 	return 0;
 }
