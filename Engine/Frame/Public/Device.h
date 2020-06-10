@@ -1,5 +1,4 @@
 #pragma once
-#include "Engine.h"
 
 class ISamplerState
 {
@@ -15,6 +14,15 @@ class IDepthStencilState
 
 class IBlendState
 {
+};
+
+class ICommandList
+{
+	virtual int Clear() = 0;
+	virtual int SetRenderTarget(IRenderTarget* rt) = 0;
+	virtual int SetViewPort() = 0;
+	virtual int SetPipelineState() = 0;
+	virtual int Draw() = 0;
 };
 
 class IDevice
