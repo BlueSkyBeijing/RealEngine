@@ -5,8 +5,17 @@
 #include "..\Public\RenderTarget.h"
 #include "..\Public\Scene.h"
 #include "..\Public\SceneManager.h"
+#include "Camera.h"
 #include <windows.h>
 #include <string>
+
+class ICamera;
+class IDevice;
+class IRenderer;
+class IScene;
+class ISceneManager;
+class ISceneObject;
+class IRenderTarget;
 
 class IEngine
 {

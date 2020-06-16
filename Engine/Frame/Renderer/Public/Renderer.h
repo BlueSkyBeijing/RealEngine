@@ -3,6 +3,7 @@
 #include "..\..\Public\Scene.h"
 #include <vector>
 #include <map>
+#include "Engine.h"
 
 class IRenderCommandList
 {

@@ -3,6 +3,7 @@
 #include "..\Public\Camera.h"
 #include "..\Public\Light.h"
 #include <vector>
+#include "Engine.h"
 
 class IScene
 {
