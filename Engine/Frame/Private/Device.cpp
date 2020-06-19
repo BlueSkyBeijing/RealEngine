@@ -1,5 +1,10 @@
 #include "..\Public\Device.h"
 
+void CommandListExecutor::ExecuteList(ICommandList& CmdList)
+{
+
+}
+
 int Device::Init()
 {
 	return 0;

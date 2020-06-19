@@ -118,11 +118,18 @@ enum PrimitiveType
 
 class ICommandList
 {
+public:
 	virtual int Clear() = 0;
 	virtual int SetRenderTarget(IRenderTarget* rt) = 0;
 	virtual int SetViewPort() = 0;
 	virtual int SetPipelineState() = 0;
 	virtual int Draw() = 0;
+};
+
+class CommandListExecutor
+{
+public:
+	void ExecuteList(ICommandList& CmdList);
 };
 
 class IDevice
