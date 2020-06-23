@@ -132,6 +132,13 @@ public:
 	void ExecuteList(ICommandList& CmdList);
 };
 
+class ICommandContext
+{
+	virtual void DrawPrimitive(uint32 PrimitiveType, uint32 BaseVertexIndex, uint32 NumPrimitives, uint32 NumInstances) = 0;
+	virtual void BeginRenderPass() = 0;
+	virtual void EndRenderPass() = 0;
+};
+
 class IDevice
 {
 public:
