@@ -139,6 +139,12 @@ class ICommandContext
 	virtual void EndRenderPass() = 0;
 };
 
+struct FRHIRenderPassInfo
+{
+	Texture* RenderTarget;
+	Texture* DepthStencilTarget;
+};
+
 class IDevice
 {
 public:
