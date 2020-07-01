@@ -58,6 +58,23 @@ int Renderer::clear()
 	return 0;
 }
 
+void Renderer::initView()
+{
+	computeVisibility();
+
+	initShadow();
+
+	updateUniformBuffer();
+}
+
+void Renderer::initShadow()
+{
+}
+
+void Renderer::updateUniformBuffer()
+{
+}
+
 void Renderer::computeVisibility()
 {
 	//check if in the view frustum
