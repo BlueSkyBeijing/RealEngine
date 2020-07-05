@@ -69,6 +69,21 @@ void Renderer::initView()
 
 void Renderer::initShadow()
 {
+	initShadowVisibility();
+	gatherShadowPrimitives();
+	createShadowDepthTargets();
+}
+
+void Renderer::initShadowVisibility()
+{
+}
+
+void Renderer::gatherShadowPrimitives()
+{
+}
+
+void Renderer::createShadowDepthTargets()
+{
 }
 
 void Renderer::updateUniformBuffer()

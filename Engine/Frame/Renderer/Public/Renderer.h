@@ -33,6 +33,9 @@ protected:
 	virtual int clear() = 0;
 	virtual void initView() = 0;
 	virtual void initShadow() = 0;
+	virtual void initShadowVisibility() = 0;
+	virtual void gatherShadowPrimitives() = 0;
+	virtual void createShadowDepthTargets() = 0;
 	virtual void updateUniformBuffer() = 0;
 	virtual void computeVisibility() = 0;
 	virtual void createPassConstants() = 0;
@@ -59,9 +62,12 @@ protected:
 	virtual int clear() override;
 	virtual void initView() override;
 	virtual void initShadow() override;
-	virtual void initShadow() override;
-	virtual void updateUniformBuffer() override;
+	virtual void initShadowVisibility() override;
+	virtual void gatherShadowPrimitives() override;
+	virtual void createShadowDepthTargets() override;
+	virtual void computeVisibility() override;
 	virtual void createPassConstants() override;
+	virtual void updateUniformBuffer() override;
 	virtual void createRenderTarget() override;
 	virtual void setRenderTarget() override;
 	virtual void setViewPort() override;
