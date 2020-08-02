@@ -1,7 +1,7 @@
 #pragma once
-#include "..\Public\SceneObject.h"
-#include "..\Public\Camera.h"
-#include "..\Public\Light.h"
+#include "SceneObject.h"
+#include "Camera.h"
+#include "Light.h"
 #include <vector>
 #include "Engine.h"
 

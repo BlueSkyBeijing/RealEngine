@@ -1,11 +1,13 @@
 #pragma once
 #include "..\Renderer\Public\Renderer.h"
-#include "..\Public\Device.h"
-#include "..\..\Utility\Public\Singleton.h"
-#include "..\Public\RenderTarget.h"
-#include "..\Public\Scene.h"
-#include "..\Public\SceneManager.h"
+#include "Device.h"
+#include "..\Utility\Public\Singleton.h"
+#include "RenderTarget.h"
+#include "Scene.h"
+#include "SceneManager.h"
 #include "Camera.h"
+#include "SceneObject.h"
+#include "Texture.h"
 #include <windows.h>
 #include <string>
 
@@ -16,6 +18,7 @@ class IScene;
 class ISceneManager;
 class ISceneObject;
 class IRenderTarget;
+class ITexture;
 
 class IEngine
 {

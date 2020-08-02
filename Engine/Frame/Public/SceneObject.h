@@ -1,5 +1,5 @@
 #pragma once
-#include "..\Public\Device.h"
+#include "Device.h"
 #include <Eigen/Dense>
 
 class IRenderable

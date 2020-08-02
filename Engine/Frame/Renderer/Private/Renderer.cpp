@@ -115,7 +115,7 @@ void Renderer::createRenderTarget()
 void Renderer::setRenderTarget()
 {
 	assert(Engine::GetDevice() != nullptr);
-	Engine::GetDevice()->SetRenderTarget();
+	Engine::GetDevice()->SetRenderTarget(nullptr);
 }
 
 void Renderer::setViewPort()

@@ -134,15 +134,15 @@ public:
 
 class ICommandContext
 {
-	virtual void DrawPrimitive(uint32 PrimitiveType, uint32 BaseVertexIndex, uint32 NumPrimitives, uint32 NumInstances) = 0;
+	virtual void DrawPrimitive(PrimitiveType Type, int BaseVertexIndex, int NumPrimitives, int NumInstances) = 0;
 	virtual void BeginRenderPass() = 0;
 	virtual void EndRenderPass() = 0;
 };
 
 struct FRHIRenderPassInfo
 {
-	Texture* RenderTarget;
-	Texture* DepthStencilTarget;
+	ITexture* RenderTarget;
+	ITexture* DepthStencilTarget;
 };
 
 class IDevice

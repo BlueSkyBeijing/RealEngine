@@ -1,6 +1,7 @@
 #pragma once
-#include "..\Public\Scene.h"
+#include "Scene.h"
 #include "..\Renderer\Public\Renderer.h"
+#include "Engine.h"
 
 class ISceneManager
 {
