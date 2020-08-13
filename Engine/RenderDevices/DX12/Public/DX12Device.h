@@ -17,6 +17,8 @@
 #include <fstream>
 #include <array>
 
+class IRenderTarget;
+
 using namespace DirectX;
 
 struct ObjectConstants
@@ -63,8 +65,8 @@ public:
 	virtual int Init() override;
 	virtual int UnInit() override;
 	virtual int Clear() override;
-	virtual int Draw() override
-	virtual IRenderTarget* CreateRenderTarget() override;;
+	virtual int Draw() override;
+	virtual IRenderTarget* CreateRenderTarget() override;
 	virtual int SetRenderTarget(IRenderTarget* rt) override;
 	virtual int SetViewPort() override;
 	virtual int SetPipelineState() override;

@@ -237,8 +237,12 @@ IRenderTarget*  DX12Device::CreateRenderTarget()
 
 	Microsoft::WRL::ComPtr <ID3D12Resource> renderTarget;
 	CD3DX12_CPU_DESCRIPTOR_HANDLE descriptorHandle(descriptorHeapRenderTarget->GetCPUDescriptorHandleForHeapStart());
-	mDXGISwapChain->GetBuffer(i, IID_PPV_ARGS(&renderTarget));
-	mDX12Device->CreateRenderTargetView(renderTarget.Get(), nullptr, descriptorHandle);
+	for (UINT i = 0; i < mSwapChainBufferCount; i++)
+	{
+		mDXGISwapChain->GetBuffer(i, IID_PPV_ARGS(&mRenderTargets[i]));
+		mDX12Device->CreateRenderTargetView(mRenderTargets[i].Get(), nullptr, descriptorHandle);
+		descriptorHandle.Offset(1, mRTVDescriptorSize);
+	}
 
 	return 0;
 }
@@ -292,11 +296,6 @@ int DX12Device::Draw()
 	ID3D12CommandList* CommandLists[] = { mDX12CommandList.Get() };
 	mDX12CommandQueue->ExecuteCommandLists(1, CommandLists);
 
-	return 0;
-}
-
-int DX12Device::SetTarget()
-{
 	return 0;
 }
 

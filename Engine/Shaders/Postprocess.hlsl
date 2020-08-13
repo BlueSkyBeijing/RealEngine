@@ -3,7 +3,7 @@
 cbuffer cbObject : register(b0)
 {
     float4 PosScaleBias;
-    float2 InvTargetSize£»
+	float2 InvTargetSize;
 };
 
 void DrawRectangle(in float4 InPosition, in float2 InTexCoord, out float4 OutPosition, out float2 OutTexCoord)

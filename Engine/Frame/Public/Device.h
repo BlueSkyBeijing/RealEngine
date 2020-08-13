@@ -1,6 +1,9 @@
 #pragma once
 #include "Engine.h"
 
+class ITexture;
+class IRenderTarget;
+
 class ISamplerState
 {
 };

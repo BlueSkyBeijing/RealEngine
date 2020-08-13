@@ -1,9 +1,11 @@
 #pragma once
 #include "..\..\Public\SceneObject.h"
-#include "..\..\Public\Scene.h"
 #include <vector>
 #include <map>
 #include "..\..\Public\Engine.h"
+
+class IRenderable;
+class IScene;
 
 class IRenderCommandList
 {

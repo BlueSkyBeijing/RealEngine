@@ -3,6 +3,8 @@
 #include "..\Renderer\Public\Renderer.h"
 #include "Engine.h"
 
+class IRenderer;
+
 class ISceneManager
 {
 public:

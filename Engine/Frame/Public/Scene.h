@@ -1,9 +1,10 @@
 #pragma once
-#include "SceneObject.h"
-#include "Camera.h"
 #include "Light.h"
 #include <vector>
 #include "Engine.h"
+
+class ICamera;
+class ISceneObject;
 
 class IScene
 {

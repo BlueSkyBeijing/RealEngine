@@ -1,6 +1,7 @@
 #pragma once
-#include "Device.h"
 #include <Eigen/Dense>
+
+class IDevice;
 
 class IRenderable
 {

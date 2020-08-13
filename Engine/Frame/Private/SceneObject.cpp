@@ -1,4 +1,5 @@
 #include "..\Public\SceneObject.h"
+#include "..\Public\Device.h"
 
 void Renderable::CreateConstants(IDevice* device)
 {
