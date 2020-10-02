@@ -208,16 +208,22 @@ float Vis_SmithJointApprox(float a2, float NoV, float NoL)
     return 0.5 * rcp(Vis_SmithV + Vis_SmithL);
 }
 
+float3 F_None(float3 SpecularColor)
+{
+    return SpecularColor;
+}
+
 // [Schlick 1994, "An Inexpensive BRDF Model for Physically-Based Rendering"]
 float3 F_Schlick(float3 SpecularColor, float VoH)
 {
-    float Fc = Pow5(1 - VoH); // 1 sub, 3 mul
-	//return Fc + (1 - Fc) * SpecularColor;		// 1 add, 3 mad
+    float Fc = Pow5(1 - VoH);					// 1 sub, 3 mul
+    //return Fc + (1 - Fc) * SpecularColor;		// 1 add, 3 mad
 
-	// Anything less than 2% is physically impossible and is instead considered to be shadowing
+    // Anything less than 2% is physically impossible and is instead considered to be shadowing
     return saturate(50.0 * SpecularColor.g) * Fc + (1 - Fc) * SpecularColor;
 
 }
+
 
 //---------------
 // EnvBRDF
