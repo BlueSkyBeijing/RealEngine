@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <string>
 #include <cassert>
+#include <stdexcept>
 
 class HResultException : public std::runtime_error
 {

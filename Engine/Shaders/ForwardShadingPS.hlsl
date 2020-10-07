@@ -43,7 +43,7 @@ float4 PSMain(VertexOut PIn) : SV_Target
     float3 worldNormal = PIn.Normal;
     float3 directionalLightDirection = gDirectionalLightDir;
     float3 reflectionVector = worldNormal;
-    float3 cameraVector = gCameraDir;
+    float3 cameraVector = -gCameraDir;
     float3 DirectionalLightColor = gDirectionalLightColor.rgb;
  
     float NoV = max(0, dot(worldNormal, cameraVector));
@@ -58,14 +58,11 @@ float4 PSMain(VertexOut PIn) : SV_Target
     context.NoV = NoV;
     context.NoL = NoL;
     context.VoL = VoL;
+    context.NoH = NoH;
+    context.VoH = VoH;
 
-	float InvLenH = rsqrt(2 + 2 * context.VoL);
-	context.NoH = saturate((context.NoL + context.NoV) * InvLenH);
-	context.VoH = saturate(InvLenH + InvLenH * context.VoL);
-
-    //SpecularColor = NoL * SpecularGGX(Roughness, SpecularColor, context, NoL);
-    SpecularColor = EnvBRDFApprox(SpecularColor, Roughness, NoV);
-    Color += NoL * DirectionalLightColor.rgb * (DiffuseColor + SpecularColor * CalcSpecular(Roughness, RoL, NoH, H, worldNormal));
+    SpecularColor = SpecularGGX(Roughness, SpecularColor, context, NoL);
+    Color += NoL * DirectionalLightColor.rgb * DiffuseColor + SpecularColor;
     float3 r = reflect(-gCameraPos, reflectionVector);
  	// Compute fractional mip from roughness
     float AbsoluteSpecularMip = ComputeReflectionCaptureMipFromRoughness(Roughness, 10.0f);
