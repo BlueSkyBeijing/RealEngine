@@ -61,13 +61,14 @@ float4 PSMain(VertexOut PIn) : SV_Target
     context.NoH = NoH;
     context.VoH = VoH;
 
-    SpecularColor = SpecularGGX(Roughness, SpecularColor, context, NoL);
-    Color += NoL * DirectionalLightColor.rgb * DiffuseColor + SpecularColor;
+    float3 DirectSpecularPart = SpecularGGX(Roughness, SpecularColor, context, NoL);
+    Color += NoL * DirectionalLightColor.rgb * DiffuseColor + DirectSpecularPart;
     float3 r = reflect(-gCameraPos, reflectionVector);
  	// Compute fractional mip from roughness
     float AbsoluteSpecularMip = ComputeReflectionCaptureMipFromRoughness(Roughness, 10.0f);
     float4 reflectionColor = EnvironmentMap.SampleLevel(DiffuseSamplerState, r, AbsoluteSpecularMip);
-    Color += SpecularColor * reflectionColor.rgb;
+    float3 IndirectSpecularPart = EnvBRDFApprox(SpecularColor, Roughness, NoV);
+    Color += IndirectSpecularPart * reflectionColor.rgb;
     Color += Emissive;
     
     return float4(ACESToneMapping(Color.rgb, 1.0f), 1.0f);

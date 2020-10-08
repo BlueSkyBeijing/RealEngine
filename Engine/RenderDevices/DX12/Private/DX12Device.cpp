@@ -363,7 +363,7 @@ int DX12Device::CreateObjectConstants()
 
 int DX12Device::CreateMaterialConstants()
 {
-	mMaterialConstants.Metallic = 0.2f;
+	mMaterialConstants.Metallic = 0.5f;
 	mMaterialConstants.Roughness = 0.2f;
 	mMaterialConstants.Specular = 0.1f;
 	mMaterialConstants.EmissiveColor = XMFLOAT4(Colors::Black);
