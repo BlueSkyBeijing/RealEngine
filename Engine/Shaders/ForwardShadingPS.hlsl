@@ -68,7 +68,7 @@ float4 PSMain(VertexOut PIn) : SV_Target
     float AbsoluteSpecularMip = ComputeReflectionCaptureMipFromRoughness(Roughness, 10.0f);
     float4 reflectionColor = EnvironmentMap.SampleLevel(DiffuseSamplerState, r, AbsoluteSpecularMip);
     float3 IndirectSpecularPart = EnvBRDFApprox(SpecularColor, Roughness, NoV);
-    Color += IndirectSpecularPart * reflectionColor.rgb;
+    Color += IndirectSpecularPart * RGBMDecode(reflectionColor, 16.0f);
     Color += Emissive;
     
     return float4(ACESToneMapping(Color.rgb, 1.0f), 1.0f);
