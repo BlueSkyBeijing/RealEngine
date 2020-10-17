@@ -61,7 +61,7 @@ float4 PSMain(VertexOut PIn) : SV_Target
     context.NoH = NoH;
     context.VoH = VoH;
 
-    float3 DirectSpecularPart = SpecularGGX(Roughness, SpecularColor, context, NoL);
+    float3 DirectSpecularPart = SpecularGGX(Roughness, SpecularColor, context, NoL) * NoL;
     Color += NoL * DirectionalLightColor.rgb * DiffuseColor + DirectSpecularPart;
     float3 r = reflect(-gCameraPos, reflectionVector);
  	// Compute fractional mip from roughness
