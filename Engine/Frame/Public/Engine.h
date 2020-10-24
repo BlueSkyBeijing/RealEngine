@@ -16,6 +16,7 @@ class IDevice;
 class IRenderer;
 class IScene;
 class ISceneManager;
+class IInputManager;
 class ISceneObject;
 class IRenderTarget;
 class ITexture;
@@ -64,5 +65,6 @@ protected:
 	IRenderTarget* mRenderTargetMain;
 	IScene* mCurrentScene;
 	ISceneManager* mSceneManager;
+    IInputManager* mInputManager;
 };
 

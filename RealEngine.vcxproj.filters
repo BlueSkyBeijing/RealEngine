@@ -118,6 +118,7 @@
     <ClCompile Include="Engine\Frame\Private\Vertex.cpp">
       <Filter>Frame\Private</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Frame\Private\InputManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Frame\Public\Device.h">
@@ -246,6 +247,7 @@
     <ClInclude Include="Engine\Frame\Public\Vertex.h">
       <Filter>Frame\Public</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Frame\Public\InputManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Frame">

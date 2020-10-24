@@ -23,6 +23,7 @@
     <ClCompile Include="Engine\Frame\Private\Device.cpp" />
     <ClCompile Include="Engine\Frame\Private\Engine.cpp" />
     <ClCompile Include="Engine\Frame\Private\Globals.cpp" />
+    <ClCompile Include="Engine\Frame\Private\InputManager.cpp" />
     <ClCompile Include="Engine\Frame\Private\Light.cpp" />
     <ClCompile Include="Engine\Frame\Private\Material.cpp" />
     <ClCompile Include="Engine\Frame\Private\Mesh.cpp" />
@@ -64,6 +65,7 @@
     <ClInclude Include="Engine\Frame\Public\Device.h" />
     <ClInclude Include="Engine\Frame\Public\Engine.h" />
     <ClInclude Include="Engine\Frame\Public\Globals.h" />
+    <ClInclude Include="Engine\Frame\Public\InputManager.h" />
     <ClInclude Include="Engine\Frame\Public\Light.h" />
     <ClInclude Include="Engine\Frame\Public\Material.h" />
     <ClInclude Include="Engine\Frame\Public\Mesh.h" />
