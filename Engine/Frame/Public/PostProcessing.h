@@ -9,5 +9,5 @@ public:
 class PostProcessing : public IPostProcessing
 {
 public:
-int Process() override;
-}
+	int Process() override;
+};

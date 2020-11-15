@@ -1,5 +1,6 @@
 #include "..\Public\Scene.h"
 #include "..\Public\StaticMeshObject.h"
+#include "..\..\OpenFBX\ofbx.h"
 
 int Scene::Load()
 {
@@ -12,6 +13,21 @@ int Scene::Load()
 
 	IRenderable* testObj = new StaticMeshObject;
 	mSceneObjects.push_back((ISceneObject*)testObj);
+
+	FILE* fp;
+	errno_t err = fopen_s(&fp, "test.fbx", "rb");
+    if (!fp) return 0;
+
+    fseek(fp, 0, SEEK_END);
+    long file_size = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
+    auto* content = new ofbx::u8[file_size];
+    fread(content, 1, file_size, fp);
+	ofbx::IScene* scene = ofbx::load((ofbx::u8*)content, file_size, (ofbx::u64)ofbx::LoadFlags::TRIANGULATE);
+	if (!scene) 
+	{
+		OutputDebugString(ofbx::getError());
+	}
 	return 0;
 }
 
