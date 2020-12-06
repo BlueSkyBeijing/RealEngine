@@ -95,6 +95,44 @@ enum TextureFileFormat
 	TGA,
 };
 
+
+enum SamplerFilter
+{
+    SF_Point,
+    SF_Bilinear,
+    SF_Trilinear,
+    SF_AnisotropicPoint,
+    SF_AnisotropicLinear,
+};
+
+enum SamplerAddressMode
+{
+    SAM_Wrap,
+    SAM_Clamp,
+    SAM_Mirror,
+    /** Not supported on all platforms */
+    SAM_Border,
+};
+
+enum SamplerCompareFunction
+{
+    SCF_Never,
+    SCF_Less
+};
+
+class SamplerState
+{
+public:
+	SamplerAddressMode WrapS;
+	SamplerAddressMode WrapT;
+	SamplerAddressMode WrapR;
+    int LODBias;
+	SamplerCompareFunction MagFilter;
+	SamplerCompareFunction MinFilter;
+	int MaxAnisotropy;
+	SamplerCompareFunction CompareMode;
+};
+
 class ITexture
 {
 public:
