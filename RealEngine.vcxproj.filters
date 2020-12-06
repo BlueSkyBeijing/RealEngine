@@ -119,6 +119,9 @@
       <Filter>Frame\Private</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Frame\Private\InputManager.cpp" />
+    <ClCompile Include="Engine\Frame\Private\Buffer.cpp">
+      <Filter>Frame\Private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Frame\Public\Device.h">
@@ -248,6 +251,9 @@
       <Filter>Frame\Public</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Frame\Public\InputManager.h" />
+    <ClInclude Include="Engine\Frame\Public\Buffer.h">
+      <Filter>Frame\Public</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Frame">

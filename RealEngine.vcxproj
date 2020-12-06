@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Frame\Private\Buffer.cpp" />
     <ClCompile Include="Engine\Frame\Private\Camera.cpp" />
     <ClCompile Include="Engine\Frame\Private\Device.cpp" />
     <ClCompile Include="Engine\Frame\Private\Engine.cpp" />
@@ -61,6 +62,7 @@
     <ClCompile Include="Engine\Utility\Private\MeshUtility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Frame\Public\Buffer.h" />
     <ClInclude Include="Engine\Frame\Public\Camera.h" />
     <ClInclude Include="Engine\Frame\Public\Device.h" />
     <ClInclude Include="Engine\Frame\Public\Engine.h" />
