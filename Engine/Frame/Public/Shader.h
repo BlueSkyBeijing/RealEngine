@@ -3,11 +3,12 @@
 
 enum ShaderType
 {
-	VertexShader,
-	PixelShader,
-	GeometryShader,
-	HullShader,
-	DomainShader,
+	ST_Vertex,
+	ST_Pixel,
+	ST_Geometry,
+	ST_Hull,
+	ST_Domain,
+	ST_Compute,
 };
 
 class IShader
@@ -22,6 +23,7 @@ public:
 class Shader : public IShader
 {
 public:
+	Shader(ShaderType inType);
 	virtual int Load() override;	
 	virtual int Combline() override;
 	virtual const std::string& GetName() const override;
@@ -31,3 +33,46 @@ protected:
 	ShaderType Type;
 };
 
+class GraphicsShader : public Shader
+{
+public:
+	GraphicsShader(ShaderType inType);
+protected:
+};
+
+class ComputeShader : public Shader
+{
+public:
+	ComputeShader();
+protected:
+};
+
+class VertexShader : public GraphicsShader
+{
+public:
+    VertexShader() : GraphicsShader(ST_Vertex) {}
+};
+
+class HullShader : public GraphicsShader
+{
+public:
+    HullShader() : GraphicsShader(ST_Hull) {}
+};
+
+class DomainShader : public GraphicsShader
+{
+public:
+    DomainShader() : GraphicsShader(ST_Domain) {}
+};
+
+class PixelShader : public GraphicsShader
+{
+public:
+    PixelShader() : GraphicsShader(ST_Pixel) {}
+};
+
+class GeometryShader : public GraphicsShader
+{
+public:
+    GeometryShader() : GraphicsShader(ST_Geometry) {}
+};
