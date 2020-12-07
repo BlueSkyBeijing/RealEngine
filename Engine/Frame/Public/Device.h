@@ -159,6 +159,11 @@ public:
 	virtual int SetViewPort() = 0;
 	virtual int SetPipelineState() = 0;
 	virtual int Draw() = 0; 
+    virtual void DrawPrimitive(unsigned int baseVertexIndex, unsigned int numPrimitives, unsigned int numInstances) = 0;
+    virtual void DrawPrimitiveIndirect(void* buffer, unsigned int  offset) = 0;
+    virtual void DrawIndexedIndirect(void* indexBuffer, void* buffer, int drawIndex, unsigned int numInstances) = 0;
+    virtual void DrawIndexedPrimitive(void* indexBuffer, int baseVertexIndex, unsigned int firstInstance, unsigned int numVertices, unsigned int startIndex, unsigned int numPrimitives, unsigned int numInstances) = 0;
+    virtual void DrawIndexedPrimitiveIndirect(void* indexBuffer, void* buffer, unsigned int offset) = 0;
 	virtual int Present() = 0;
 	virtual int CreateObjectConstants() = 0;
 	virtual int CreateMaterialConstants() = 0;
@@ -177,6 +182,11 @@ public:
 	virtual int SetViewPort() override;
 	virtual int SetPipelineState() override;
 	virtual int Draw() override; 
+    virtual void DrawPrimitive(unsigned int baseVertexIndex, unsigned int numPrimitives, unsigned int numInstances) override;
+    virtual void DrawPrimitiveIndirect(void* buffer, unsigned int  offset) override;
+    virtual void DrawIndexedIndirect(void* indexBuffer, void* buffer, int drawIndex, unsigned int numInstances) override;
+    virtual void DrawIndexedPrimitive(void* indexBuffer, int baseVertexIndex, unsigned int firstInstance, unsigned int numVertices, unsigned int startIndex, unsigned int numPrimitives, unsigned int numInstances) override;
+    virtual void DrawIndexedPrimitiveIndirect(void* indexBuffer, void* buffer, unsigned int offset) override;
 	virtual int Present() override;
 	virtual int CreateObjectConstants() override;
 	virtual int CreateMaterialConstants() override;

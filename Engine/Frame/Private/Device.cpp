@@ -20,6 +20,31 @@ int Device::Draw()
 	return 0;
 }
 
+void Device::DrawPrimitive(unsigned int baseVertexIndex, unsigned int numPrimitives, unsigned int numInstances)
+{
+
+}
+
+void Device::DrawPrimitiveIndirect(void* buffer, unsigned int  offset)
+{
+
+}
+
+void Device::DrawIndexedIndirect(void* indexBuffer, void* buffer, int drawIndex, unsigned int numInstances)
+{
+
+}
+
+void Device::DrawIndexedPrimitive(void* indexBuffer, int baseVertexIndex, unsigned int firstInstance, unsigned int numVertices, unsigned int startIndex, unsigned int numPrimitives, unsigned int numInstances)
+{
+
+}
+
+void Device::DrawIndexedPrimitiveIndirect(void* indexBuffer, void* buffer, unsigned int offset)
+{
+
+}
+
 int Device::Clear()
 {
 	return 0;

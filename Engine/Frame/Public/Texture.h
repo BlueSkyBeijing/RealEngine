@@ -146,14 +146,32 @@ public:
 class Texture : public ITexture
 {
 public:
-	virtual int Load() override;
-	virtual const int GetWidth() const override;
-	virtual const int GetHeight() const override;
-	virtual const PixelFormat GetPixelFormat() const override;
-	virtual const TextureFileFormat GetTextureFileFormat() const = 0;
+    virtual int Load() override;
+    virtual const int GetWidth() const override;
+    virtual const int GetHeight() const override;
+    virtual const PixelFormat GetPixelFormat() const override;
+    virtual const TextureFileFormat GetTextureFileFormat() const = 0;
 protected:
-	int mWidth;
-	int mHeight;
-	PixelFormat mPixelFormat;
-	TextureFileFormat mTextureFileFormat;
+    int mWidth;
+    int mHeight;
+    PixelFormat mPixelFormat;
+    TextureFileFormat mTextureFileFormat;
+};
+
+class Texture2D : public Texture
+{
+public:
+protected:
+};
+
+class TextureCube : public Texture
+{
+public:
+protected:
+};
+
+class TextureVolume : public Texture
+{
+public:
+protected:
 };
