@@ -1,6 +1,8 @@
 #pragma once
 
+#include "Vertex.h"
 #include <vector>
+#include <Eigen/Dense>
 
 enum PassInputId
 {
@@ -119,6 +121,42 @@ public:
 	CompositePass* FinalOutput;
 };
 
+
+struct ScreenRectangleVertex
+{
+public:
+	Eigen::Vector4f Position;
+	Eigen::Vector2f UV;
+};
+
+class ScreenRectangleVertexDeclaration
+{
+public:
+    virtual void Init()
+    {
+		std::vector<VertexElement> Elements;
+        unsigned int Stride = sizeof(ScreenRectangleVertex);
+    }
+};
+
+class ScreenRectangleVertexBuffer
+{
+public:
+	void Init()
+	{
+
+	}
+};
+
+class ScreenRectangleIndexBuffer
+{
+public:
+	void Init()
+	{
+
+	}
+};
+
 class PostProcessVS
 {
 public:
@@ -132,10 +170,14 @@ class IPostProcessing
 {
 public:
 	virtual int Process() = 0;
+    virtual void DrawRectangle(float x, float y, float sizeX, float sizeY, float u, float v, float sizeU, float sizeV, Eigen::Vector2i targetSize, Eigen::Vector2i textureSize) = 0;
+
 };
 
 class PostProcessing : public IPostProcessing
 {
 public:
 	int Process() override;
+    virtual void DrawRectangle(float x, float y, float sizeX, float sizeY, float u, float v, float sizeU, float sizeV, Eigen::Vector2i targetSize, Eigen::Vector2i textureSize) override;
+
 };

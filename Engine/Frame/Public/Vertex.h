@@ -28,6 +28,11 @@ enum VertexElementType
 	VET_NumBits = 5,
 };
 
+enum
+{
+    MaxVertexElementCount = 16,
+};
+
 class IVertexLayout
 {
 public:
