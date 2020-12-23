@@ -144,6 +144,27 @@ class ScreenRectangleVertexBuffer
 public:
 	void Init()
 	{
+        std::vector<ScreenRectangleVertex> Vertices;
+
+        Vertices.resize(6);
+
+        Vertices[0].Position = Eigen::Vector4f(1, 1, 0, 1);
+        Vertices[0].UV = Eigen::Vector2f(1, 1);
+
+        Vertices[1].Position = Eigen::Vector4f(0, 1, 0, 1);
+        Vertices[1].UV = Eigen::Vector2f(0, 1);
+
+        Vertices[2].Position = Eigen::Vector4f(1, 0, 0, 1);
+        Vertices[2].UV = Eigen::Vector2f(1, 0);
+
+        Vertices[3].Position = Eigen::Vector4f(0, 0, 0, 1);
+        Vertices[3].UV = Eigen::Vector2f(0, 0);
+
+        Vertices[4].Position = Eigen::Vector4f(-1, 1, 0, 1);
+        Vertices[4].UV = Eigen::Vector2f(-1, 1);
+
+        Vertices[5].Position = Eigen::Vector4f(1, -1, 0, 1);
+        Vertices[5].UV = Eigen::Vector2f(1, -1);
 
 	}
 };
@@ -153,6 +174,12 @@ class ScreenRectangleIndexBuffer
 public:
 	void Init()
 	{
+        const unsigned int Indices[] = { 0, 1, 2, 2, 1, 3, 0, 4, 5 };
+
+        std::vector<unsigned int> IndexBuffer;
+		unsigned int NumIndices = 9;
+        IndexBuffer.resize(NumIndices);
+        memcpy(IndexBuffer.data(), Indices, NumIndices * sizeof(unsigned int));
 
 	}
 };
