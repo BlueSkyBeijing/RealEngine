@@ -167,6 +167,9 @@ public:
         Vertices[5].UV = Eigen::Vector2f(1, -1);
 
 	}
+
+public:
+    VertexBuffer mVertexBuffer;
 };
 
 class ScreenRectangleIndexBuffer
@@ -182,6 +185,8 @@ public:
         memcpy(IndexBuffer.data(), Indices, NumIndices * sizeof(unsigned int));
 
 	}
+public:
+	VertexIndexBuffer mVertexIndexBuffer;
 };
 
 class PostProcessVS
@@ -207,4 +212,7 @@ public:
 	int Process() override;
     virtual void DrawRectangle(float x, float y, float sizeX, float sizeY, float u, float v, float sizeU, float sizeV, Eigen::Vector2i targetSize, Eigen::Vector2i textureSize) override;
 
+protected:
+	ScreenRectangleVertexBuffer mScreenRectangleVertexBuffer;
+	ScreenRectangleIndexBuffer mScreenRectangleIndexBuffer;
 };

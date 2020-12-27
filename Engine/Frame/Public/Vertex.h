@@ -81,9 +81,55 @@ protected:
 	VertexLayout Layout;
 };
 
-
 class IVertexIndex
 {
+
+};
+
+class IVertexBuffer
+{
+	virtual unsigned int GetSize() const = 0;
+
+	virtual unsigned int GetUsage() const = 0;
+};
+
+class VertexBuffer : public IVertexBuffer
+{
+public:
+    virtual unsigned int  GetSize() const { return Size; }
+
+    virtual unsigned int  GetUsage() const { return Usage; }
+
+protected:
+    unsigned int  Stride;
+    unsigned int  Size;
+    unsigned int  Usage;
+};
+
+
+class IVertexIndexBuffer
+{
+	virtual unsigned int GetStride() const = 0;
+
+	virtual unsigned int GetSize() const = 0;
+
+	virtual unsigned int GetUsage() const = 0;
+
+};
+
+class VertexIndexBuffer : public IVertexIndexBuffer
+{
+public:
+	virtual unsigned int  GetStride() const { return Stride; }
+
+	virtual unsigned int  GetSize() const { return Size; }
+
+	virtual unsigned int  GetUsage() const { return Usage; }
+
+protected:
+	unsigned int  Stride;
+	unsigned int  Size;
+	unsigned int  Usage;
 };
 
 typedef std::uint16_t VertexIndex;
