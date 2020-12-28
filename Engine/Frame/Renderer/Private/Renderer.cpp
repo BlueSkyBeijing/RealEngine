@@ -15,7 +15,7 @@ int RenderCommandList::reset()
 
 Renderer::Renderer()
 {
-
+	mPostProcessing = new PostProcessing();
 }
 
 Renderer::~Renderer()
@@ -138,6 +138,9 @@ void Renderer::drawRenderables()
 void Renderer::postProcess()
 {
 	assert(Engine::GetDevice() != nullptr);
+    assert(mPostProcessing != nullptr);
+
+	mPostProcessing->Process();
 }
 
 void Renderer::present()

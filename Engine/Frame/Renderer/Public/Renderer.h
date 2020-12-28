@@ -3,6 +3,7 @@
 #include <vector>
 #include <map>
 #include "..\..\Public\Engine.h"
+#include "..\..\Public\PostProcessing.h"
 
 class IRenderable;
 class IScene;
@@ -80,4 +81,5 @@ protected:
 protected:
 	std::vector<IRenderable*> mStaticRenderObjects;
 	std::map<IRenderable*, bool> mVisibilityMap;
+	IPostProcessing* mPostProcessing;
 };

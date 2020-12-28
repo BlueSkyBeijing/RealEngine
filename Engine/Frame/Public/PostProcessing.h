@@ -47,12 +47,12 @@ class CompositePassContext
 
 	~CompositePassContext();
 
-	void Process(CompositePass* Root)
+	void Process(CompositePass* root)
 	{
 	}
 
-	CompositePass* Pass;
-	CompositionGraph* Graph;
+	CompositePass* mPass;
+	CompositionGraph* mGraph;
 
 private:
 	bool mProcessed;
@@ -97,16 +97,16 @@ public:
 	template<class T>
 	T* AddPass(T* InPass)
 	{
-		Nodes.push_back(InPass);
+		mNodes.push_back(InPass);
 
 		return InPass;
 	}
 
-	friend struct CompositePassContext;
+	friend class CompositePassContext;
 
 private:
 
-	std::vector<CompositePass*> Nodes;
+	std::vector<CompositePass*> mNodes;
 };
 
 class PostprocessContext
@@ -116,17 +116,17 @@ public:
 
 	CompositionGraph& Graph;
 
-	CompositePass* SceneColor;
-	CompositePass* SceneDepth;
-	CompositePass* FinalOutput;
+	CompositePass* mSceneColor;
+	CompositePass* mSceneDepth;
+	CompositePass* mFinalOutput;
 };
 
 
 struct ScreenRectangleVertex
 {
 public:
-	Eigen::Vector4f Position;
-	Eigen::Vector2f UV;
+	Eigen::Vector4f mPosition;
+	Eigen::Vector2f mUV;
 };
 
 class ScreenRectangleVertexDeclaration
@@ -148,23 +148,23 @@ public:
 
         Vertices.resize(6);
 
-        Vertices[0].Position = Eigen::Vector4f(1, 1, 0, 1);
-        Vertices[0].UV = Eigen::Vector2f(1, 1);
+        Vertices[0].mPosition = Eigen::Vector4f(1, 1, 0, 1);
+        Vertices[0].mUV = Eigen::Vector2f(1, 1);
 
-        Vertices[1].Position = Eigen::Vector4f(0, 1, 0, 1);
-        Vertices[1].UV = Eigen::Vector2f(0, 1);
+        Vertices[1].mPosition = Eigen::Vector4f(0, 1, 0, 1);
+        Vertices[1].mUV = Eigen::Vector2f(0, 1);
 
-        Vertices[2].Position = Eigen::Vector4f(1, 0, 0, 1);
-        Vertices[2].UV = Eigen::Vector2f(1, 0);
+        Vertices[2].mPosition = Eigen::Vector4f(1, 0, 0, 1);
+        Vertices[2].mUV = Eigen::Vector2f(1, 0);
 
-        Vertices[3].Position = Eigen::Vector4f(0, 0, 0, 1);
-        Vertices[3].UV = Eigen::Vector2f(0, 0);
+        Vertices[3].mPosition = Eigen::Vector4f(0, 0, 0, 1);
+        Vertices[3].mUV = Eigen::Vector2f(0, 0);
 
-        Vertices[4].Position = Eigen::Vector4f(-1, 1, 0, 1);
-        Vertices[4].UV = Eigen::Vector2f(-1, 1);
+        Vertices[4].mPosition = Eigen::Vector4f(-1, 1, 0, 1);
+        Vertices[4].mUV = Eigen::Vector2f(-1, 1);
 
-        Vertices[5].Position = Eigen::Vector4f(1, -1, 0, 1);
-        Vertices[5].UV = Eigen::Vector2f(1, -1);
+        Vertices[5].mPosition = Eigen::Vector4f(1, -1, 0, 1);
+        Vertices[5].mUV = Eigen::Vector2f(1, -1);
 
 	}
 
