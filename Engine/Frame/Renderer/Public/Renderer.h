@@ -8,6 +8,29 @@
 class IRenderable;
 class IScene;
 
+class IRenderCommand
+{
+public:
+    virtual void Execut() = 0;
+
+protected:
+};
+
+template<typename TCmd>
+class RenderCommand : public IRenderCommand
+{
+public:
+    IRenderCommand* mNext = nullptr;
+    virtual void Execut() override
+	{
+        TCmd* ThisCmd = static_cast<TCmd*>(this);
+        ThisCmd->Execute();
+        ThisCmd->~TCmd();
+	}
+
+protected:
+};
+
 class IRenderCommandList
 {
 public:
@@ -25,6 +48,34 @@ public:
 protected:
 	virtual int reset() override;
 };
+
+class IRenderCommandExecutor
+{
+public:
+    virtual int GetCommandList() = 0;
+	virtual void ExecuteList(IRenderCommandList& cmdList) = 0;
+
+protected:
+};
+
+class RenderCommandExecutor : public IRenderCommandExecutor
+{
+public:
+    virtual int GetCommandList() override;
+    virtual void ExecuteList(IRenderCommandList& cmdList) override;
+
+protected:
+};
+
+class RenderCommandSetShaderParameter final : public RenderCommand<RenderCommandSetShaderParameter>
+{
+public:
+	RenderCommandSetShaderParameter()
+    {
+    }
+    void Execute();
+};
+
 
 class IRenderer
 {
